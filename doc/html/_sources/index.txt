@@ -1,0 +1,70 @@
+.. ----------------------------------------------------------------------------
+.. index.rst - 
+..
+.. August 2015, Matthew Earl
+..
+.. Copyright (c) 2015 by Cisco Systems, Inc.
+.. All rights reserved.
+.. ----------------------------------------------------------------------------
+
+
+M2M API
+^^^^^^^
+
+This collection of pages describes the external M2M Python API, which gives
+access to the IOS-XR management plane intended for direct use by Cisco
+customers. Example usage:
+
+.. sourcecode:: python
+
+   from xrm2m import RootOper, connect
+
+   conn = connect()
+   for path, info in conn.get(RootOper.Interfaces):
+       print(path["InterfaceName"], info["MTU"], info["ActualState"])
+
+The interface also has facilities for operating asynchronously, and remotely
+over SSH.
+
+See :doc:`examples` for more examples.
+
+The main module exports are:
+
+- :func:`.connect`: Function to connect to a router, and return a
+  :class:`.Connection` object. :class:`.Connection` objects have methods which
+  perform manageability and schema requests/operations on the server (eg.  get,
+  set).
+- :func:`.connect_async`: Asynchronous equivalent to :func:`.connect` which
+  returns a :class:`.AsyncConnection` object, which is an asynchronous
+  equivalent of the :class:`.Connection` object. :func:`.sync` can be called
+  on a :class:`.AsyncConnection` object to give the equivalent
+  :class:`.Connection` object without creating a new underlying connection.
+- :data:`.RootCfg` and :data:`.RootOper` which are :class:`.Path` objects,
+  from which all other paths are created via attribute access and calling
+  syntax.
+- Transport classes which define a method of connection to a remote router.
+  Arguments include identifying information (eg. IP address) for the router in
+  question, and user credentials as necessary. Currently only
+  :class:`.SSHTransport` is supported, which uses SSH to connect to a router
+  remotely.
+
+Asynchronous functions and methods return `asyncio` `Future` objects on Python
+3, and Trollius_ `Future` objects on Python 2.
+
+.. _Trollius: https://pypi.python.org/pypi/trollius
+
+.. _contents:
+
+Table of contents
+-----------------
+
+.. toctree::
+   :maxdepth: 2
+
+   conn
+   dataobj
+   schema
+   types
+   errors
+   examples
+

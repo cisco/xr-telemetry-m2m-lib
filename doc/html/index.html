@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>M2M API &mdash; IOS-XR Machine-to-Machine Python API 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/m2m.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="IOS-XR Machine-to-Machine Python API 0.1.0 documentation" href="#" />
+    <link rel="next" title="Connections and transports" href="conn.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="conn.html" title="Connections and transports"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="m2m-api">
+<h1>M2M API<a class="headerlink" href="#m2m-api" title="Permalink to this headline">¶</a></h1>
+<p>This collection of pages describes the external M2M Python API, which gives
+access to the IOS-XR management plane intended for direct use by Cisco
+customers. Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">xrm2m</span> <span class="kn">import</span> <span class="n">RootOper</span><span class="p">,</span> <span class="n">connect</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">connect</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">conn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">RootOper</span><span class="o">.</span><span class="n">Interfaces</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="s">&quot;InterfaceName&quot;</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;MTU&quot;</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;ActualState&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The interface also has facilities for operating asynchronously, and remotely
+over SSH.</p>
+<p>See <a class="reference internal" href="examples.html"><em>Usage examples</em></a> for more examples.</p>
+<p>The main module exports are:</p>
+<ul class="simple">
+<li><a class="reference internal" href="conn.html#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a>: Function to connect to a router, and return a
+<a class="reference internal" href="conn.html#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> object. <a class="reference internal" href="conn.html#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> objects have methods which
+perform manageability and schema requests/operations on the server (eg.  get,
+set).</li>
+<li><a class="reference internal" href="conn.html#xrm2m.connect_async" title="xrm2m.connect_async"><code class="xref py py-func docutils literal"><span class="pre">connect_async()</span></code></a>: Asynchronous equivalent to <a class="reference internal" href="conn.html#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a> which
+returns a <a class="reference internal" href="conn.html#xrm2m.AsyncConnection" title="xrm2m.AsyncConnection"><code class="xref py py-class docutils literal"><span class="pre">AsyncConnection</span></code></a> object, which is an asynchronous
+equivalent of the <a class="reference internal" href="conn.html#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> object. <a class="reference internal" href="conn.html#xrm2m.sync" title="xrm2m.sync"><code class="xref py py-func docutils literal"><span class="pre">sync()</span></code></a> can be called
+on a <a class="reference internal" href="conn.html#xrm2m.AsyncConnection" title="xrm2m.AsyncConnection"><code class="xref py py-class docutils literal"><span class="pre">AsyncConnection</span></code></a> object to give the equivalent
+<a class="reference internal" href="conn.html#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> object without creating a new underlying connection.</li>
+<li><a class="reference internal" href="dataobj.html#xrm2m.RootCfg" title="xrm2m.RootCfg"><code class="xref py py-data docutils literal"><span class="pre">RootCfg</span></code></a> and <a class="reference internal" href="dataobj.html#xrm2m.RootOper" title="xrm2m.RootOper"><code class="xref py py-data docutils literal"><span class="pre">RootOper</span></code></a> which are <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> objects,
+from which all other paths are created via attribute access and calling
+syntax.</li>
+<li>Transport classes which define a method of connection to a remote router.
+Arguments include identifying information (eg. IP address) for the router in
+question, and user credentials as necessary. Currently only
+<a class="reference internal" href="conn.html#xrm2m.SSHTransport" title="xrm2m.SSHTransport"><code class="xref py py-class docutils literal"><span class="pre">SSHTransport</span></code></a> is supported, which uses SSH to connect to a router
+remotely.</li>
+</ul>
+<p>Asynchronous functions and methods return <cite>asyncio</cite> <cite>Future</cite> objects on Python
+3, and <a class="reference external" href="https://pypi.python.org/pypi/trollius">Trollius</a> <cite>Future</cite> objects on Python 2.</p>
+<div class="section" id="table-of-contents">
+<span id="contents"></span><h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="conn.html">Connections and transports</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conn.html#connections">Connections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conn.html#transports">Transports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conn.html#event-loops">Event Loops</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataobj.html">Data references and representations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataobj.html#paths">Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataobj.html#passwords">Passwords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataobj.html#wildcarding">Wildcarding</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="schema.html">Schema inspection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="schema.html#hierarchy">Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schema.html#typing">Typing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Data types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="types.html#integers">Integers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#booleans">Booleans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#strings">Strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#enums">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#bags">Bags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#ip-addresses">IP addresses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#vrfs">VRFs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#mac-addresses">MAC addresses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#interfaces">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#osi-is-is-types">OSI/IS-IS types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#node-ids">Node IDs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#password-types">Password types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#tty-types">TTY types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="errors.html#request-errors">Request errors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Usage examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#summarise-interfaces">Summarise interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#summarise-recompose-te-tunnel-interfaces">Summarise, recompose TE tunnel interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#reconfigure-te-metrics">Reconfigure TE metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#subtree-replace">Subtree replace</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">M2M API</a><ul>
+<li><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="conn.html"
+                        title="next chapter">Connections and transports</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="conn.html" title="Connections and transports"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Cisco Systems.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

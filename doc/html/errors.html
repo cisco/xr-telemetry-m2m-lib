@@ -1,0 +1,441 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Errors &mdash; IOS-XR Machine-to-Machine Python API 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/m2m.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="IOS-XR Machine-to-Machine Python API 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Usage examples" href="examples.html" />
+    <link rel="prev" title="Data types" href="types.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="examples.html" title="Usage examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="types.html" title="Data types"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="errors">
+<h1>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h1>
+<dl class="exception">
+<dt id="xrm2m.ConnectionError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">ConnectionError</code><a class="headerlink" href="#xrm2m.ConnectionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised if connecting or reconnecting failed.</p>
+<p>Can be raised by <a class="reference internal" href="conn.html#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a>, <a class="reference internal" href="conn.html#xrm2m.connect_async" title="xrm2m.connect_async"><code class="xref py py-func docutils literal"><span class="pre">connect_async()</span></code></a> or
+<a class="reference internal" href="conn.html#xrm2m.Connection.reconnect" title="xrm2m.Connection.reconnect"><code class="xref py py-meth docutils literal"><span class="pre">Connection.reconnect()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.DisconnectedError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">DisconnectedError</code><a class="headerlink" href="#xrm2m.DisconnectedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised by methods requiring a connection, if one has not been established.</p>
+<p>The exception is raised in the following cases:</p>
+<ul class="simple">
+<li>The connection was not available before the method was called.</li>
+<li>The connection went away before the method returned.</li>
+</ul>
+<p>A connection is considered to be not available if it is not in <cite>CONNECTED</cite>
+state. See <code class="xref py py-data docutils literal"><span class="pre">Connection.state</span></code> for more details.</p>
+</dd></dl>
+
+<div class="section" id="request-errors">
+<h2>Request errors<a class="headerlink" href="#request-errors" title="Permalink to this headline">¶</a></h2>
+<p>These exceptions may be raised by <a class="reference internal" href="conn.html#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> request methods. See the
+individial methods for details on what each method can raise.</p>
+<dl class="exception">
+<dt id="xrm2m.AmbiguousPathError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">AmbiguousPathError</code><a class="headerlink" href="#xrm2m.AmbiguousPathError" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <cite>get_value</cite> request matched multiple paths.</p>
+<dl class="attribute">
+<dt id="AmbiguousPathError.path">
+<code class="descname">path</code><a class="headerlink" href="#AmbiguousPathError.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path passed to <cite>get_value</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.CiscoError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">CiscoError</code><a class="headerlink" href="#xrm2m.CiscoError" title="Permalink to this definition">¶</a></dt>
+<dd><p>An error not covered by one of the other error types was encountered during
+processing a request. This error is used for errors represented by cerrnos
+- the associated error string is presented as the exception message string.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.ConfigCommitError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">ConfigCommitError</code><a class="headerlink" href="#xrm2m.ConfigCommitError" title="Permalink to this definition">¶</a></dt>
+<dd><p>A commit request failed.</p>
+<dl class="attribute">
+<dt id="ConfigCommitError.detail">
+<code class="descname">detail</code><a class="headerlink" href="#ConfigCommitError.detail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary mapping failed <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> objects to
+<a class="reference internal" href="#xrm2m.ConfigCommitErrorDetail" title="xrm2m.ConfigCommitErrorDetail"><code class="xref py py-class docutils literal"><span class="pre">ConfigCommitErrorDetail</span></code></a> objects which give the specific
+failure details.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.ErrorCategory">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">ErrorCategory</code><a class="headerlink" href="#xrm2m.ErrorCategory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumeration identifying the high-level reasons for operation failures.</p>
+<dl class="attribute">
+<dt id="ErrorCategory.VERIFY">
+<code class="descname">VERIFY</code><a class="headerlink" href="#ErrorCategory.VERIFY" title="Permalink to this definition">¶</a></dt>
+<dd><p>A change was rejected by an IOS-XR feature as semantically invalid,
+e.g. since it would move the system to an inconsistent state.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.ConfigCommitErrorDetail">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">ConfigCommitErrorDetail</code><a class="headerlink" href="#xrm2m.ConfigCommitErrorDetail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detail for a particular path within a failed config commit operation.</p>
+<dl class="attribute">
+<dt id="ConfigCommitErrorDetail.op">
+<code class="descname">op</code><a class="headerlink" href="#ConfigCommitErrorDetail.op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element of <a class="reference internal" href="conn.html#xrm2m.Change" title="xrm2m.Change"><code class="xref py py-class docutils literal"><span class="pre">Change</span></code></a> recording the operation that failed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ConfigCommitErrorDetail.path">
+<code class="descname">path</code><a class="headerlink" href="#ConfigCommitErrorDetail.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element of <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> recording the path path of the failed
+operation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ConfigCommitErrorDetail.value">
+<code class="descname">value</code><a class="headerlink" href="#ConfigCommitErrorDetail.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>For non-delete operations, the (new) value for the leaf to which the
+error applies. This is represented in the standard <a class="reference external" href="types.html">output format</a> (and so may not exactly match the input representation).</p>
+<p>For delete operations, this is <cite>None</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ConfigCommitErrorDetail.error">
+<code class="descname">error</code><a class="headerlink" href="#ConfigCommitErrorDetail.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>String describing the error.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ConfigCommitErrorDetail.error_category">
+<code class="descname">error_category</code><a class="headerlink" href="#ConfigCommitErrorDetail.error_category" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes the circumstances of the error, one of the
+<a class="reference internal" href="#xrm2m.ErrorCategory" title="xrm2m.ErrorCategory"><code class="xref py py-class docutils literal"><span class="pre">ErrorCategory</span></code></a> values.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.DatatypeNotSupportedError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">DatatypeNotSupportedError</code><a class="headerlink" href="#xrm2m.DatatypeNotSupportedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>The requested operation is not supported for the corresponding data type.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.FileExistsError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">FileExistsError</code><a class="headerlink" href="#xrm2m.FileExistsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>The user provided an invalid filename to the write_file method, for example
+a directory that does not exist. More details are given in the message
+field</p>
+<dl class="attribute">
+<dt id="FileExistsError.filename">
+<code class="descname">filename</code><a class="headerlink" href="#FileExistsError.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>The missing file name.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.InvalidArgumentError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">InvalidArgumentError</code><a class="headerlink" href="#xrm2m.InvalidArgumentError" title="Permalink to this definition">¶</a></dt>
+<dd><p>An input argument was detected to be invalid by an IOS-XR feature.</p>
+<p>This exception may, in rare circumstances, be raised when working with data
+access functions. In general problems with input data should be detected
+and reported (in a descriptive way!) by MPG.</p>
+<dl class="attribute">
+<dt id="InvalidArgumentError.path">
+<code class="descname">path</code><a class="headerlink" href="#InvalidArgumentError.path" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> recording which data was requested.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.NotFoundError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">NotFoundError</code><a class="headerlink" href="#xrm2m.NotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>An attempt was made to access data that doesn&#8217;t exist.</p>
+<dl class="attribute">
+<dt id="NotFoundError.path">
+<code class="descname">path</code><a class="headerlink" href="#NotFoundError.path" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> to which the error is related.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.OperationNotSupportedError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">OperationNotSupportedError</code><a class="headerlink" href="#xrm2m.OperationNotSupportedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>The requested operation is not supported.</p>
+<dl class="attribute">
+<dt id="OperationNotSupportedError.path">
+<code class="descname">path</code><a class="headerlink" href="#OperationNotSupportedError.path" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> to which the error is related.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.PathHierarchyError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">PathHierarchyError</code><a class="headerlink" href="#xrm2m.PathHierarchyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>An invalid path through the schema hierarchy was specified.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">RootOper</span><span class="o">.</span><span class="n">Interfaces</span><span class="o">.</span><span class="n">Interface</span><span class="p">)</span>
+<span class="go">PathHierarchyError: &#39;Interface&#39; is not a child of &#39;Interfaces&#39;</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="PathHierarchyError.element">
+<code class="descname">element</code><a class="headerlink" href="#PathHierarchyError.element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the path element that doesn&#8217;t match the schema (e.g.
+<cite>&#8216;Interface</cite> in the example above).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PathHierarchyError.parent">
+<code class="descname">parent</code><a class="headerlink" href="#PathHierarchyError.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the last valid element in the path (e.g. <cite>&#8216;Interfaces&#8217;</cite> in the
+example above).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.PathKeyContentError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">PathKeyContentError</code><a class="headerlink" href="#xrm2m.PathKeyContentError" title="Permalink to this definition">¶</a></dt>
+<dd><p>A path key value is not compatible with its schema data type.</p>
+<p>This exception may be raised when a request is made on a path which has
+invalid key types. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf_cfg_path</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intf_cfg_path</span> <span class="o">=</span> <span class="n">intf_cfg_path</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">intf_cfg_path</span><span class="p">)</span>
+<span class="go">PathKeyContentError: &#39;HundredGigE0/0&#39; is not a valid InterfaceName value</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="PathKeyContentError.param">
+<code class="descname">param</code><a class="headerlink" href="#PathKeyContentError.param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of <a class="reference internal" href="schema.html#xrm2m.SchemaParam" title="xrm2m.SchemaParam"><code class="xref py py-class docutils literal"><span class="pre">SchemaParam</span></code></a> containing the schema meta-data
+that the value failed to conform with.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PathKeyContentError.value">
+<code class="descname">value</code><a class="headerlink" href="#PathKeyContentError.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invalid value specified.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.PathKeyStructureError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">PathKeyStructureError</code><a class="headerlink" href="#xrm2m.PathKeyStructureError" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of path key values doesn&#8217;t have the correct structure.</p>
+<p>This exception may be raised, for example, when adding key values to a
+path the values don&#8217;t conform with union constraints:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">nbr</span>
+<span class="go">Path(RootOper.EIGRP.Process(1).Neighbour)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nbr</span> <span class="o">=</span> <span class="n">nbr</span><span class="p">(</span><span class="s">&quot;foovrf&quot;</span><span class="p">,</span> <span class="s">&quot;IPv4&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span>
+<span class="go">PathKeyStructureError: Invalid union combination: VRFName, AFName, ASN</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="PathKeyStructureError.class_name">
+<code class="descname">class_name</code><a class="headerlink" href="#PathKeyStructureError.class_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the the schema class that the values fail to conform with.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PathKeyStructureError.value_seq">
+<code class="descname">value_seq</code><a class="headerlink" href="#PathKeyStructureError.value_seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sequence of values passed as the path key (e.g.
+<cite>[&#8216;foovrf&#8217;, &#8216;IPv4&#8217;, 3]</cite> in the example above).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.PathStringFormatError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">PathStringFormatError</code><a class="headerlink" href="#xrm2m.PathStringFormatError" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string representation of a path is badly formatted.</p>
+<p>This exception may be raised when attempting to create a
+<a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> from a string representation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Path</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s">&#39;RootOper.Abc.Def(10.0.0.1)&#39;</span><span class="p">)</span>
+<span class="go">PathStringFormatError: Unquoted string &#39;10.0.0.1&#39; not recognised as a literal value (e.g. &#39;null&#39;)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="PathStringFormatError.pathstr">
+<code class="descname">pathstr</code><a class="headerlink" href="#PathStringFormatError.pathstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path string that this exception relates to.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.ValueContentError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">ValueContentError</code><a class="headerlink" href="#xrm2m.ValueContentError" title="Permalink to this definition">¶</a></dt>
+<dd><p>An element in a value sequence is not compatible with its schema data type.</p>
+<p>This exception may be raised when attempting to set a value. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ipv4_addr</span> <span class="o">=</span> <span class="n">intf_ipv4_config</span><span class="o">.</span><span class="n">Addresses</span><span class="o">.</span><span class="n">Primary</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">ipv4_addr</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;10.0.0.&quot;</span><span class="p">,</span> <span class="s">&quot;255.0.0.0&quot;</span><span class="p">]])</span>
+<span class="go">ValueContentError: &#39;10.0.0.&#39; is not a valid IPv4Address value</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="ValueContentError.param">
+<code class="descname">param</code><a class="headerlink" href="#ValueContentError.param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of <a class="reference internal" href="schema.html#xrm2m.SchemaParam" title="xrm2m.SchemaParam"><code class="xref py py-class docutils literal"><span class="pre">SchemaParam</span></code></a> containing the schema meta-data that
+the value failed to conform with.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ValueContentError.value">
+<code class="descname">value</code><a class="headerlink" href="#ValueContentError.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invalid value specified.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xrm2m.ValueStructureError">
+<em class="property">exception </em><code class="descclassname">xrm2m.</code><code class="descname">ValueStructureError</code><a class="headerlink" href="#xrm2m.ValueStructureError" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of values doesn&#8217;t have the correct structure.</p>
+<p>This exception may be raised when attempting to write values if, for
+example, some mandatory elements of the value sequence have been omitted:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf_ipv4</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;Loopback0&#39;).IPV4Network)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_ipv4</span><span class="o">.</span><span class="n">Addresses</span><span class="o">.</span><span class="n">Primary</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;203.0.0.1&quot;</span><span class="p">]])</span>
+<span class="go">ValueStructureError: Too few values: need 2, have 1</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="ValueStructureError.class_name">
+<code class="descname">class_name</code><a class="headerlink" href="#ValueStructureError.class_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the the schema class containing the schema meta-data that the
+values fail to conform with.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ValueStructureError.value_seq">
+<code class="descname">value_seq</code><a class="headerlink" href="#ValueStructureError.value_seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sequence of values passed (e.g. <cite>[&#8216;203.0.0.1&#8217;]</cite> in the example above).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Errors</a><ul>
+<li><a class="reference internal" href="#request-errors">Request errors</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="types.html"
+                        title="previous chapter">Data types</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="next chapter">Usage examples</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/errors.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="examples.html" title="Usage examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="types.html" title="Data types"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Cisco Systems.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

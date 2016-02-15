@@ -1,0 +1,979 @@
+
+Data types
+**********
+
+This page documents the data types supported by M2M, and the
+representations used for each type on input and output.
+
+Input/output formats conform to these general principles:
+
+* Data is passed into and out of M2M as integers and strings. The
+  intention is that this gives clients the flexibility to use their
+  preferred high-level representations of any type (e.g. one of the
+  many IP address manipulation libraries).
+
+* Any commonly-used 'standard' format is accepted on input for most
+  types (e.g. *'00:00:06:12:ab:ef'* as well as *'0000.0612.abef'* for
+  MAC addresses).
+
+* Wherever a string or integer is required on input, any object that
+  can be converted to a string or integer (using *str()* or *int()*)
+  is usually also accepted.
+
+Some data types are synonymous, e.g. *IPADDRESS* and
+*IPADDRESS_STRING*. Usually, the only difference between such types is
+how they're encoded internally by IOS-XR features. Any other
+difference with an effect on clients is explicitly noted.
+
+
+Integers
+========
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "INTEGER"                                  | Unsigned 32-bit integer                                     |
++--------------------------------------------+-------------------------------------------------------------+
+| "SIGNED_INTEGER"                           | Signed 32-bit integer                                       |
++--------------------------------------------+-------------------------------------------------------------+
+| "RANGE"                                    | Unsigned 32-bit integer range                               |
++--------------------------------------------+-------------------------------------------------------------+
+| "SIGNED_RANGE"                             | Signed 32-bit integer range                                 |
++--------------------------------------------+-------------------------------------------------------------+
+| "HEX_INTEGER"                              | Unsigned 32-bit integer, usually presented in hexadecimal   |
++--------------------------------------------+-------------------------------------------------------------+
+
+*RANGE* and *SIGNED_RANGE* are parameterised types, with parameters
+giving the minimum and maximum values represented by the range
+(inclusive).
+
+
+Input format
+------------
+
+For all integer types, any object that can be converted to an integer
+(using *int()*) is supported on input:
+
+   >>> conn.set([mtu_path, 9000])
+   >>> conn.set([mtu_path, "9000"])
+
+Types representing unsigned integers (e.g. *INTEGER*) have the
+(obvious!) restriction that input values must be non-negative, while
+*RANGE* and *SIGNED_RANGE* have the additional restriction that input
+values must lie within a particular range:
+
+   >>> conn.set([te_rel_metric_path, -10])
+   >>> conn.set([te_rel_metric_path, 10])
+   >>> conn.set([te_rel_metric_path, -11])
+   ValueContentError: -11 is not a valid SignedRange(-10, 10) value
+
+For the *HEX_INTEGER* type, strings beginning with *'0x'* or *'0X'*
+and encoding an integer in hex notation are also supported:
+
+   >>> conn.set([te_affinity_path, "0x10001"])
+   >>> conn.set([te_affinity_path, "0X10001"])
+   >>> conn.set([te_affinity_path, 0x10001])
+   >>> conn.set([te_affinity_path, "65537"])
+   >>> conn.set([te_affinity_path, 65537])
+
+
+Output format
+-------------
+
+All integer types are represented by integers on output:
+
+   >>> conn.get_value(mtu_path)
+   9000
+   >>> conn.get_value(te_affinity_path)
+   65537
+
+
+Booleans
+========
+
++---------------------------------+------------------------------------------------------------------+
+| Data type                       | Description                                                      |
++=================================+==================================================================+
+| "BOOL"                          | Standard boolean                                                 |
++---------------------------------+------------------------------------------------------------------+
+| "TRUE_ONLY"                     | Boolean whose only valid value is *True*. Values of this type    |
+|                                 | communicate information only through their presence or absence   |
++---------------------------------+------------------------------------------------------------------+
+| "FALSE_ONLY"                    | Boolean whose only valid value is *False*. The semantics of this |
+|                                 | type are similar to *TRUE_ONLY*                                  |
++---------------------------------+------------------------------------------------------------------+
+
+
+Input format
+------------
+
+For all boolean types, any object that can be converted to a boolean
+(using *bool()*) is supported on input:
+
+   # 'True' values
+   >>> conn.set([enable_path, True])
+   >>> conn.set([enable_path, 1])
+   >>> conn.set([enable_path, "any non-empty string"])
+   >>> conn.set([enable_path, "False"])
+   # 'False' values
+   >>> conn.set([auto_in_service_path, False])
+   >>> conn.set([auto_in_service_path, []])
+
+
+Output format
+-------------
+
+All boolean types are represented by bools on output:
+
+   >>> conn.get_value(enable_path)
+   True
+   >>> conn.get_value(auto_in_service_path)
+   False
+
+
+Strings
+=======
+
++--------------------------------------------+----------------------------------------------------------------------+
+| Data type                                  | Description                                                          |
++============================================+======================================================================+
+| "STRING"                                   | ASCII-compatible string                                              |
++--------------------------------------------+----------------------------------------------------------------------+
+| "TEXT"                                     | Synonym for *STRING*                                                 |
++--------------------------------------------+----------------------------------------------------------------------+
+| "BOUNDED_STRING"                           | Variant on *STRING*, with a restricted length                        |
++--------------------------------------------+----------------------------------------------------------------------+
+| "IDENTIFIER"                               | Variant on *STRING*, with the additional restrictions that the       |
+|                                            | string only contains alphanumeric characters plus *'-'* and *'_'*,   |
+|                                            | and that the string begins with an alphabetic character              |
++--------------------------------------------+----------------------------------------------------------------------+
+| "BOUNDED_IDENTIFIER"                       | Variant on *IDENTIFIER*, with a restricted length                    |
++--------------------------------------------+----------------------------------------------------------------------+
+| "ENCODED_STRING"                           | Synonym for *STRING*                                                 |
++--------------------------------------------+----------------------------------------------------------------------+
+| "ENCODED_BOUNDED_STRING"                   | Synonym for *BOUNDED_STRING*                                         |
++--------------------------------------------+----------------------------------------------------------------------+
+
+*BOUNDED_STRING*, *BOUNDED_IDENTIFIER* and *ENCODED_BOUNDED_STRING*
+are parameterised types, with parameters giving the minimum and
+maximum lengths for represented strings (inclusive).
+
+Note that *ENCRYPTED_STRING* and similar types are functionally
+identical to *STRING*: no algorithm is applied as values described by
+these types pass through MPG.
+
+
+Input format
+------------
+
+For all string types input values *must* be an instance of *str* or
+*bytes*  on Python 3, or equivalently *unicode* or *str* on Python 2,
+and must contain only ASCII characters:
+
+   # Valid values
+   >>> conn.set([description_path, "To BOS"])
+   >>> conn.set([description_path, str(12345)])
+   # Invalid value
+   >>> conn.set([description, "\u2625 +\u1f437"])
+   ValueContentError: '\u2625 +\u1f437' is not a valid String value
+
+If an instance of *bytes* on Python 3 or *str* on Python 2 is
+provided, then it will be decoded as ASCII into the corresponding
+*str* object on Python 3 or *unicode* object on Python 2.
+
+For *IDENTIFIER* and *BOUNDED_IDENTIFIER* there are additional
+restrictions on the string's contents, as described above:
+
+   # Valid values
+   >>> conn.set([ident_path, "abc123-def"])
+   >>> conn.set([ident_path, "XY_-_-_12"])
+   # Invalid values
+   >>> conn.set([ident_path, "_abc"])
+   ValueContentError: ...
+   >>> conn.set([ident_path, "0abc"])
+   ValueContentError: ...
+   >>> conn.set([ident_path, "abc def"])
+   ValueContentError: ...
+
+
+Output format
+-------------
+
+All string types are represented by strings on output:
+
+   >>> conn.get_value(description_path)
+   'To BOS'
+   >>> conn.get_value(ident_path)
+   'abc123-def'
+
+
+Enums
+=====
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "ENUM"                                     | Collection of unsigned integer values, each labelled with a |
+|                                            | string name                                                 |
++--------------------------------------------+-------------------------------------------------------------+
+| "RANGE_ENUM"                               | Hybrid of the *ENUM* and *RANGE* types: a range between two |
+|                                            | unsigned integers, where a selection of values in the range |
+|                                            | are labelled with names                                     |
++--------------------------------------------+-------------------------------------------------------------+
+| "STRING_LIST"                              | Collection of string values                                 |
++--------------------------------------------+-------------------------------------------------------------+
+
+All enum types are parameterised, with parameters giving names and
+descriptions of the enum elements. For *RANGE_ENUM* the parameters
+also record the minimum and maximum values represented by the range
+(inclusive).
+
+
+Usage and schema examples
+-------------------------
+
+*ENUM* instances are used throughout the schema to represent pre-
+defined collections of permissible values, e.g. for an RSVP bandwidth
+mode:
+
+   >>> param
+   SchemaParam(Enum BandwidthMode)
+   >>> pprint(param.datatype_args.dump())
+   {
+      'Absolute': {
+         'value': 0,
+         'description': 'Configuration is in absolute bandwidth values',
+      },
+      'Percentage': {
+         'value': 1,
+         'description': 'Configuration is in percentage of physical bandwidth values',
+      },
+   }
+
+*RANGE_ENUM* instances are occasionally used in place of *RANGE* when
+a handful of values in the range have distinguished semantics, e.g.
+for an ISIS mesh group ID:
+
+   >>> param
+   SchemaParam(RangeEnum(0, 4294967295) MeshGroup)
+   >>> pprint(param.datatype_args.dump())
+   {
+         "min": 0,
+         "max": 4294967295,
+         "enum": {
+            "Blocked": {
+               "value": 0,
+               "description": "Blocked mesh group. Changed LSPs are not "
+                              "flooded over blocked interfaces",
+            },
+         },
+   }
+
+*STRING_LIST* instances are occasionally used in place of *ENUM*
+where, from the point of view of the underlying IOS-XR feature, the
+enumerated values are most naturally represented as strings rather
+than integers. This distinction between *STRING_LIST* and *ENUM* has
+little relevance for clients of MPG, and string lists and enums have a
+very similar look and feel:
+
+   >>> param
+   SchemaParam(StringList AccountingType)
+   >>> pprint(param.datatype_args.dump())
+   {
+         'subscriber': {
+            'description': 'Set AAA lists for "subscriber"',
+         },
+         'service': {
+            'description': 'Set AAA lists for "service"',
+         },
+         'policy-if': {
+            'description': 'Set AAA lists for "policy-if"',
+         },
+         'prepaid': {
+            'description': 'Set AAA lists for "prepaid"',
+         },
+   }
+
+
+Input format
+------------
+
+For *ENUM*, strings specifying a symbolic name and integers giving an
+underlying value are both accepted on input. If the input value is not
+an integer or string, it's converted to a string (using *str()*) and
+intepreting as specifying a value by name:
+
+   # All of the inputs below are equivalent, specifying RSVP bandwidth config.
+   # In each case, the first tuple element is the bandwidth value and the
+   # second is an enum value that determines how it's interpreted.
+   >>> conn.set([bandwidth_path, (50, "Percentage")])
+   >>> conn.set([bandwidth_path, (50, 1)])
+   # Example of a non-str/int input that's converted to a str
+   >>> str(complex_bwmode_obj)
+   "Percentage"
+   >>> conn.set([bandwidth_path, (50, complex_bwmode_obj)])
+
+*RANGE_ENUM* values can be represented as follows on input:
+
+1. As an *int*, to specify any value in the range.
+
+2. As an *str*, to specify a named value.
+
+3. If neither of the above cases applies, the value is converted to
+   a string (using *str()*) and matched against named values.
+
+4. If the value doesn't match a named value when converted to a
+   string, it's converted to an integer (using *int()*) and, if
+   successful, the result is interpreted as a value in the range.
+
+For example:
+
+   # All of the inputs below are equivalent, specifying an ISIS mesh group ID.
+   # They illustrate the cases listed above.
+   >>> conn.set([meshgrp_path, 0])
+   >>> conn.set([meshgrp_path, "Blocked"])
+   >>> str(complex_meshgrp_obj)
+   "Blocked"
+   >>> conn.set([meshgrp_path, complex_meshgrp_obj])
+   >>> conn.set([meshgrp_path, "0"])
+
+For *STRING_LIST*, any object that can be converted to a string is
+supported on input:
+
+   >>> accounting
+   Path(RootCfg.AAA.AAASubscriber.Accounting)
+   >>> accounting("subscriber")
+   Path(RootCfg.AAA.AAASubscriber.Accounting('subscriber'))
+
+
+Output format
+-------------
+
+*ENUM* values, *RANGE_ENUM* values that are named and *STRING_LIST*
+values are all represented by strings on output. *RANGE_ENUM* values
+that aren't named are represented by integers.
+
+>>> conn.get_value(bandwidth_path)
+(50, 'Percentage')
+>>> conn.get_value(meshgrp_path)
+'Blocked'
+>>> conn.get_value(other_meshgrp_path)
+100
+>>> list(get_keys(accounting_table))
+[Path(RootCfg.AAA.AAASubscriber.Accounting('subscriber')),
+ Path(RootCfg.AAA.AAASubscriber.Accounting('prepaid'))]
+
+
+Bags
+====
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "BAG"                                      | Collection of data grouped together into a single 'value'   |
++--------------------------------------------+-------------------------------------------------------------+
+
+
+Usage
+-----
+
+Bags are composite structures used to collect several values into a
+single leaf. They:
+
+* Consist of key, value pairs. Keys are always strings.
+
+* May contain arbitrarily many values.
+
+* May have arbitrarily deep substructure.
+
+They're used extensively for operational data, e.g. interface ethernet
+counters are represented by a single bag-valued leaf in the schema,
+rather than one leaf for each statistic.
+
+
+Input format
+------------
+
+Bags are currently only supported on output.
+
+
+Output format
+-------------
+
+Bags are represented by mappings:
+
+   >>> intf
+   Path(RootOper.Interfaces.InterfaceBriefTable.Interface("GigabitEthernet0/0/0/0"))
+   >>> info = get(intf)[0][1]
+   >>> info
+   Bag(imds_ifattr_base_info v1.0)
+   >>> pprint(dict(info))
+   {'ActualLineState': 'IM_STATE_UP',
+    'ActualState': 'IM_STATE_UP',
+    'Bandwidth': 0,
+    'Encapsulation': 17,
+    'EncapsulationTypeString': 'Null',
+    'Interface': 384,
+    'L2Transport': False,
+    'LineState': 'IM_STATE_UP',
+    'MTU': 1500,
+    'ParentInterface': 0,
+    'State': 'IM_STATE_UP',
+    'SubInterfaceMTUOverhead': 0,
+    'Type': 17}
+   >>> "L2Transport" in intf
+   True
+   >>> intf["MTU"]
+   1500
+
+Bag-like substructures within bags are represented by dicts:
+
+   >>> pprint(dict(info))
+   {
+    'ABC': '10.0.0.1',
+    'DEF': 'xyz',
+    'GHI': {
+      'X': 1,
+      'Y': 2,
+     },
+   }
+
+'Array' substructures within bags are represented by lists:
+
+   >>> pprint(dict(info))
+   {
+    'ABC': [123, 456, 789],
+    'DEF': {
+      'XX': 'abc',
+      'YY': {
+         'ZZ': ['xx', 'yy'],
+       },
+    },
+   }
+
+
+IP addresses
+============
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "IPV4ADDRESS"                              | IPv4 address, represented as a string, e.g. *'203.0.113.1'* |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPV4ADDRESS_STRING"                       | Synonym for *IPV4ADDRESS*                                   |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPV4HOSTNAME"                             | Synonym for *IPV4ADDRESS*                                   |
++--------------------------------------------+-------------------------------------------------------------+
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "IPV6ADDRESS"                              | IPv6 address, represented as a string, e.g.                 |
+|                                            | *'2001:db8::42'*                                            |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPV6ADDRESS_STRING"                       | Synonym for *IPV6ADDRESS*                                   |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPV6ADDRESS_HEXSTRING"                    | Synonym for *IPV6ADDRESS*                                   |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPV6ADDRESS_PLUS"                         | Synonym for *IPV6ADDRESS*                                   |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPV6HOSTNAME"                             | Synonym for *IPV6ADDRESS*                                   |
++--------------------------------------------+-------------------------------------------------------------+
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "IPADDRESS"                                | IPv4 or IPv6 address, represented as a string, e.g.         |
+|                                            | *'203.0.13.1'* or *'2001:db8::42'*                          |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPADDRESS_STRING"                         | Synonym for *IPADDRESS*                                     |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPHOSTNAME"                               | Synonym for *IPADDRESS*                                     |
++--------------------------------------------+-------------------------------------------------------------+
+| "IPADDRESS_PREFIX"                         | IPv4 or IPv6 address together with a prefix length.         |
+|                                            | Represented as a string, e.g. *'203.0.13.1/24'* or          |
+|                                            | *'2001:db8::42/32'*                                         |
++--------------------------------------------+-------------------------------------------------------------+
+
+Note: Though the names of the *IPV4HOSTNAME*, *IPV6HOSTNAME* and
+  *IPHOSTNAME* types suggest that they should be presented as
+  hostnames, this isn't the case for MPG:
+
+  * Data modelled by these types is processed internally by IOS-XR
+    features as IP addresses rather than hostnames.
+
+  * Rather than incurring the overhead of DNS and reverse DNS
+    lookups when data modelled by these types is encountered, the IP
+    address data is exposed directly.
+
+
+Input format
+------------
+
+IP addresses are represented by strings on input, using one of the
+following representations:
+
+* For IPv4 addresses, dotted-decimal notation, e.g. *'203.0.13.1'*.
+
+* For IPv6 addresses, groups of four hex digits separated by colons,
+  e.g. *'2001:db8::42'*.
+
+Any object whose string representation (obtained using *str()*)
+conforms with one of these formats is also accepted.
+
+IPv4 address examples:
+
+   >>> conn.set([nexthop_path, "203.0.13.1"])
+   # Any object whose string representation is appropriately formatted is
+   # permissible on input. This applies to all IP address types.
+   >>> str(ipaddr)
+   '203.0.13.1'
+   >>> conn.set([nexthop_path, ipaddr])
+
+IPv6 address examples:
+
+   >>> conn.set([nexthop_path, "2001:0db8:0000:0000:0000:0000:0000:0042"])
+   # Groups of all-zero digits may be omitted, using the standard :: notation
+   >>> conn.set([nexthop_path, "2001:0db8::0042"])
+   # Leading zeroes within groups may also be omitted
+   >>> conn.set([nexthop_path, "2001:db8::42"])
+   # Any combination of upper-case and lower-case letters may be used
+   >>> conn.set([nexthop_path, "2001:DB8::42"])
+   >>> conn.set([nexthop_path, "2001:Db8::42"])
+
+For *IPADDRESS* and related types, all of the address formats above
+are supported. For *IPADDRESS_PREFIX*, the prefix length must be
+specified using *'address/prefix_len'* notation:
+
+   >>> conn.set([network_path, "203.0.13.1/16"])
+   >>> conn.set([network_path, "2001:0db8:0000:0000:0000:0000:0000:0042/32"])
+   >>> conn.set([network_path, "2001:db8::42/32"])
+   # As usual, objects with an appropriate str() representation are accepted
+   >>> str(netaddr)
+   '203.0.13.1/16'
+   >>> conn.set([network_path, netaddr])
+
+
+Output format
+-------------
+
+IP addresses are represented by strings on output, formatted as
+follows:
+
+* For IPv4 addresses, dotted-decimal notation, e.g. *'203.0.13.1'*.
+
+* For IPv6 addresses, groups of four hex digits separated by colons,
+  following RFC-5952.
+
+* For *IPADDRESS_PREFIX*, the standard IPv4 or IPv6 notation, with
+  the prefix appended as a decimal string separated from the address
+  by a slash.
+
+Examples:
+
+   # IPv4 address
+   >>> conn.get_value(nexthop4_path)
+   '203.0.13.1'
+   # IPv6 address
+   >>> conn.get_value(nexthop6_path)
+   '2001:db8::42'
+   # IPADDRESS_PREFIX
+   >>> conn.get_value(netaddr4_path)
+   '203.0.13.1/16'
+   >>> conn.get_value(netaddr6_path)
+   '2001:db8::42/32'
+
+
+VRFs
+====
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "VRF"                                      | VRF identified by name, e.g. *'default'*                    |
++--------------------------------------------+-------------------------------------------------------------+
+
+
+Input format
+------------
+
+VRFs are represented by strings on input, identifying a VRF by name:
+
+   >>> conn.set([vrf_path, "default"])
+   >>> conn.set([vrf_path, "abcxyz"])
+
+Any object whose string representation (obtained using *str()*) is a
+VRF name is also accepted.
+
+
+Output format
+-------------
+
+VRFs are represented by strings on output, identifying VRFs by name:
+
+   >>> conn.get_value(vrf_path)
+   'abcxyz'
+
+
+MAC addresses
+=============
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "MACADDRESS"                               | MAC address, represented as a string e.g.                   |
+|                                            | *'00:00:06:12:ab:ef'*                                       |
++--------------------------------------------+-------------------------------------------------------------+
+| "MACADDRESS_STRING"                        | Synonym for *MACADDRESS*                                    |
++--------------------------------------------+-------------------------------------------------------------+
+
+
+Input format
+------------
+
+MAC addresses are represented by strings on input, with the following
+representations accepted:
+
+   # Colon-separated octets
+   >>> conn.set([src_mac_path, "00:00:06:12:ab:ef"])
+   # Hyphen-separated octets
+   >>> conn.set([src_mac_path, "00-00-06-12-ab-ef"])
+   # Period-separated quads
+   >>> conn.set([src_mac_path, "0000.0612.abef"])
+   # All formats are case-insensitive
+   >>> conn.set([src_mac_path, "00:00:06:12:aB:Ef"])
+
+Any object whose string representation (obtained using *str()*)
+conforms with one of these formats is also accepted.
+
+
+Output format
+-------------
+
+MAC addresses are represented by strings on output, using a colon-
+separated octet representation in transmission order:
+
+   >>> conn.get_value(src_mac_path)
+   '00:00:06:12:ab:ef'
+
+
+Interfaces
+==========
+
+Throughout this section, the terms 'interface' and 'controller' may be
+interchanged: 'interface' data types are used to identify controllers
+as well as interfaces.
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "INTERFACE_NAME"                           | Name of a network interface, e.g. *'HundredGigE0/0/0/0*     |
++--------------------------------------------+-------------------------------------------------------------+
+| "INTERFACE_HANDLE"                         | Synonym for *INTERFACE_NAME*                                |
++--------------------------------------------+-------------------------------------------------------------+
+| "INTERFACE_FORWARD"                        | Synonym for *INTERFACE_NAME*                                |
++--------------------------------------------+-------------------------------------------------------------+
+
+Note: *INTERFACE_FORWARD* has slightly different semantics to
+  *INTERFACE_NAME*:Conventionally, *INTERFACE_NAME* is used to encode
+  references to interfaces that are known to exist in the system
+  whereas *INTERFACE_FORWARD* is used to encode a forward-reference to
+  an interface that may not yet exist.MPG does not enforce this
+  distinction.
+
+
+Input format
+------------
+
+All interface types are represented by strings on input, identifying
+an interface by name:
+
+   >>> conn.set([intf_path, "HundredGigE0/0/0/0"])
+
+Any object whose string representation (obtained using *str()*) is an
+interface name is also accepted.
+
+More precisely, interface names should be formatted as follows:
+
+* Names have two components: a string identifying the interface's
+  type, directly followed by a string giving its location:
+
+     # Valid
+     >>> conn.set([intf_path, "Loopback4"])
+     # Invalid (no whitespace is permitted)
+     >>> conn.set([intf_path, "Loopback 4"])
+     ValueContentError: ...
+
+* 'Long' type names must used rather than 'short' abbreviated names:
+
+     # Valid
+     >>> conn.set([intf_path, "GigabitEthernet100/2/0/1"])
+     # Invalid
+     >>> conn.set([intf_path, "Gi100/2/0/1"])
+     ValueContentError: ...
+
+* Type names are case-insensitive:
+
+     >>> conn.set([intf_path, "gigabitethernet100/2/0/1"])
+
+* Any location format accepted by the IOS-XR CLI may be used. In
+  particular, MPG uses standard mechanisms to parse interface names
+  and so any new extension to the syntax is automatically supported:
+
+     # Interfaces with a 'physical' location
+     >>> conn.set([intf_path, "TenGigE0/0/0/0"])
+     >>> conn.set([intf_path, "dwdm0/0/0/0"])
+     >>> conn.set([intf_path, "GigabitEthernet201/20/0/10"])
+     # Subinterfaces
+     >>> conn.set([intf_path, "TenGigE0/2/0/1.3"])
+     # PPPoE sessions on subinterfaces of channelised/breakout interfaces!
+     >>> conn.set([intf_path, "GigabitEthernet4/12/0/13/2.987.pppoe12345"])
+
+
+Output format
+-------------
+
+Interfaces are represented by strings on output, identifying
+interfaces by name:
+
+   >>> conn.get_value(intf_path)
+   'HundredGigE0/0/0/0'
+
+
+OSI/IS-IS types
+===============
+
+The following types are used to model data related to the IS-IS
+protocol.
+
++--------------------------------------------+---------------------------------------------------------------+
+| Data type                                  | Description                                                   |
++============================================+===============================================================+
+| "OSI_SYSTEMID"                             | Identifier for a router/host in the network, represented as a |
+|                                            | string e.g. *'1234.5678.9abc'*                                |
++--------------------------------------------+---------------------------------------------------------------+
+| "OSI_AREA_ADDRESS"                         | Identifier for an area of the network, represented as a       |
+|                                            | string, e.g. *'49'* or *'49.0000.1111.2222.aaaa.bbbb.cccc'*   |
++--------------------------------------------+---------------------------------------------------------------+
+| "OSI_NET"                                  | Network entity title, combining an area address, system ID    |
+|                                            | and an additional selector octet (which is always zero).      |
+|                                            | Represented as a string e.g. *'49.1234.5678.9abc.00'*         |
++--------------------------------------------+---------------------------------------------------------------+
+| "ISIS_NODEID"                              | Identifier for a network node, combining a system ID with an  |
+|                                            | additional octet specifying the pseudonode ID. Represented as |
+|                                            | a string e.g. *'1234.5678.9abc.ab'*                           |
++--------------------------------------------+---------------------------------------------------------------+
+| "ISIS_LSPID"                               | Identifier for an LSP, combining a node ID with an additional |
+|                                            | octet specifying the LSP fragmentation number. Represented as |
+|                                            | a string e.g. *'1234.5678.9abc.ab.cd'*                        |
++--------------------------------------------+---------------------------------------------------------------+
+
+
+Input format
+------------
+
+Values modelled by OSI/IS-IS types are represented by strings on input
+(or any object whose string representation, obtained using *str()*, is
+appropriately formatted). All values consist of hex-string
+representations of octets, delimited by *.* characters.
+
+*OSI_SYSTEMID*:
+   * Six octets.
+
+   * Split into three two-octet segments.
+
+   * e.g. *"1234.5678.9abc"*.
+
+*OSI_AREA_ADDRESS*:
+   * Between one and thirteen octets (inclusive).
+
+   * Split into two-octet segments (starting from the right).
+
+   * e.g. *"49"*, *"4900.0000"*,
+     *"49.0000.1111.2222.aaaa.bbbb.cccc"*.
+
+*OSI_NET*:
+   * Concatentation of an area address, system ID and a zero octet.
+
+   * e.g. *"49.1234.5678.9abc.00"*,
+     *"49.0000.1111.2222.aaaa.bbbb.cccc.1234.5678.9abc.00"*.
+
+*ISIS_NODEID*:
+   * Concatentation of a system ID and a pseudonode ID octet.
+
+   * e.g. *"1234.5678.9abc.ab"*.
+
+*ISIS_LSPID*:
+   * Concatentation of an IS-IS node ID and an LSP fragmentation
+     number octet.
+
+   * e.g. *"1234.5678.9abc.ab.cd"*.
+
+
+Output format
+-------------
+
+Values modelled by OSI/IS-IS types are represented by strings on
+output, using the formats defined above.
+
+
+Node IDs
+========
+
+The following types are used to model data identifying physical
+resources in the system at (approximately) a card/CPU granularity.
+Physical port references are modelled by interface types.
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "NODEID"                                   | ID of a node in the system, as a string, e.g.               |
+|                                            | *'0/RP0/CPU0'*                                              |
++--------------------------------------------+-------------------------------------------------------------+
+| "NODEID_STRING"                            | Synonym for *NODEID*                                        |
++--------------------------------------------+-------------------------------------------------------------+
+| "PHYSICAL_NODEID"                          | Synonym for *NODEID*                                        |
++--------------------------------------------+-------------------------------------------------------------+
+| "PHYSICAL_NODEID_STRING"                   | Synonym for *NODEID*                                        |
++--------------------------------------------+-------------------------------------------------------------+
+| "SYSDB_NODEID"                             | Synonym for *NODEID*                                        |
++--------------------------------------------+-------------------------------------------------------------+
+| "EXTENDED_NODEID"                          | Synonym for *NODEID*                                        |
++--------------------------------------------+-------------------------------------------------------------+
+| "PQ_NODEID"                                | Partially-qualified ID of a node in the system, as a string |
+|                                            | with wildcard elements represented by *'*'*, e.g. *'2/*/*'* |
+|                                            | to match all nodes in rack 2.                               |
++--------------------------------------------+-------------------------------------------------------------+
+| "PQ_NODEID_STRING"                         | Synonym for *PQ_NODEID*                                     |
++--------------------------------------------+-------------------------------------------------------------+
+| "RACKID"                                   | ID of a rack in the system, as a string, e.g. *'0'*         |
++--------------------------------------------+-------------------------------------------------------------+
+
+
+Input format
+------------
+
+Node IDs are represented by strings on input, using standard
+*'rack/slot/instance'* notation:
+
+   >>> conn.set([preferred_active_path, "0/RP0/CPU0"])
+   >>> conn.set([preferred_active_path, "0/RSP0/CPU0"])
+   >>> conn.set([preferred_active_path, "2/5/CPU1"])
+
+Rack IDs are represented by strings on input, identically to the
+'rack' component of node ID strings:
+
+   >>> conn.set([rack_path, "2"])
+   >>> conn.set([rack_path, "F0"])
+
+Partially-qualified node IDs use similar notation, except *'*'* may be
+used to wildcard rack, slot and instance numbers:
+
+   >>> conn.set([node_group_path, "*/RP0/CPU0"])
+   >>> conn.set([node_group_path, "0/*/*"])
+   >>> conn.set([node_group_path, "2/5/*"])
+   # Fully-qualified IDs are also valid.
+   >>> conn.set([node_group_path, "0/RP0/CPU0"])
+
+In practice, partially-qualified node ID types are very rarely used.
+
+As usual, any object with an appropriate string representation
+(obtained using *str()*) is also accepted on input for each type.
+
+
+Output format
+-------------
+
+All node ID types are represented by strings on output, using the
+formats described above, i.e.
+
+* *'rack/slot/instance'* notation for node IDs.
+
+* Standard node ID notation with *'*'* wildcards for partially-
+  qualified node IDs.
+
+* *'rack'* notation for rack IDs
+
+
+Password types
+==============
+
++--------------------------------------------+----------------------------------------------------------------------+
+| Data type                                  | Description                                                          |
++============================================+======================================================================+
+| "ENCRYPTION_TYPE"                          | Enumeration of cryptographic algorithms                              |
++--------------------------------------------+----------------------------------------------------------------------+
+| "PROPRIETARY_PASSWORD"                     | Synonym for *STRING*, signifying a value passed through the cisco-   |
+|                                            | proprietary (reversible) cryptographic algorithm                     |
++--------------------------------------------+----------------------------------------------------------------------+
+| "ENCRYPTED_STRING"                         | Synonym for *PROPRIETARY_PASSWORD*                                   |
++--------------------------------------------+----------------------------------------------------------------------+
+| "ENCRYPTION_STRING"                        | Synonym for *PROPRIETARY_PASSWORD*                                   |
++--------------------------------------------+----------------------------------------------------------------------+
+| "MD5_PASSWORD"                             | Similar to *PROPRIETARY_PASSWORD*, signifying a value passed through |
+|                                            | the MD5 algorithm                                                    |
++--------------------------------------------+----------------------------------------------------------------------+
+
+
+Input format
+------------
+
+*ENCRYPTION_TYPE* values are specified as strings, selecting from one
+of three possible values:
+
+   >>> conn.set([encrypt_type_path, "none"])          # cleartext
+   >>> conn.set([encrypt_type_path, "md5"])
+   >>> conn.set([encrypt_type_path, "proprietary"])   # cisco-proprietary, reversible
+
+Password values are specified as strings. Cleartext values can be
+passed through the appropriate algorithm before input using
+"Password":
+
+   # The following are equivalent
+   >>> conn.set([password_path, Password("secret")])
+   >>> conn.set([password_path, "0215015819031B"])
+
+
+Output format
+-------------
+
+The output formation for *ENCRYPTION_TYPE* is identical to its input
+format.
+
+Password values are represented by (obfuscated) strings on output:
+
+   >>> conn.get_value(password_path)
+   "0215015819031B"
+
+
+TTY types
+=========
+
++--------------------------------------------+-------------------------------------------------------------+
+| Data type                                  | Description                                                 |
++============================================+=============================================================+
+| "CHARNUM"                                  | Byte value                                                  |
++--------------------------------------------+-------------------------------------------------------------+
+| "TTY_ESCAPE_CHARNUM"                       | Byte value with special cases for none/default/break        |
++--------------------------------------------+-------------------------------------------------------------+
+
+
+Input format
+------------
+
+*CHARNUM* values are specified as integers, in the range *0* to *255*
+inclusive.
+
+*TTY_ESCAPE_CHARNUM* values are specified as integers, in the range
+*0* to *255* inclusive, or as a string indicating a distinguished
+value:
+
+   >>> conn.set([escape_char, "none"])     # disable escape
+   >>> conn.set([escape_char_path, "default"])
+   >>> conn.set([escape_char, "break"])    # break signal causes escape
+
+
+Output format
+-------------
+
+Output formats are identical to input formats for each of these types.

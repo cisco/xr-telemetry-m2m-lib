@@ -1,0 +1,13 @@
+This provides a Go library to access the experimental IOS XR M2M API, and a few
+examples to manage streaming telemetry or do other actions.
+
+You can either build a Docker container with all the dependencies, or just
+manually run:
+
+  go get github.com/ScriptRock/crypto/ssh
+  go get github.com/kr/pretty
+  go get github.com/abiosoft/ishell
+
+The special crypto/ssh dependency is because the standard crypto/ssh doesn't
+have aes128-cbc support at the time of writing, which is required for
+communicating with some IOS XR releases.

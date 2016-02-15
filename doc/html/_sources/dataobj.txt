@@ -1,0 +1,140 @@
+.. ----------------------------------------------------------------------------
+.. dataobj.rst - M2M data instance representation documentation.
+..
+.. July 2015, Phil Connell
+..
+.. Copyright (c) 2015 by Cisco Systems, Inc.
+.. All rights reserved.
+.. ----------------------------------------------------------------------------
+
+Data references and representations
+===================================
+
+Paths
+-----
+
+.. autoclass:: xrm2m.Path()
+   :members: __getattr__, __call__, __getitem__, elems, __str__, from_str
+
+.. autoclass:: xrm2m.PathElement()
+
+.. data:: xrm2m.RootCfg
+
+   :class:`.Path` instance representing the root node of the configuration data
+   hierarchy.
+
+.. data:: xrm2m.RootOper
+
+   :class:`.Path` instance representing the root node of the operational data
+   hierarchy.
+
+Passwords
+---------
+
+.. autoclass:: xrm2m.Password
+   :members: __new__
+
+.. _wildcards:
+
+Wildcarding
+-----------
+
+Three wildcarding mechanisms are supported:
+
+- 'Glob' characters allow wildcarding of string key values, e.g. matching all
+  key values starting with a certain substring.
+
+- :data:`.WILDCARD` matches any value, and can be used in conjunction with
+  any data type.
+
+- :data:`.WILDCARD_ALL` matches any value for *multiple* keys.
+
+For example::
+
+   >>> intf = Path(conn).InterfaceConfiguration
+   >>>
+   >>> # Get the description of all TE tunnels
+   >>> all_tunnels = intf("act", "tunnel-te*")
+   >>> for path, value in get(all_tunnels.Description):
+   ...   print(path[-2].key["InterfaceName"], value)
+   te-tunnel1 BOS-SFO-1
+   te-tunnel2 BOS-ATL-4
+   >>>
+   >>> # Get the description of all active interfaces
+   >>> all_intfs = intf("act", WILDCARD)
+   >>> for path, value in get(all_intfs.Description):
+   ...   print(path[-2].key["InterfaceName"], value)
+   HundredGigE0/0/0/0 Trunk-A
+   HundredGigE0/0/0/1 Trunk-A
+   te-tunnel1 BOS-SFO-1
+   te-tunnel2 BOS-ATL-4
+   >>>
+   >>> # Get the description of all interfaces
+   >>> #
+   >>> # This is equivalent to intf(WILDCARD, WILDCARD)
+   >>> all_intfs = intf(WILDCARD_ALL)
+   >>> for path, value in get(all_intfs.Description):
+   ...   print(path[-2].key["Active"], path[-2].key["InterfaceName"], value)
+   act HundredGigE0/0/0/0 Trunk-A
+   act HundredGigE0/0/0/1 Trunk-A
+   act te-tunnel1 BOS-SFO-1
+   act te-tunnel2 BOS-ATL-4
+   pre HundredGigE0/1/0/0 Trunk-B
+   pre HundredGigE0/1/0/1 Trunk-B
+
+Wildcards
++++++++++
+
+.. data:: xrm2m.WILDCARD
+
+   Singleton that can substitute any key value and matches any value.
+
+.. data:: xrm2m.WILDCARD_ALL
+
+   Singleton that can substitute *all* key values for a path element, and
+   matches any value for those keys.
+
+Globbing
+++++++++
+
+The supported globbing characters are:
+
+- `*` to match any number of arbitrary characters::
+
+  >>> # Match all key values containing the string 'abc'
+  >>> path("*abc*")
+
+- `|` to match against two or more glob expressions::
+
+  >>> # Match any ethernet interface or controller
+  >>> path("GigabitEthernet*|TenGigE*|FortyGigE*|HundredGigE*")
+
+- `()` to group glob expressions into a single sub-expression::
+
+  >>> # Match any ethernet interface or controller
+  >>> path("(GigabitEthernet|TenGigE|FortyGigE|HundredGigE)*")
+
+  >>> # Match any key value that satisfies any of:
+  >>> #  - starts with 'abc'
+  >>> #  - starts with 'def'
+  >>> #  - is exactly 'xyz'
+  >>> path("(abc|def)*|xyz")
+
+The globbing characters above may also be used literally. However, they must be
+escaped using the '\' character. In addition if the literal '\' character is
+required, then it must also be escaped as follows '\\'.  
+
+  >>> # Match the key which contains the literal '*' character followed by abc.
+  >>> path("\*abc")
+
+Globbing is supported only for a limited set of 'string' data types. These are:
+
+- `STRING <types.html#string>`__
+- `TEXT <types.html#text>`__
+- `IDENTIFIER <types.html#identifier>`__
+- `BOUNDED_STRING <types.html#bounded-string>`__
+- `BOUNDED_IDENTIFIER <types.html#bounded-identifier>`__
+- `STRING_LIST <types.html#string-list>`__
+- `INTERFACE_NAME <types.html#interface-name>`__
+- `INTERFACE_FORWARD <types.html#interface-forward>`__
+

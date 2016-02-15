@@ -1,0 +1,106 @@
+.. ----------------------------------------------------------------------------
+.. schema.rst - MPG schema API documentation.
+..
+.. January 2015, Phil Connell
+..
+.. Copyright (c) 2015 by Cisco Systems, Inc.
+.. All rights reserved.
+.. ----------------------------------------------------------------------------
+
+Schema inspection
+=================
+
+.. automethod:: xrm2m.Connection.get_schema
+    :noindex:
+
+
+Hierarchy
+---------
+
+.. autoclass:: xrm2m.SchemaClass
+
+.. autoclass:: xrm2m.SchemaClassCategory
+
+.. autoclass:: xrm2m.Version
+
+.. data:: xrm2m.MAX_VERSION
+
+   Singleton representing an arbitrarily high :class:`.Version`, i.e. this is
+   greater than every other version.
+
+.. data:: xrm2m.UNVERSIONED
+
+   Singleton representing absence of version information.
+
+Bags
+++++
+
+.. autoclass:: xrm2m.BagType
+
+.. autoclass:: xrm2m.BagParam
+
+.. autoclass:: xrm2m.BagParamStatus
+
+.. autoclass:: xrm2m.BagUnionArgs
+
+.. autoclass:: xrm2m.BagEnumElement
+
+.. autoclass:: xrm2m.BagListArgs
+
+
+Typing
+------
+
+Parameters
+++++++++++
+
+.. autoclass:: xrm2m.SchemaParam
+
+.. autoclass:: xrm2m.SchemaParamStatus
+
+
+Data types
+++++++++++
+
+.. autoclass:: xrm2m.Datatype
+
+.. autoclass:: xrm2m.BagDatatype
+
+
+Parameterised types
++++++++++++++++++++
+
+Certain data types have associated parameters: for example, every instance of
+the :attr:`~Datatype.RANGE` type has two associated integer arguments giving
+the min and max values for the range::
+
+      >>> param
+      SchemaParam(Range(5, 16) MaxRecursionDepth)
+      >>> param.datatype
+      <Datatype.RANGE: 'Range'>
+      >>> param.datatype_args
+      {'min': 5, 'max': 16}
+
+The following table lists all of the parameterised types (see also
+:attr:`.SchemaParam.datatype_args`):
+
+   +--------------------------------------------+-------------------------------------------------------------------+
+   | Data type classification                   | Data types                                                        |
+   +============================================+===================================================================+
+   | Integer range types                        | `RANGE <types.html#range>`__                                      |
+   |                                            +-------------------------------------------------------------------+
+   |                                            | `SIGNED_RANGE <types.html#signed-range>`__                        |
+   +--------------------------------------------+-------------------------------------------------------------------+
+   | Restricted-length string types             | `BOUNDED_STRING <types.html#bounded-string>`__                    |
+   |                                            +-------------------------------------------------------------------+
+   |                                            | `BOUNDED_IDENTIFIER <types.html#bounded-identifier>`__            |
+   |                                            +-------------------------------------------------------------------+
+   |                                            | `ENCODED_BOUNDED_STRING <types.html#encoded-bounded-string>`__    |
+   +--------------------------------------------+-------------------------------------------------------------------+
+   | Enum type                                  | `ENUM <types.html#enum>`__                                        |
+   +--------------------------------------------+-------------------------------------------------------------------+
+   | Range enum type                            | `RANGE_ENUM <types.html#range-enum>`__                            |
+   +--------------------------------------------+-------------------------------------------------------------------+
+   | String list type                           | `STRING_LIST <types.html#string-list>`__                          |
+   +--------------------------------------------+-------------------------------------------------------------------+
+

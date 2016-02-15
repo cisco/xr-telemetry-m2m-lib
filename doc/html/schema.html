@@ -1,0 +1,1563 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Schema inspection &mdash; IOS-XR Machine-to-Machine Python API 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/m2m.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="IOS-XR Machine-to-Machine Python API 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Data types" href="types.html" />
+    <link rel="prev" title="Data references and representations" href="dataobj.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="types.html" title="Data types"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dataobj.html" title="Data references and representations"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="schema-inspection">
+<h1>Schema inspection<a class="headerlink" href="#schema-inspection" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt>
+<code class="descclassname">Connection.</code><code class="descname">get_schema</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span></dt>
+<dd><p>Return the schema meta-data for a path.</p>
+<p>This method returns a <a class="reference internal" href="#xrm2m.SchemaClass" title="xrm2m.SchemaClass"><code class="xref py py-class docutils literal"><span class="pre">SchemaClass</span></code></a> describing the last element
+of the path:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
+<span class="go">SchemaClass(InterfaceConfiguration)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span><span class="o">.</span><span class="n">description</span>
+<span class="go">&#39;The configuration for an interface&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">schema</span><span class="o">.</span><span class="n">children</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.PseudowireEther)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.IPv6Neighbor)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.MACAccounting)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.IPV6PacketFilter)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.PTP)</span>
+</pre></div>
+</div>
+<p>The input <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> identifies the point of interest in the schema
+hierarchy.</p>
+<p>Any key values in the path are ignored. In particular, it&#8217;s ok to
+omit key values even where they&#8217;d usually be mandatory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cls</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="o">.</span><span class="n">VRF</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+<span class="go">SchemaClass(VRF)</span>
+</pre></div>
+</div>
+<p>If the path doesn&#8217;t identify a valid sequence of classes in the schema,
+<a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a> is raised:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">RootOper</span><span class="o">.</span><span class="n">Missing</span><span class="o">.</span><span class="n">Interface</span><span class="p">)</span>
+<span class="go">PathHierarchyError: &#39;Missing&#39; is not a child of &#39;RootOper&#39;</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> &#8211; <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> identifying the point in the hierarchy of interest.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="#xrm2m.SchemaClass" title="xrm2m.SchemaClass"><code class="xref py py-class docutils literal"><span class="pre">SchemaClass</span></code></a> object, as above.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="hierarchy">
+<h2>Hierarchy<a class="headerlink" href="#hierarchy" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xrm2m.SchemaClass">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">SchemaClass</code><a class="headerlink" href="#xrm2m.SchemaClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meta-data for a node in the schema hierarchy.</p>
+<p>Schema classes describe a type of management data that <em>may</em> exist and
+the properties of any such data.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># To navigate to a particular point in the schema, create a Path</span>
+<span class="c"># without filling in key values.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">path</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="o">.</span><span class="n">VRF</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cls_info</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cls_info</span><span class="o">.</span><span class="n">name</span>
+<span class="s">&#39;VRF&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cls_info</span><span class="o">.</span><span class="n">category</span>
+<span class="o">&lt;</span><span class="n">SchemaClassCategory</span><span class="o">.</span><span class="n">LEAF</span><span class="p">:</span> <span class="mi">2</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cls_info</span><span class="o">.</span><span class="n">description</span>
+<span class="s">&#39;Assign the interface to a VRF&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">cls_info</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+<span class="o">...</span>     <span class="k">print</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+<span class="n">SchemaParam</span><span class="p">(</span><span class="n">BoundedString</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span> <span class="n">VRFName</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="SchemaClass.name">
+<code class="descname">name</code><a class="headerlink" href="#SchemaClass.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of this class in the schema.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.category">
+<code class="descname">category</code><a class="headerlink" href="#SchemaClass.category" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#xrm2m.SchemaClassCategory" title="xrm2m.SchemaClassCategory"><code class="xref py py-class docutils literal"><span class="pre">Category</span></code></a> of this class.</p>
+<p>A class&#8217; category denotes what data it describes e.g. whether it&#8217;s a
+container for other classes, or has an associated value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.description">
+<code class="descname">description</code><a class="headerlink" href="#SchemaClass.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>String giving a verbose description of the semantics of data described
+by the class.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.table_description">
+<code class="descname">table_description</code><a class="headerlink" href="#SchemaClass.table_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#SchemaClass.description" title="SchemaClass.description"><code class="xref py py-attr docutils literal"><span class="pre">description</span></code></a>, for the table described by this class, if
+any.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.key">
+<code class="descname">key</code><a class="headerlink" href="#SchemaClass.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data type information for this class&#8217; key parameters. This is a list of
+<code class="xref py py-class docutils literal"><span class="pre">SchemaParam</span></code> objects, each describing a single key parameter.</p>
+<p>The &#8216;key&#8217; of a class is the collection of parameters whose values
+distinguish different instances of the class in data described by the
+schema. This attribute describes the format and meaning of those
+values. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">route_cls</span><span class="p">)</span>
+<span class="go">SchemaClass(IP_RIBRoute)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">route_cls</span><span class="o">.</span><span class="n">key</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+<span class="go">SchemaParam(String RouteTableName)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.value">
+<code class="descname">value</code><a class="headerlink" href="#SchemaClass.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data type information for this class&#8217; value parameters. This is a list
+of <code class="xref py py-class docutils literal"><span class="pre">SchemaParam</span></code> objects, each describing a single value
+parameters.</p>
+<p>This attribute describes the format and meaning of the data contained
+in instances of this class. An example from the BGP config schema:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">bufsizes</span><span class="p">)</span>
+<span class="go">SchemaClass(ReceiveSocketBufferSizes)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">bufsizes</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+<span class="go">SchemaParam(Range(512, 13107) SocketReceiveSize)</span>
+<span class="go">SchemaParam(Range(512, 13107) BGPReceiveSize)</span>
+</pre></div>
+</div>
+<p>Note that if the leaf represents a bag, then <cite>value</cite> will be a
+singleton list containing a <code class="xref py py-class docutils literal"><span class="pre">SchemaParam</span></code> of type
+<cite>Datatype.BAG</cite>.</p>
+<p>Note that if the leaf represents a bag, then <cite>value</cite> will be a
+singleton list containing a <code class="xref py py-class docutils literal"><span class="pre">SchemaParam</span></code> of type
+<cite>Datatype.BAG</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.presence">
+<code class="descname">presence</code><a class="headerlink" href="#SchemaClass.presence" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> identifying the leaf class that gives this class
+&#8216;presence&#8217;, or <cite>None</cite> if there is no such leaf class.</p>
+<p>Container classes may have a nominated leaf class that defines whether
+the container exists or not, a similar concept to &#8216;containers with
+presence&#8217; in YANG. This method returns a path to the nominated class,
+if any.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.version">
+<code class="descname">version</code><a class="headerlink" href="#SchemaClass.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current <a class="reference internal" href="#xrm2m.Version" title="xrm2m.Version"><code class="xref py py-class docutils literal"><span class="pre">Version</span></code></a> of this class or <a class="reference internal" href="#xrm2m.UNVERSIONED" title="xrm2m.UNVERSIONED"><code class="xref py py-data docutils literal"><span class="pre">UNVERSIONED</span></code></a> if this
+class has the same version as its parent.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+<span class="go">SchemaClass(InterfaceProperties)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cls</span><span class="o">.</span><span class="n">version</span><span class="p">()</span>
+<span class="go">Version(major=3, minor=2)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.table_version">
+<code class="descname">table_version</code><a class="headerlink" href="#SchemaClass.table_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#SchemaClass.version" title="SchemaClass.version"><code class="xref py py-attr docutils literal"><span class="pre">version</span></code></a>, for the table described by this class, if any.
+None if the class does not describe a table.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.hidden">
+<code class="descname">hidden</code><a class="headerlink" href="#SchemaClass.hidden" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>True</cite> if this class is hidden, <cite>False</cite> otherwise.</p>
+<p>Classes are typically hidden to mark them as deprecated. See
+<a class="reference internal" href="#SchemaClass.version_compatibility" title="SchemaClass.version_compatibility"><code class="xref py py-attr docutils literal"><span class="pre">version_compatibility</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.version_compatibility">
+<code class="descname">version_compatibility</code><a class="headerlink" href="#SchemaClass.version_compatibility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum and maximum schema versions this class is compatible with.</p>
+<p>This is a <cite>(min version, max version)</cite> tuple of <a class="reference internal" href="#xrm2m.Version" title="xrm2m.Version"><code class="xref py py-class docutils literal"><span class="pre">Version</span></code></a>
+instances. It can be used to determine whether a class is deprecated
+(in which case it&#8217;s also likely to be marked as hidden):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+<span class="go">SchemaClass(DefaultVRF)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">version</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">min_supported</span><span class="p">,</span> <span class="n">max_supported</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">version_compatibility</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">max_supported</span> <span class="o">&lt;</span> <span class="n">current</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span>
+<span class="go">Version(major=10, minor=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">max_supported</span>
+<span class="go">Version(major=8, minor=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cls</span><span class="o">.</span><span class="n">hidden</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>A deprecated class is still a valid representation of management data,
+but represents an outdated or incomplete view of that data.</p>
+<p>If a class is compatible with known versions after a certain point, the
+<code class="xref py py-data docutils literal"><span class="pre">MAX_VERSION</span></code> singleton is used to represent the maximum
+compatible version:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+<span class="go">SchemaClass(Node)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cls</span><span class="o">.</span><span class="n">version_compatibility</span><span class="p">()</span>
+<span class="go">(Version(major=2, minor=0), MAX_VERSION)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Version</span><span class="p">(</span><span class="n">major</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">MAX_VERSION</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>If a class contains no compatibility information, then
+<code class="xref py py-data docutils literal"><span class="pre">UNVERSIONED</span></code> is returned for both the min and max versions.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.table_version_compatibility">
+<code class="descname">table_version_compatibility</code><a class="headerlink" href="#SchemaClass.table_version_compatibility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as :attr:&#8217;version_compatibility`, for the table described by this
+class, if any. None if the class does not describe a table.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.children">
+<code class="descname">children</code><a class="headerlink" href="#SchemaClass.children" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of paths to children of this class in the schema:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cls</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">children</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.PseudowireEther)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.IPv6Neighbor)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.MACAccounting)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.IPV6PacketFilter)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.PTP)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClass.bag_types">
+<code class="descname">bag_types</code><a class="headerlink" href="#SchemaClass.bag_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bag types relevant to this schema node, or <cite>None</cite> if <cite>value</cite> does not
+contain (a single) <a class="reference internal" href="#xrm2m.SchemaParam" title="xrm2m.SchemaParam"><code class="xref py py-class docutils literal"><span class="pre">SchemaParam</span></code></a> of type <cite>Datatype.BAG</cite>.</p>
+<p><cite>bag_types</cite> contains schema information for structures (equivalently
+bags), unions, and enums that are directly or indirectly referenced by
+this node&#8217;s schema parameter. It is structured as a dict in the
+following form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_info</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">intf_config</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">schema_info</span><span class="o">.</span><span class="n">bag_types</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &#39;im_if_type_summary_st&#39;: BagType(</span>
+<span class="go">        name=&#39;im_if_type_summary_st&#39;,</span>
+<span class="go">        description=&#39;&#39;, datatype=&lt;BagDatatype.STRUCT: 2&gt;,</span>
+<span class="go">        children=[</span>
+<span class="go">             string InterfaceTypeName,</span>
+<span class="go">             string InterfaceTypeDescription,</span>
+<span class="go">             struct im_if_group_counts_st InterfaceCounts</span>
+<span class="go">        ],</span>
+<span class="go">        datatype_args=None</span>
+<span class="go">    ),</span>
+<span class="go">    &#39;im_if_group_counts_st&#39;: BagType(</span>
+<span class="go">        name=&#39;im_if_group_counts_st&#39;,</span>
+<span class="go">        description=&#39;&#39;,</span>
+<span class="go">        datatype=&lt;Datatype.STRUCT: 2&gt;,</span>
+<span class="go">        children=[</span>
+<span class="go">            uint32 InterfaceCount,</span>
+<span class="go">            uint32 UpInterfaceCount,</span>
+<span class="go">            uint32 DownInterfaceCount,</span>
+<span class="go">            uint32 AdminDownInterfaceCount</span>
+<span class="go">        ],</span>
+<span class="go">        datatype_args=None</span>
+<span class="go">    ),</span>
+<span class="go">    &#39;im_if_summary_info&#39;: BagType(</span>
+<span class="go">        name=&#39;im_if_summary_info&#39;,</span>
+<span class="go">        description=&#39;Interface summary bag&#39;,</span>
+<span class="go">        datatype=&lt;Datatype.STRUCT: 2&gt;,</span>
+<span class="go">        children=[</span>
+<span class="go">            struct im_if_type_summary_st InterfaceTypeList[],</span>
+<span class="go">            struct im_if_group_counts_st InterfaceCounts</span>
+<span class="go">        ],</span>
+<span class="go">        datatype_args=None</span>
+<span class="go">    )</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>Keys of the dict correspond with this node&#8217;s schema parameter&#8217;s
+<cite>name</cite> field:</p>
+<p>In the case that the bag corresponding with this node contains a
+structure, enum, or union as one of its parameters, then the structure,
+enum, or union is referenced by the <cite>datatype_name</cite> attribute of the
+corresponding <code class="xref py py-class docutils literal"><span class="pre">BagParam</span></code>. For example, if the third bag
+parameter is a struct, and the fourth a union:</p>
+<p>Such nested structs and unions may themselves refer to further nested
+structs, unions and enums in a similar way.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.SchemaClassCategory">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">SchemaClassCategory</code><a class="headerlink" href="#xrm2m.SchemaClassCategory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumeration of classifications of schema classes.</p>
+<dl class="attribute">
+<dt id="SchemaClassCategory.CONTAINER">
+<code class="descname">CONTAINER</code><a class="headerlink" href="#SchemaClassCategory.CONTAINER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Denotes a class that acts as a container for other classes (its
+children) and has no value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaClassCategory.LEAF">
+<code class="descname">LEAF</code><a class="headerlink" href="#SchemaClassCategory.LEAF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Denotes a class whose instances have a value. Leaf classes have no
+child classes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.Version">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">Version</code><a class="headerlink" href="#xrm2m.Version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Named tuple describing the version of an object in the schema.</p>
+<p>If version information is requested for an object that&#8217;s not versioned, the
+<a class="reference internal" href="#xrm2m.UNVERSIONED" title="xrm2m.UNVERSIONED"><code class="xref py py-data docutils literal"><span class="pre">UNVERSIONED</span></code></a> singleton is returned rather than an instance of this
+class.</p>
+<p>The <a class="reference internal" href="#xrm2m.MAX_VERSION" title="xrm2m.MAX_VERSION"><code class="xref py py-data docutils literal"><span class="pre">MAX_VERSION</span></code></a> singleton represents an &#8216;infinitely high&#8217; version.</p>
+<dl class="attribute">
+<dt id="Version.major">
+<code class="descname">major</code><a class="headerlink" href="#Version.major" title="Permalink to this definition">¶</a></dt>
+<dd><p>Major version number.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Version.minor">
+<code class="descname">minor</code><a class="headerlink" href="#Version.minor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minor version number.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="xrm2m.MAX_VERSION">
+<code class="descclassname">xrm2m.</code><code class="descname">MAX_VERSION</code><a class="headerlink" href="#xrm2m.MAX_VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singleton representing an arbitrarily high <a class="reference internal" href="#xrm2m.Version" title="xrm2m.Version"><code class="xref py py-class docutils literal"><span class="pre">Version</span></code></a>, i.e. this is
+greater than every other version.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="xrm2m.UNVERSIONED">
+<code class="descclassname">xrm2m.</code><code class="descname">UNVERSIONED</code><a class="headerlink" href="#xrm2m.UNVERSIONED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singleton representing absence of version information.</p>
+</dd></dl>
+
+<div class="section" id="bags">
+<h3>Bags<a class="headerlink" href="#bags" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="xrm2m.BagType">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">BagType</code><a class="headerlink" href="#xrm2m.BagType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Typing information for a composite type.</p>
+<p>A composite type is either a structure, an enumeration, or a union.</p>
+<dl class="attribute">
+<dt id="BagType.name">
+<code class="descname">name</code><a class="headerlink" href="#BagType.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Brief string description of the meaning of data described by this
+type, e.g. &#8220;Bandwidth&#8221;.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagType.description">
+<code class="descname">description</code><a class="headerlink" href="#BagType.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verbose string description of the meaning of data described by this
+type, e.g. &#8220;Interface bandwidth (Kb/s)&#8221;.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagType.datatype">
+<code class="descname">datatype</code><a class="headerlink" href="#BagType.datatype" title="Permalink to this definition">¶</a></dt>
+<dd><p>A instance of <a class="reference internal" href="#xrm2m.BagDatatype" title="xrm2m.BagDatatype"><code class="xref py py-class docutils literal"><span class="pre">BagDatatype</span></code></a>, indicating whether the type being
+described is a structure, union or enumeration. (Ie.
+<cite>datatype.is_composite()</cite> will always be true.)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagType.children">
+<code class="descname">children</code><a class="headerlink" href="#BagType.children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes the subelements of this structure, union or enumeration.</p>
+<p>If <cite>datatype</cite> is <a class="reference internal" href="#BagDatatype.STRUCT" title="BagDatatype.STRUCT"><code class="xref py py-attr docutils literal"><span class="pre">BagDatatype.STRUCT</span></code></a> or <cite>.BagDatatype.UNION</cite>,
+then this attribute is a list of instances of <a class="reference internal" href="#xrm2m.BagParam" title="xrm2m.BagParam"><code class="xref py py-class docutils literal"><span class="pre">BagParam</span></code></a>.</p>
+<p>If <cite>datatype</cite> is <a class="reference internal" href="#BagDatatype.ENUM" title="BagDatatype.ENUM"><code class="xref py py-attr docutils literal"><span class="pre">BagDatatype.ENUM</span></code></a>, then this attribute is a
+list of instances of <a class="reference internal" href="#xrm2m.BagEnumElement" title="xrm2m.BagEnumElement"><code class="xref py py-class docutils literal"><span class="pre">BagEnumElement</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagType.datatype_args">
+<code class="descname">datatype_args</code><a class="headerlink" href="#BagType.datatype_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additional information for a particular datatype. Specifically, if the
+<cite>datatype</cite> is <code class="xref py py-class docutils literal"><span class="pre">BagDatatype.UNION</span></code>, this is an instance of
+:class:.`BagUnionArgs`.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.BagParam">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">BagParam</code><a class="headerlink" href="#xrm2m.BagParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Typing information for a single item of data in a bag.</p>
+<p>In particular, this describes an element in a structure or union, or a
+union discriminator.</p>
+<dl class="attribute">
+<dt id="BagParam.name">
+<code class="descname">name</code><a class="headerlink" href="#BagParam.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Brief string description of the meaning of data described by this
+parameter, e.g. <cite>&#8216;Bandwidth&#8217;</cite> for a parameter describing an interface&#8217;s
+configured bandwidth value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagParam.description">
+<code class="descname">description</code><a class="headerlink" href="#BagParam.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verbose string description of the meaning of data described by this
+parameter, e.g. <cite>&#8216;Bandwidth of the interface in kbps&#8217;</cite> for a bandwidth
+parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagParam.datatype">
+<code class="descname">datatype</code><a class="headerlink" href="#BagParam.datatype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element of <a class="reference internal" href="#xrm2m.BagDatatype" title="xrm2m.BagDatatype"><code class="xref py py-class docutils literal"><span class="pre">BagDatatype</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagParam.datatype_name">
+<code class="descname">datatype_name</code><a class="headerlink" href="#BagParam.datatype_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the <cite>datatype</cite> is a composite datatype, this is the name of the
+type, which can be used as the key into the types dictionary to find
+detailed type information.  Otherwise, this is None.</p>
+<p><code class="xref py py-func docutils literal"><span class="pre">BagDatatype.is_composite()</span></code> can be used to determine if a
+datatype is composite or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagParam.status">
+<code class="descname">status</code><a class="headerlink" href="#BagParam.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element of <a class="reference internal" href="#xrm2m.BagParamStatus" title="xrm2m.BagParamStatus"><code class="xref py py-class docutils literal"><span class="pre">BagParamStatus</span></code></a> describing requirements on
+values described by this parameter e.g. whether specifying the value is
+optional.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagParam.status_args">
+<code class="descname">status_args</code><a class="headerlink" href="#BagParam.status_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additional information on the node based on the <cite>status</cite>.</p>
+<p>If the status is <code class="xref py py-class docutils literal"><span class="pre">BagParamStatus.LIST</span></code>, this is an list of
+instances of <a class="reference internal" href="#xrm2m.BagListArgs" title="xrm2m.BagListArgs"><code class="xref py py-class docutils literal"><span class="pre">BagListArgs</span></code></a>, describing the list entries.</p>
+<p>Otherwise it is None.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.BagParamStatus">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">BagParamStatus</code><a class="headerlink" href="#xrm2m.BagParamStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumeration of schema parameter statuses.</p>
+<dl class="attribute">
+<dt id="BagParamStatus.MANDATORY">
+<code class="descname">MANDATORY</code><a class="headerlink" href="#BagParamStatus.MANDATORY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value must be specified for this parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagParamStatus.OPTIONAL">
+<code class="descname">OPTIONAL</code><a class="headerlink" href="#BagParamStatus.OPTIONAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value may be specified for this parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagParamStatus.LIST">
+<code class="descname">LIST</code><a class="headerlink" href="#BagParamStatus.LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value is a list of parameters of the given type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.BagUnionArgs">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">BagUnionArgs</code><a class="headerlink" href="#xrm2m.BagUnionArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additional information for union types defined in bags.</p>
+<dl class="attribute">
+<dt id="BagUnionArgs.discriminator">
+<code class="descname">discriminator</code><a class="headerlink" href="#BagUnionArgs.discriminator" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of <a class="reference internal" href="#xrm2m.BagParam" title="xrm2m.BagParam"><code class="xref py py-class docutils literal"><span class="pre">BagParam</span></code></a> describing the discriminator for the
+union.  This is a parameter with <cite>datatype</cite> <cite>ENUM</cite> whose value
+determines which entry of the union is selected.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagUnionArgs.default">
+<code class="descname">default</code><a class="headerlink" href="#BagUnionArgs.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>The identifier of the <cite>discriminator</cite> enumeration value to be used
+by default to determine the case.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.BagEnumElement">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">BagEnumElement</code><a class="headerlink" href="#xrm2m.BagEnumElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Typing information for an enumeration value in a bag.</p>
+<dl class="attribute">
+<dt id="BagEnumElement.name">
+<code class="descname">name</code><a class="headerlink" href="#BagEnumElement.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Brief string description of the meaning of data described by this
+parameter, e.g. <cite>&#8216;Enabled&#8217;</cite> for a value representing the fact that an
+interface is enabled.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagEnumElement.description">
+<code class="descname">description</code><a class="headerlink" href="#BagEnumElement.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verbose string description of the meaning of data described by this
+parameter, e.g. <cite>&#8216;The interface is enabled&#8217;</cite> for the example above.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.BagListArgs">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">BagListArgs</code><a class="headerlink" href="#xrm2m.BagListArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additional information for instances of <a class="reference internal" href="#xrm2m.BagParam" title="xrm2m.BagParam"><code class="xref py py-class docutils literal"><span class="pre">BagParam</span></code></a> with a status of
+<code class="xref py py-class docutils literal"><span class="pre">BagParamStatus.LIST</span></code>.</p>
+<dl class="attribute">
+<dt id="BagListArgs.fixed_length">
+<code class="descname">fixed_length</code><a class="headerlink" href="#BagListArgs.fixed_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to <cite>true</cite> to indicate that the list in question has a fixed length
+(given by the <cite>max_length</cite> attribute), or <cite>false</cite> if it the length is
+variable.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagListArgs.max_length">
+<code class="descname">max_length</code><a class="headerlink" href="#BagListArgs.max_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>If <cite>fixed_length</cite> is <cite>true</cite>, this is an integer value indicating the
+length of the list. Otherwise, this may be an integer value denoting
+the upper bound of the list length, or <cite>None</cite> if there is no upper
+bound.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="typing">
+<h2>Typing<a class="headerlink" href="#typing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="xrm2m.SchemaParam">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">SchemaParam</code><a class="headerlink" href="#xrm2m.SchemaParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Typing information for a single key or value parameter.</p>
+<dl class="attribute">
+<dt id="SchemaParam.datatype">
+<code class="descname">datatype</code><a class="headerlink" href="#SchemaParam.datatype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element of <a class="reference internal" href="#xrm2m.Datatype" title="xrm2m.Datatype"><code class="xref py py-class docutils literal"><span class="pre">Datatype</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaParam.name">
+<code class="descname">name</code><a class="headerlink" href="#SchemaParam.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Brief string description of the meaning of data described by this
+parameter, e.g. <cite>&#8216;Bandwidth&#8217;</cite> for a parameter describing an interface&#8217;s
+configured bandwidth value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaParam.description">
+<code class="descname">description</code><a class="headerlink" href="#SchemaParam.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verbose string description of the meaning of data described by this
+parameter, e.g. <cite>&#8216;Bandwidth of the interface in kbps&#8217;</cite> for a bandwidth
+parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaParam.datatype_args">
+<code class="descname">datatype_args</code><a class="headerlink" href="#SchemaParam.datatype_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>If <a class="reference internal" href="#SchemaParam.datatype" title="SchemaParam.datatype"><code class="xref py py-attr docutils literal"><span class="pre">datatype</span></code></a> is a parameterised type, a dict containing the
+parameter values for this instance of the type. For unparameterised
+types, this is <cite>None</cite>.</p>
+<p>For integer range types:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(Range(5, 16) MaxRecursionDepth)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="o">.</span><span class="n">description</span>
+<span class="go">&#39;Maximum depth for route recursion check&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &quot;min&quot;: 5,</span>
+<span class="go">    &quot;max&quot;: 16,</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>For restricted-length string types:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(BoundedString(0, 244) Description)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="o">.</span><span class="n">description</span>
+<span class="go">&#39;VRF description&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &quot;minlen&quot;: 0,</span>
+<span class="go">    &quot;maxlen&quot;: 244,</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>For instances of the <a class="reference external" href="types.html#enum">enum</a> type:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(Enum Mode)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &quot;Default&quot;: {</span>
+<span class="go">        &quot;value&quot;: 0,</span>
+<span class="go">        &quot;description&quot;: &quot;Default interface mode&quot;,</span>
+<span class="go">    },</span>
+<span class="go">    &quot;PointToPoint&quot;: {</span>
+<span class="go">        &quot;value&quot;: 1,</span>
+<span class="go">        &quot;description&quot;: &quot;Point-to-point interface mode&quot;,</span>
+<span class="go">    },</span>
+<span class="go">    &quot;Multipoint&quot;: {</span>
+<span class="go">        &quot;value&quot;: 2,</span>
+<span class="go">        &quot;description&quot;: &quot;Multipoint interface mode&quot;,</span>
+<span class="go">    },</span>
+<span class="go">    &quot;L2Transport&quot;: {</span>
+<span class="go">        &quot;value&quot;: 3,</span>
+<span class="go">        &quot;description&quot;: &quot;L2 transport interface mode&quot;,</span>
+<span class="go">    },</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>For instances of the <a class="reference external" href="types.html#range-enum">range enum</a> type:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(RangeEnum(0, 4294967295) MeshGroup)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &quot;min&quot;: 0,</span>
+<span class="go">    &quot;max&quot;: 4294967295,</span>
+<span class="go">    &quot;enum&quot;: {</span>
+<span class="go">        &quot;Blocked&quot;: {</span>
+<span class="go">            &quot;value&quot;: 0,</span>
+<span class="go">            &quot;description&quot;: &quot;Blocked mesh group. Changed LSPs are &quot;</span>
+<span class="go">                           &quot;not flooded over blocked interfaces&quot;,</span>
+<span class="go">        },</span>
+<span class="go">    },</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>For instances of the <a class="reference external" href="types.html#string-list">string list</a> type:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(StringList Active)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &quot;act&quot;: {</span>
+<span class="go">        &quot;description&quot;: &quot;Interface is active&quot;,</span>
+<span class="go">    },</span>
+<span class="go">    &quot;pre&quot;: {</span>
+<span class="go">        &quot;description&quot;: &quot;Interface is preconfigured&quot;,</span>
+<span class="go">    },</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaParam.repeat_count">
+<code class="descname">repeat_count</code><a class="headerlink" href="#SchemaParam.repeat_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of times this parameter is repeated in data described by the
+schema. This is <cite>1</cite> unless this parameter is an array.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaParam.status">
+<code class="descname">status</code><a class="headerlink" href="#SchemaParam.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element of <a class="reference internal" href="#xrm2m.SchemaParamStatus" title="xrm2m.SchemaParamStatus"><code class="xref py py-class docutils literal"><span class="pre">SchemaParamStatus</span></code></a> describing requirements on
+values described by this parameter e.g. whether specifying the value is
+optional.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaParam.internal_name">
+<code class="descname">internal_name</code><a class="headerlink" href="#SchemaParam.internal_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name used to refer to this parameter internally within the IOS-XR 
+system.  It is set only if this data is of type <cite>BAG</cite>.
+Otherwise it is None.</p>
+<p>If set it is usually the same as <cite>name</cite>.</p>
+<p>This information is intended for use by IOS-XR tools built on top of 
+MPG. It&#8217;s unlikely to be useful in other scenarios.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.SchemaParamStatus">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">SchemaParamStatus</code><a class="headerlink" href="#xrm2m.SchemaParamStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumeration of schema parameter statuses.</p>
+<dl class="attribute">
+<dt id="SchemaParamStatus.MANDATORY">
+<code class="descname">MANDATORY</code><a class="headerlink" href="#SchemaParamStatus.MANDATORY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value must be specified for this parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaParamStatus.OPTIONAL">
+<code class="descname">OPTIONAL</code><a class="headerlink" href="#SchemaParamStatus.OPTIONAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value may be specified for this parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SchemaParamStatus.IGNORED">
+<code class="descname">IGNORED</code><a class="headerlink" href="#SchemaParamStatus.IGNORED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value may be specified for this parameter, but any value given will
+have no effect on the system.</p>
+<p>This status is typically used to denote a parameter that no longer has
+a meaning after an update to the schema, while preserving backwards
+compatibility.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="data-types">
+<h3>Data types<a class="headerlink" href="#data-types" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="xrm2m.Datatype">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">Datatype</code><a class="headerlink" href="#xrm2m.Datatype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumeration of datatypes that appear in the schema.</p>
+<dl class="attribute">
+<dt id="Datatype.INTEGER">
+<code class="descname">INTEGER</code><a class="headerlink" href="#Datatype.INTEGER" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#integer">Unsigned 32-bit integer</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.HEX_INTEGER">
+<code class="descname">HEX_INTEGER</code><a class="headerlink" href="#Datatype.HEX_INTEGER" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#hex-integer">Unsigned 32-bit integer</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.SIGNED_INTEGER">
+<code class="descname">SIGNED_INTEGER</code><a class="headerlink" href="#Datatype.SIGNED_INTEGER" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#signed-integer">Signed 32-bit integer</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.BOOL">
+<code class="descname">BOOL</code><a class="headerlink" href="#Datatype.BOOL" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#bool">Boolean</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.TRUE_ONLY">
+<code class="descname">TRUE_ONLY</code><a class="headerlink" href="#Datatype.TRUE_ONLY" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#true-only">Boolean restricted to True</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.FALSE_ONLY">
+<code class="descname">FALSE_ONLY</code><a class="headerlink" href="#Datatype.FALSE_ONLY" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#false-only">Boolean restricted to False</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.RANGE">
+<code class="descname">RANGE</code><a class="headerlink" href="#Datatype.RANGE" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#range">Unsigned 32-bit integer range</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.SIGNED_RANGE">
+<code class="descname">SIGNED_RANGE</code><a class="headerlink" href="#Datatype.SIGNED_RANGE" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#signed-range">Signed 32-bit integer range</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.ENUM">
+<code class="descname">ENUM</code><a class="headerlink" href="#Datatype.ENUM" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#enum">Integer-valued enum</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.RANGE_ENUM">
+<code class="descname">RANGE_ENUM</code><a class="headerlink" href="#Datatype.RANGE_ENUM" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#range-enum">Unsigned 32-bit integer range with labels</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.STRING">
+<code class="descname">STRING</code><a class="headerlink" href="#Datatype.STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#string">ASCII-compatible string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.TEXT">
+<code class="descname">TEXT</code><a class="headerlink" href="#Datatype.TEXT" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#text">ASCII-compatible string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IDENTIFIER">
+<code class="descname">IDENTIFIER</code><a class="headerlink" href="#Datatype.IDENTIFIER" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#identifier">Identifier string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.ENCODED_STRING">
+<code class="descname">ENCODED_STRING</code><a class="headerlink" href="#Datatype.ENCODED_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#encoded-string">ASCII-compatible string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.BOUNDED_STRING">
+<code class="descname">BOUNDED_STRING</code><a class="headerlink" href="#Datatype.BOUNDED_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#bounded-string">Restricted-length ASCII-compatible string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.BOUNDED_IDENTIFIER">
+<code class="descname">BOUNDED_IDENTIFIER</code><a class="headerlink" href="#Datatype.BOUNDED_IDENTIFIER" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#bounded-identifier">Restricted-length identifier string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.ENCODED_BOUNDED_STRING">
+<code class="descname">ENCODED_BOUNDED_STRING</code><a class="headerlink" href="#Datatype.ENCODED_BOUNDED_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#encoded-bounded-string">Restricted-length ASCII-compatible string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.STRING_LIST">
+<code class="descname">STRING_LIST</code><a class="headerlink" href="#Datatype.STRING_LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#string-list">String-valued enum</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.BAG">
+<code class="descname">BAG</code><a class="headerlink" href="#Datatype.BAG" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#bag">Composite data</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPV4ADDRESS">
+<code class="descname">IPV4ADDRESS</code><a class="headerlink" href="#Datatype.IPV4ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipv4address">IPv4 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.MASK">
+<code class="descname">MASK</code><a class="headerlink" href="#Datatype.MASK" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#mask">IPv4 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPV4ADDRESS_STRING">
+<code class="descname">IPV4ADDRESS_STRING</code><a class="headerlink" href="#Datatype.IPV4ADDRESS_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipv4address-string">IPv4 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPV4HOSTNAME">
+<code class="descname">IPV4HOSTNAME</code><a class="headerlink" href="#Datatype.IPV4HOSTNAME" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipv4hostname">IPv4 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPV6ADDRESS">
+<code class="descname">IPV6ADDRESS</code><a class="headerlink" href="#Datatype.IPV6ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipv6address">IPv6 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPV6ADDRESS_PLUS">
+<code class="descname">IPV6ADDRESS_PLUS</code><a class="headerlink" href="#Datatype.IPV6ADDRESS_PLUS" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipv6address-plus">IPv6 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPV6ADDRESS_STRING">
+<code class="descname">IPV6ADDRESS_STRING</code><a class="headerlink" href="#Datatype.IPV6ADDRESS_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipv6address-string">IPv6 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPV6ADDRESS_HEXSTRING">
+<code class="descname">IPV6ADDRESS_HEXSTRING</code><a class="headerlink" href="#Datatype.IPV6ADDRESS_HEXSTRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipv6address-hexstring">IPv6 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPV6HOSTNAME">
+<code class="descname">IPV6HOSTNAME</code><a class="headerlink" href="#Datatype.IPV6HOSTNAME" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipv6hostname">IPv6 address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPADDRESS">
+<code class="descname">IPADDRESS</code><a class="headerlink" href="#Datatype.IPADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipaddress">IP address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPADDRESS_STRING">
+<code class="descname">IPADDRESS_STRING</code><a class="headerlink" href="#Datatype.IPADDRESS_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipaddress-string">IP address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPHOSTNAME">
+<code class="descname">IPHOSTNAME</code><a class="headerlink" href="#Datatype.IPHOSTNAME" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#iphostname">IP address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.IPADDRESS_PREFIX">
+<code class="descname">IPADDRESS_PREFIX</code><a class="headerlink" href="#Datatype.IPADDRESS_PREFIX" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#ipaddress-prefix">IP address and prefix length</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.VRF">
+<code class="descname">VRF</code><a class="headerlink" href="#Datatype.VRF" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#vrf">VRF</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.MACADDRESS">
+<code class="descname">MACADDRESS</code><a class="headerlink" href="#Datatype.MACADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#macaddress">MAC address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.MACADDRESS_STRING">
+<code class="descname">MACADDRESS_STRING</code><a class="headerlink" href="#Datatype.MACADDRESS_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#macaddress-string">MAC address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.INTERFACE_NAME">
+<code class="descname">INTERFACE_NAME</code><a class="headerlink" href="#Datatype.INTERFACE_NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#interface-name">Interface name</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.INTERFACE_HANDLE">
+<code class="descname">INTERFACE_HANDLE</code><a class="headerlink" href="#Datatype.INTERFACE_HANDLE" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#interface-handle">Interface name</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.INTERFACE_FORWARD">
+<code class="descname">INTERFACE_FORWARD</code><a class="headerlink" href="#Datatype.INTERFACE_FORWARD" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#interface-forward">Interface name</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.NODEID">
+<code class="descname">NODEID</code><a class="headerlink" href="#Datatype.NODEID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#nodeid">Node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.SYSDB_NODEID">
+<code class="descname">SYSDB_NODEID</code><a class="headerlink" href="#Datatype.SYSDB_NODEID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#sysdb-nodeid">Node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.NODEID_STRING">
+<code class="descname">NODEID_STRING</code><a class="headerlink" href="#Datatype.NODEID_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#nodeid-string">Node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.PHYSICAL_NODEID">
+<code class="descname">PHYSICAL_NODEID</code><a class="headerlink" href="#Datatype.PHYSICAL_NODEID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#physical-nodeid">Node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.PHYSICAL_NODEID_STRING">
+<code class="descname">PHYSICAL_NODEID_STRING</code><a class="headerlink" href="#Datatype.PHYSICAL_NODEID_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#physical-nodeid-string">Node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.EXTENDED_NODEID">
+<code class="descname">EXTENDED_NODEID</code><a class="headerlink" href="#Datatype.EXTENDED_NODEID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#extended-nodeid">Node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.PQ_NODEID">
+<code class="descname">PQ_NODEID</code><a class="headerlink" href="#Datatype.PQ_NODEID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#pq-nodeid">Partially-qualified node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.PQ_NODEID_STRING">
+<code class="descname">PQ_NODEID_STRING</code><a class="headerlink" href="#Datatype.PQ_NODEID_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#pq-nodeid-string">Partially-qualified node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.RACKID">
+<code class="descname">RACKID</code><a class="headerlink" href="#Datatype.RACKID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#rackid">Rack ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.ENCRYPTION_TYPE">
+<code class="descname">ENCRYPTION_TYPE</code><a class="headerlink" href="#Datatype.ENCRYPTION_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#encryption-type">Enum of cryptographic algorithms</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.ENCRYPTED_STRING">
+<code class="descname">ENCRYPTED_STRING</code><a class="headerlink" href="#Datatype.ENCRYPTED_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#encrypted-string">Obfuscated string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.ENCRYPTION_STRING">
+<code class="descname">ENCRYPTION_STRING</code><a class="headerlink" href="#Datatype.ENCRYPTION_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#encryption-string">Obfuscated string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.MD5_PASSWORD">
+<code class="descname">MD5_PASSWORD</code><a class="headerlink" href="#Datatype.MD5_PASSWORD" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#md5-password">Obfuscated string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.PROPRIETARY_PASSWORD">
+<code class="descname">PROPRIETARY_PASSWORD</code><a class="headerlink" href="#Datatype.PROPRIETARY_PASSWORD" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#proprietary-password">Obfuscated string</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.OSI_SYSTEMID">
+<code class="descname">OSI_SYSTEMID</code><a class="headerlink" href="#Datatype.OSI_SYSTEMID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#osi-systemid">OSI system ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.OSI_AREA_ADDRESS">
+<code class="descname">OSI_AREA_ADDRESS</code><a class="headerlink" href="#Datatype.OSI_AREA_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#osi-area-address">OSI area address</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.ISIS_NODEID">
+<code class="descname">ISIS_NODEID</code><a class="headerlink" href="#Datatype.ISIS_NODEID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#isis-nodeid">IS-IS node ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.ISIS_LSPID">
+<code class="descname">ISIS_LSPID</code><a class="headerlink" href="#Datatype.ISIS_LSPID" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#isis-lspid">IS-IS LSP ID</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.OSI_NET">
+<code class="descname">OSI_NET</code><a class="headerlink" href="#Datatype.OSI_NET" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#osi-net">OSI NET</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.CHARNUM">
+<code class="descname">CHARNUM</code><a class="headerlink" href="#Datatype.CHARNUM" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#charnum">Byte value</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Datatype.TTY_ESCAPE_CHARNUM">
+<code class="descname">TTY_ESCAPE_CHARNUM</code><a class="headerlink" href="#Datatype.TTY_ESCAPE_CHARNUM" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="types.html#tty-escape-charnum">Byte value or special value</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">TTY_ESCAPE_CHARNUM</code></dt>
+<dd><p><a class="reference external" href="types.html#tty-escape-charnum">Byte value or special value</a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.BagDatatype">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">BagDatatype</code><a class="headerlink" href="#xrm2m.BagDatatype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumeration of datatypes used for bag nodes.</p>
+<dl class="attribute">
+<dt id="BagDatatype.NONE">
+<code class="descname">NONE</code><a class="headerlink" href="#BagDatatype.NONE" title="Permalink to this definition">¶</a></dt>
+<dd><p>No data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.INT8">
+<code class="descname">INT8</code><a class="headerlink" href="#BagDatatype.INT8" title="Permalink to this definition">¶</a></dt>
+<dd><p>8-bit signed integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.UINT8">
+<code class="descname">UINT8</code><a class="headerlink" href="#BagDatatype.UINT8" title="Permalink to this definition">¶</a></dt>
+<dd><p>8-bit unsigned integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.INT16">
+<code class="descname">INT16</code><a class="headerlink" href="#BagDatatype.INT16" title="Permalink to this definition">¶</a></dt>
+<dd><p>16-bit signed integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.UINT16">
+<code class="descname">UINT16</code><a class="headerlink" href="#BagDatatype.UINT16" title="Permalink to this definition">¶</a></dt>
+<dd><p>16-bit unsigned integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.INT32">
+<code class="descname">INT32</code><a class="headerlink" href="#BagDatatype.INT32" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit signed integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.UINT32">
+<code class="descname">UINT32</code><a class="headerlink" href="#BagDatatype.UINT32" title="Permalink to this definition">¶</a></dt>
+<dd><p>32-bit unsigned integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.INT64">
+<code class="descname">INT64</code><a class="headerlink" href="#BagDatatype.INT64" title="Permalink to this definition">¶</a></dt>
+<dd><p>64-bit signed integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.UINT64">
+<code class="descname">UINT64</code><a class="headerlink" href="#BagDatatype.UINT64" title="Permalink to this definition">¶</a></dt>
+<dd><p>64-bit unsigned integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IPV4_ADDRESS">
+<code class="descname">IPV4_ADDRESS</code><a class="headerlink" href="#BagDatatype.IPV4_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv4 address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.ENUM">
+<code class="descname">ENUM</code><a class="headerlink" href="#BagDatatype.ENUM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumeration.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.BOOL">
+<code class="descname">BOOL</code><a class="headerlink" href="#BagDatatype.BOOL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean (true or false).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.VOID">
+<code class="descname">VOID</code><a class="headerlink" href="#BagDatatype.VOID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Void value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.STRING">
+<code class="descname">STRING</code><a class="headerlink" href="#BagDatatype.STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p>ASCII string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.OPAQUE">
+<code class="descname">OPAQUE</code><a class="headerlink" href="#BagDatatype.OPAQUE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binary data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IPV4_TUNNEL_ADDRESS">
+<code class="descname">IPV4_TUNNEL_ADDRESS</code><a class="headerlink" href="#BagDatatype.IPV4_TUNNEL_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv4 tunnel address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IPV4_MDT_ADDRESS">
+<code class="descname">IPV4_MDT_ADDRESS</code><a class="headerlink" href="#BagDatatype.IPV4_MDT_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv4 MDT address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.RT_CONSTRAINT_ADDRESS">
+<code class="descname">RT_CONSTRAINT_ADDRESS</code><a class="headerlink" href="#BagDatatype.RT_CONSTRAINT_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>RT constraint address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IPV4_MVPN_ADDRESS">
+<code class="descname">IPV4_MVPN_ADDRESS</code><a class="headerlink" href="#BagDatatype.IPV4_MVPN_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv4 MVPN address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IPV6_MVPN_ADDRESS">
+<code class="descname">IPV6_MVPN_ADDRESS</code><a class="headerlink" href="#BagDatatype.IPV6_MVPN_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv6 MVPN address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IP_L2VPN_EVPN_ADDRESS">
+<code class="descname">IP_L2VPN_EVPN_ADDRESS</code><a class="headerlink" href="#BagDatatype.IP_L2VPN_EVPN_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IP L2VPN EVPN address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IP_L2VPN_MSPW_ADDRESS">
+<code class="descname">IP_L2VPN_MSPW_ADDRESS</code><a class="headerlink" href="#BagDatatype.IP_L2VPN_MSPW_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IP L2VPN MSPW address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.LINKSTATE_ADDRESS">
+<code class="descname">LINKSTATE_ADDRESS</code><a class="headerlink" href="#BagDatatype.LINKSTATE_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linkstate address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IPV4_FlOWSPEC_ADDRESS">
+<code class="descname">IPV4_FlOWSPEC_ADDRESS</code><a class="headerlink" href="#BagDatatype.IPV4_FlOWSPEC_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv4 flowspec address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IPV6_FLOWSPEC_ADDRESS">
+<code class="descname">IPV6_FLOWSPEC_ADDRESS</code><a class="headerlink" href="#BagDatatype.IPV6_FLOWSPEC_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv6 flowspec address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IPV6_ADDRESS">
+<code class="descname">IPV6_ADDRESS</code><a class="headerlink" href="#BagDatatype.IPV6_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPv6 address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.MAC_ADDRESS">
+<code class="descname">MAC_ADDRESS</code><a class="headerlink" href="#BagDatatype.MAC_ADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>MAC address.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.HEXINTEGERTYPE">
+<code class="descname">HEXINTEGERTYPE</code><a class="headerlink" href="#BagDatatype.HEXINTEGERTYPE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hexadecimal integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.NODEID">
+<code class="descname">NODEID</code><a class="headerlink" href="#BagDatatype.NODEID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node identifier.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.IFHTYPE">
+<code class="descname">IFHTYPE</code><a class="headerlink" href="#BagDatatype.IFHTYPE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface handle.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.HEX_BINARY">
+<code class="descname">HEX_BINARY</code><a class="headerlink" href="#BagDatatype.HEX_BINARY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hexadecimal binary data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.INLINE_STRING">
+<code class="descname">INLINE_STRING</code><a class="headerlink" href="#BagDatatype.INLINE_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inline string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.OSI_SYSTEMID">
+<code class="descname">OSI_SYSTEMID</code><a class="headerlink" href="#BagDatatype.OSI_SYSTEMID" title="Permalink to this definition">¶</a></dt>
+<dd><p>OSI system identifier.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.OSI_AREAADDRESS">
+<code class="descname">OSI_AREAADDRESS</code><a class="headerlink" href="#BagDatatype.OSI_AREAADDRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>OSI area address</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.ISIS_NODEID">
+<code class="descname">ISIS_NODEID</code><a class="headerlink" href="#BagDatatype.ISIS_NODEID" title="Permalink to this definition">¶</a></dt>
+<dd><p>ISIS node ID.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.ISIS_LSPID">
+<code class="descname">ISIS_LSPID</code><a class="headerlink" href="#BagDatatype.ISIS_LSPID" title="Permalink to this definition">¶</a></dt>
+<dd><p>ISIS LSP ID.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.INTERFACE_CAPS">
+<code class="descname">INTERFACE_CAPS</code><a class="headerlink" href="#BagDatatype.INTERFACE_CAPS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface capsulation ID.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.INTERFACE_PROTO">
+<code class="descname">INTERFACE_PROTO</code><a class="headerlink" href="#BagDatatype.INTERFACE_PROTO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface protocol ID.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.INTERFACE_TYPE">
+<code class="descname">INTERFACE_TYPE</code><a class="headerlink" href="#BagDatatype.INTERFACE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.ROUTE_DISTINGUISHER">
+<code class="descname">ROUTE_DISTINGUISHER</code><a class="headerlink" href="#BagDatatype.ROUTE_DISTINGUISHER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route distinguisher.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.VRF_ID">
+<code class="descname">VRF_ID</code><a class="headerlink" href="#BagDatatype.VRF_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>VRF ID.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.STRUCT">
+<code class="descname">STRUCT</code><a class="headerlink" href="#BagDatatype.STRUCT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Denotes a type that acts as a container for other types (its
+children).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="BagDatatype.UNION">
+<code class="descname">UNION</code><a class="headerlink" href="#BagDatatype.UNION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Denotes a type with a set of children, only one of which may be active
+at any given time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">ENUM</code></dt>
+<dd><p>Denotes an enumeration type; its children are the possible values a
+node of this type may take.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="parameterised-types">
+<h3>Parameterised types<a class="headerlink" href="#parameterised-types" title="Permalink to this headline">¶</a></h3>
+<p>Certain data types have associated parameters: for example, every instance of
+the <a class="reference internal" href="#Datatype.RANGE" title="Datatype.RANGE"><code class="xref py py-attr docutils literal"><span class="pre">RANGE</span></code></a> type has two associated integer arguments giving
+the min and max values for the range:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(Range(5, 16) MaxRecursionDepth)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="o">.</span><span class="n">datatype</span>
+<span class="go">&lt;Datatype.RANGE: &#39;Range&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span>
+<span class="go">{&#39;min&#39;: 5, &#39;max&#39;: 16}</span>
+</pre></div>
+</div>
+<p>The following table lists all of the parameterised types (see also
+<a class="reference internal" href="#SchemaParam.datatype_args" title="SchemaParam.datatype_args"><code class="xref py py-attr docutils literal"><span class="pre">SchemaParam.datatype_args</span></code></a>):</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type classification</th>
+<th class="head">Data types</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2">Integer range types</td>
+<td><a class="reference external" href="types.html#range">RANGE</a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="types.html#signed-range">SIGNED_RANGE</a></td>
+</tr>
+<tr class="row-even"><td rowspan="3">Restricted-length string types</td>
+<td><a class="reference external" href="types.html#bounded-string">BOUNDED_STRING</a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="types.html#bounded-identifier">BOUNDED_IDENTIFIER</a></td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="types.html#encoded-bounded-string">ENCODED_BOUNDED_STRING</a></td>
+</tr>
+<tr class="row-odd"><td>Enum type</td>
+<td><a class="reference external" href="types.html#enum">ENUM</a></td>
+</tr>
+<tr class="row-even"><td>Range enum type</td>
+<td><a class="reference external" href="types.html#range-enum">RANGE_ENUM</a></td>
+</tr>
+<tr class="row-odd"><td>String list type</td>
+<td><a class="reference external" href="types.html#string-list">STRING_LIST</a></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Schema inspection</a><ul>
+<li><a class="reference internal" href="#hierarchy">Hierarchy</a><ul>
+<li><a class="reference internal" href="#bags">Bags</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#typing">Typing</a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#data-types">Data types</a></li>
+<li><a class="reference internal" href="#parameterised-types">Parameterised types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dataobj.html"
+                        title="previous chapter">Data references and representations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="types.html"
+                        title="next chapter">Data types</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/schema.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="types.html" title="Data types"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dataobj.html" title="Data references and representations"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Cisco Systems.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

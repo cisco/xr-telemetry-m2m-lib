@@ -1,0 +1,1 @@
+This is a copy of net/rpc/jsonrpc/client.go, but modified to be compliant to the JSON-RPC 2.0 spec

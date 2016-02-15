@@ -1,0 +1,260 @@
+
+Errors
+******
+
+exception exception xrm2m.ConnectionError
+
+   Raised if connecting or reconnecting failed.
+
+   Can be raised by "connect()", "connect_async()" or
+   "Connection.reconnect()".
+
+exception exception xrm2m.DisconnectedError
+
+   Raised by methods requiring a connection, if one has not been
+   established.
+
+   The exception is raised in the following cases:
+
+   * The connection was not available before the method was called.
+
+   * The connection went away before the method returned.
+
+   A connection is considered to be not available if it is not in
+   *CONNECTED* state. See "Connection.state" for more details.
+
+
+Request errors
+==============
+
+exception exception xrm2m.CiscoError
+
+   An error not covered by one of the above error types was
+   encountered during processing a request. This error is used for
+   errors represented by cerrnos - the associated error string is
+   presented as the exception message string.
+
+class class xrm2m.ErrorCategory
+
+   Enumeration identifying the high-level reasons for operation
+   failures.
+
+   VERIFY
+
+      A change was rejected by an IOS-XR feature as semantically
+      invalid, e.g. since it would move the system to an inconsistent
+      state.
+
+class class xrm2m.ConfigCommitErrorDetail
+
+   Detail for a particular path within a failed config commit
+   operation.
+
+   op
+
+      Element of "Change" recording the operation that failed.
+
+   path
+
+      Element of "Path" recording the path path of the failed
+      operation.
+
+   value
+
+      For non-delete operations, the (new) value for the leaf to which
+      the error applies. This is represented in the standard output
+      format (and so may not exactly match the input representation).
+
+      For delete operations, this is *None*.
+
+   error
+
+      String describing the error.
+
+   error_category
+
+      Describes the circumstances of the error, one of the
+      "ErrorCategory" values.
+
+exception exception xrm2m.ConfigCommitError
+
+   A commit request failed.
+
+   The path, operation, value, category and error attributes are used
+   to describe the configuration error (or errors) in detail. Note
+   that a "ConfigCommitError" can represent multiple verification or
+   apply errors, in which case these fields will contain arrays with
+   the value for each separate error.
+
+   detail
+
+      Dictionary mapping failed "Path`s to
+      :class:".ConfigCommitErrorDetail`s which give the specific
+      failure details.
+
+exception exception xrm2m.DatatypeNotSupportedError
+
+   The requested operation is not supported for the corresponding data
+   type.
+
+exception exception xrm2m.FileExistsError
+
+   The user provided an invalid filename to the write_file method, for
+   example a directory that does not exist. More details are given in
+   the message field
+
+   filename
+
+      The missing file name.
+
+exception exception xrm2m.InvalidArgumentError
+
+   An input argument was detected to be invalid by an IOS-XR feature.
+
+   This exception may, in rare circumstances, be raised when working
+   with data access functions. In general problems with input data
+   should be detected and reported (in a descriptive way!) by MPG.
+
+   path
+
+      "Path" recording which data was requested.
+
+exception exception xrm2m.NotFoundError
+
+   An attempt was made to access data that doesn't exist.
+
+   path
+
+      "Path" to which the error is related.
+
+exception exception xrm2m.OperationNotSupportedError
+
+   The requested operation is not supported.
+
+   path
+
+      "Path" to which the error is related.
+
+exception exception xrm2m.PathHierarchyError
+
+   An invalid path through the schema hierarchy was specified.
+
+   >>> conn.get_schema(RootOper.Interfaces.Interface)
+   PathHierarchyError: 'Interface' is not a child of 'Interfaces'
+
+   element
+
+      Name of the path element that doesn't match the schema (e.g.
+      *'Interface* in the example above).
+
+   parent
+
+      Name of the last valid element in the path (e.g. *'Interfaces'*
+      in the example above).
+
+exception exception xrm2m.PathKeyContentError
+
+   A path key value is not compatible with its schema data type.
+
+   This exception may be raised when a request is made on a path which
+   has invalid key types. For example:
+
+      >>> intf_cfg_path = RootCfg.InterfaceConfiguration
+      >>> intf_cfg_path = intf_cfg_path("act", "HundredGigE0/0")
+      >>> conn.get_value(intf_cfg_path)
+      PathKeyContentError: 'HundredGigE0/0' is not a valid InterfaceName value
+
+   param
+
+      Instance of "SchemaParam" containing the schema meta-data that
+      the value failed to conform with.
+
+   value
+
+      Invalid value specified.
+
+exception exception xrm2m.PathKeyStructureError
+
+   A collection of path key values doesn't have the correct structure.
+
+   This exception may be raised, for example, when adding key values
+   to a path the values don't conform with union constraints:
+
+      >>> nbr
+      Path(RootOper.EIGRP.Process(1).Neighbour)
+      >>> nbr = nbr("foovrf", "IPv4", 3)
+      >>> conn.get_value(nbr)
+      PathKeyStructureError: Invalid union combination: VRFName, AFName, ASN
+
+   class_name
+
+      Name of the the schema class that the values fail to conform
+      with.
+
+   value_seq
+
+      Sequence of values passed as the path key (e.g. *['foovrf',
+      'IPv4', 3]* in the example above).
+
+exception exception xrm2m.PathStringFormatError
+
+   A string representation of a path is badly formatted.
+
+   This exception may be raised when attempting to create a "Path"
+   from a string representation:
+
+      >>> Path.from_str(conn, 'RootOper.Abc.Def(10.0.0.1)')
+      PathStringFormatError: Unquoted string '10.0.0.1' not recognised as a literal value (e.g. 'null')
+
+   pathstr
+
+      Path string that this exception relates to.
+
+exception exception xrm2m.PermissionsError
+
+   The user did not have the required permissions to execute the call.
+   More details are given in the exception message string.
+
+exception exception xrm2m.ValueContentError
+
+   An element in a value sequence is not compatible with its schema
+   data type.
+
+   This exception may be raised when attempting to set a value. For
+   example:
+
+      >>> ipv4_addr = intf_ipv4_config.Addresses.Primary
+      >>> conn.set([ipv4_addr, ["10.0.0.", "255.0.0.0"]])
+      ValueContentError: '10.0.0.' is not a valid IPv4Address value
+
+   param
+
+      Instance of "SchemaParam" containing the schema meta-data that
+      the value failed to conform with.
+
+   value
+
+      Invalid value specified.
+
+exception exception xrm2m.ValueStructureError
+
+   A collection of values doesn't have the correct structure.
+
+   This exception may be raised when attempting to write values if,
+   for example, some mandatory elements of the value sequence have
+   been omitted:
+
+      >>> intf_ipv4
+      Path(RootCfg.InterfaceConfiguration('act', 'Loopback0').IPV4Network)
+      >>> conn.set([intf_ipv4.Addresses.Primary, ["203.0.0.1"]])
+      ValueStructureError: Too few values: need 2, have 1
+
+   class_name
+
+      Name of the the schema class containing the schema meta-data
+      that the values fail to conform with.
+
+   value_seq
+
+      Sequence of values passed (e.g. *['203.0.0.1']* in the example
+      above).

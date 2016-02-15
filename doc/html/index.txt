@@ -1,0 +1,111 @@
+
+M2M API
+*******
+
+This collection of pages describes the external M2M Python API, which
+gives access to the IOS-XR management plane intended for direct use by
+Cisco customers. Example usage:
+
+   from xrm2m import RootOper, connect
+
+   conn = connect()
+   for path, info in conn.get(RootOper.Interfaces):
+       print(path["InterfaceName"], info["MTU"], info["ActualState"])
+
+The interface also has facilities for operating asynchronously, and
+remotely over SSH.
+
+See *Usage examples* for more examples.
+
+The main module exports are:
+
+* Transport classes which define a method of connection to a remote
+  router. Arguments include identifying information (eg. IP address)
+  for the router in question, and user credentials as necessary.
+  Currently only "SSHTransport" is supported, which uses SSH to
+  connect to a router remotely.
+
+* "connect()": Function to connect to a router, and return a
+  "Connection" object. "Connection" objects have methods which perform
+  manageability and schema requests/operations on the server (eg. get,
+  set).
+
+* "connect_async()": Asynchronous equivalent to "connect()" which
+  returns a "AsyncConnection" object, which is an asynchronous
+  equivalent of the "Connection" object. "async()" can be called on a
+  "Connection" object to give the equivalent "Connection" object
+  without creating a new underlying connection.
+
+* "RootCfg" and "RootOper" which are "Path" objects, from which all
+  other paths are created via attribute access and calling syntax.
+
+Asynchronous functions and methods return *asyncio* *Future* objects
+on Python 3, and Trollius *Future* objects on Python 2.
+
+
+Table of contents
+=================
+
+* Connections and transports
+
+  * Connections
+
+  * Transports
+
+  * Request errors
+
+* Data references and representations
+
+  * Paths
+
+  * Passwords
+
+  * Wildcarding
+
+* Schema inspection
+
+  * Hierarchy
+
+  * Typing
+
+* Data types
+
+  * Integers
+
+  * Booleans
+
+  * Strings
+
+  * Enums
+
+  * Bags
+
+  * IP addresses
+
+  * VRFs
+
+  * MAC addresses
+
+  * Interfaces
+
+  * OSI/IS-IS types
+
+  * Node IDs
+
+  * Password types
+
+  * TTY types
+
+* Errors
+
+  * Request errors
+
+* Usage examples
+
+  * Summarise interfaces
+
+  * Summarise, recompose TE tunnel interfaces
+
+  * Reconfigure TE metrics
+
+  * Subtree replace

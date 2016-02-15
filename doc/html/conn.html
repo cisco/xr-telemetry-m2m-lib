@@ -1,0 +1,1133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Connections and transports &mdash; IOS-XR Machine-to-Machine Python API 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/m2m.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="IOS-XR Machine-to-Machine Python API 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Data references and representations" href="dataobj.html" />
+    <link rel="prev" title="M2M API" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="dataobj.html" title="Data references and representations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="M2M API"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="connections-and-transports">
+<h1>Connections and transports<a class="headerlink" href="#connections-and-transports" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="connections">
+<h2>Connections<a class="headerlink" href="#connections" title="Permalink to this headline">¶</a></h2>
+<p>Connections to an IOS-XR router are created with <a class="reference internal" href="#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">xrm2m.connect()</span></code></a> or
+<a class="reference internal" href="#xrm2m.connect_async" title="xrm2m.connect_async"><code class="xref py py-func docutils literal"><span class="pre">xrm2m.connect_async()</span></code></a>.</p>
+<dl class="function">
+<dt id="xrm2m.connect">
+<code class="descclassname">xrm2m.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>transport=None</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to a router, via the given transport.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>transport</strong> &#8211; The <a class="reference internal" href="#xrm2m.Transport" title="xrm2m.Transport"><code class="xref py py-class docutils literal"><span class="pre">Transport</span></code></a> to connect to the router with. If running on an
+IOS-XR router this argument may be omitted, in which case the
+connection will be made locally.</li>
+<li><strong>loop</strong> &#8211; Optional event loop to use for any internal async calls that may be
+made. If not provided the default event loop will be used. See <a class="reference external" href="conn.html#event-loops">Event
+Loops</a> for more details.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> object representing the new connection.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="errors.html#xrm2m.ConnectionError" title="xrm2m.ConnectionError"><code class="xref py py-class docutils literal"><span class="pre">ConnectionError</span></code></a> if the connection could not be made.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="xrm2m.connect_async">
+<code class="descclassname">xrm2m.</code><code class="descname">connect_async</code><span class="sig-paren">(</span><em>transport=None</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.connect_async" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asynchronously connect to a router, via the given transport.</p>
+<p>See <a class="reference internal" href="#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a> for details on when a transport can be re-used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>transport</strong> &#8211; The <a class="reference internal" href="#xrm2m.Transport" title="xrm2m.Transport"><code class="xref py py-class docutils literal"><span class="pre">Transport</span></code></a> to connect to the router with. If running on an
+IOS-XR router this argument may be omitted, in which case the
+connection will be made locally.</li>
+<li><strong>loop</strong> &#8211; The event loop with which the future returned by this function will be
+associated. It is also the event loop that will be associated with
+the futures returned by the methods of the resulting
+<a class="reference internal" href="#xrm2m.AsyncConnection" title="xrm2m.AsyncConnection"><code class="xref py py-class docutils literal"><span class="pre">AsyncConnection</span></code></a> object. See <a class="reference external" href="conn.html#event-loops">Event Loops</a> for more details.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="#xrm2m.AsyncConnection" title="xrm2m.AsyncConnection"><code class="xref py py-class docutils literal"><span class="pre">AsyncConnection</span></code></a> representing the new connection.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="errors.html#xrm2m.ConnectionError" title="xrm2m.ConnectionError"><code class="xref py py-class docutils literal"><span class="pre">ConnectionError</span></code></a> if the connection could not be made.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="xrm2m.sync">
+<code class="descclassname">xrm2m.</code><code class="descname">sync</code><span class="sig-paren">(</span><em>async_conn</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.sync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> given a <a class="reference internal" href="#xrm2m.AsyncConnection" title="xrm2m.AsyncConnection"><code class="xref py py-class docutils literal"><span class="pre">AsyncConnection</span></code></a>.</p>
+<p>The returned object uses the same underlying connection as the input
+connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conn</strong> &#8211; The <a class="reference internal" href="#xrm2m.AsyncConnection" title="xrm2m.AsyncConnection"><code class="xref py py-class docutils literal"><span class="pre">AsyncConnection</span></code></a> connection whose synchronous equivalent
+is to be sought.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> representing the synchronous version of <cite>conn</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="xrm2m.async">
+<code class="descclassname">xrm2m.</code><code class="descname">async</code><span class="sig-paren">(</span><em>sync_conn</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.async" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#xrm2m.AsyncConnection" title="xrm2m.AsyncConnection"><code class="xref py py-class docutils literal"><span class="pre">AsyncConnection</span></code></a> given a <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a>.</p>
+<p>The returned object uses the same underlying connection as the input
+connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conn</strong> &#8211; The <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> connection whose asynchronous equivalent
+is to be sought.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#xrm2m.AsyncConnection" title="xrm2m.AsyncConnection"><code class="xref py py-class docutils literal"><span class="pre">AsyncConnection</span></code></a> representing the asynchronous version of
+<cite>conn</cite>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.Connection">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">Connection</code><a class="headerlink" href="#xrm2m.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection to a router, with synchronous methods.</p>
+<p>Connections are created with <a class="reference internal" href="#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a>, or <a class="reference internal" href="#xrm2m.sync" title="xrm2m.sync"><code class="xref py py-func docutils literal"><span class="pre">sync()</span></code></a>. See the
+corresponding documentation for more information.</p>
+<p>Note: <cite>Connection</cite> objects are not thread-safe: No two threads should
+concurrently call a single <cite>Connection</cite> object&#8217;s methods.</p>
+<dl class="method">
+<dt id="xrm2m.Connection.cli_exec">
+<code class="descname">cli_exec</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.cli_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a CLI comand and return the resulting string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>command</strong> &#8211; CLI command to fetch data for.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The string returned when the command was executed.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.cli_get">
+<code class="descname">cli_get</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.cli_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve data given a CLI command.</p>
+<p>The command is equivalent to doing a <a class="reference internal" href="#xrm2m.Connection.get" title="xrm2m.Connection.get"><code class="xref py py-meth docutils literal"><span class="pre">get()</span></code></a> call for each path
+that the command fetches, and concatenating the results.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">cli_get</span><span class="p">(</span><span class="s">&quot;show foo interfaces&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">[[</span><span class="s">&quot;RootOper.Foo.Interface({&#39;IntfName&#39;: &#39;GigE0&#39;})&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}],</span>
+<span class="gp">... </span> <span class="p">[</span><span class="s">&quot;RootOper.Foo.Interface({&#39;IntfName&#39;: &#39;GigE1&#39;})&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;a&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}]]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>command</strong> &#8211; CLI command to fetch data for.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Iterable of <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a>, value pairs.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.cli_get_nested">
+<code class="descname">cli_get_nested</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.cli_get_nested" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve structured data given a CLI command.</p>
+<p>The command is equivalent to doing a <a class="reference internal" href="#xrm2m.Connection.get_nested" title="xrm2m.Connection.get_nested"><code class="xref py py-meth docutils literal"><span class="pre">get_nested()</span></code></a> call for
+each path that the command fetches, and combining the results.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">cli_get_nested</span><span class="p">(</span><span class="s">&quot;show foo interfaces&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">{</span>
+<span class="gp">... </span>    <span class="s">&quot;RootOper&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s">&quot;Foo&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s">&quot;Interface&quot;</span><span class="p">:</span> <span class="p">[{</span>
+<span class="gp">... </span>                <span class="s">&quot;IntfName&quot;</span><span class="p">:</span> <span class="s">&quot;GigE0&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s">&quot;b&quot;</span><span class="p">:</span> <span class="mi">2</span>
+<span class="gp">... </span>            <span class="p">},</span> <span class="p">{</span>
+<span class="gp">... </span>                <span class="s">&quot;IntfName&quot;</span><span class="p">:</span> <span class="s">&quot;GigE1&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s">&quot;a&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s">&quot;b&quot;</span><span class="p">:</span> <span class="mi">7</span>
+<span class="gp">... </span>            <span class="p">}]</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>command</strong> &#8211; CLI command to fetch data for.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Return a nested dict/list containing the retreived values. The
+information retrieved is equivalent to that returned by
+<a class="reference internal" href="#xrm2m.Connection.get" title="xrm2m.Connection.get"><code class="xref py py-meth docutils literal"><span class="pre">get()</span></code></a>. Leaves in the structures correspond with the values
+returned by <cite>get_nested</cite>. See example for how the dict is
+formatted.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.cli_replace">
+<code class="descname">cli_replace</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.cli_replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace the subtree corresponding with a config CLI command.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">cli_replace</span><span class="p">(</span><span class="s">&quot;int GE0/0/0/0&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>command</strong> &#8211; Config CLI command.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-class docutils literal"><span class="pre">DisconnectedError</span></code></a> if the connection was lost.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.cli_set">
+<code class="descname">cli_set</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.cli_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/delete data corresponding with a config CLI command.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">cli_set</span><span class="p">(</span><span class="s">&quot;int GE/0/0/0 shut&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>command</strong> &#8211; Config CLI command.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.commit">
+<code class="descname">commit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.commit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Commit the config changes made using this connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.ConfigCommitError" title="xrm2m.ConfigCommitError"><code class="xref py py-exc docutils literal"><span class="pre">ConfigCommitError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.commit_replace">
+<code class="descname">commit_replace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.commit_replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Commit the config changes made using this connection, replacing all
+existing config.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.ConfigCommitError" title="xrm2m.ConfigCommitError"><code class="xref py py-exc docutils literal"><span class="pre">ConfigCommitError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>path_or_iter</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the contents of one or more leaves/subtrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path_or_iter</strong> &#8211; Either a <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> or an iterable of <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> to be
+deleted.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.OperationNotSupportedError" title="xrm2m.OperationNotSupportedError"><code class="xref py py-exc docutils literal"><span class="pre">OperationNotSupportedError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.NotFoundError" title="xrm2m.NotFoundError"><code class="xref py py-exc docutils literal"><span class="pre">NotFoundError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.discard_changes">
+<code class="descname">discard_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.discard_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discard any uncommitted config changes made using this connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect the connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">NotConnected</span></code> if the connection is already disconnected.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read paths and values under a given path.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">RootOper</span><span class="o">.</span><span class="n">Foo</span><span class="o">.</span><span class="n">Interface</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">[[</span><span class="n">RootOper</span><span class="o">.</span><span class="n">Foo</span><span class="o">.</span><span class="n">Interface</span><span class="p">({</span><span class="s">&#39;IntfName&#39;</span><span class="p">:</span> <span class="s">&#39;GigE0&#39;</span><span class="p">}),</span> <span class="p">{</span><span class="s">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}],</span>
+<span class="gp">... </span> <span class="p">[</span><span class="n">RootOper</span><span class="o">.</span><span class="n">Foo</span><span class="o">.</span><span class="n">Interface</span><span class="p">({</span><span class="s">&#39;IntfName&#39;</span><span class="p">:</span> <span class="s">&#39;GigE1&#39;</span><span class="p">}),</span> <span class="p">{</span><span class="s">&quot;a&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}]]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> &#8211; <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> identifying which paths and values should be
+returned.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Iterable of <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a>, value pairs.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.OperationNotSupportedError" title="xrm2m.OperationNotSupportedError"><code class="xref py py-exc docutils literal"><span class="pre">OperationNotSupportedError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.get_changes">
+<code class="descname">get_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.get_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the changes in running config built up (but not yet commited) on
+this connection.</p>
+<p>This method can be used to examine the changes that would be made if
+<a class="reference internal" href="#xrm2m.Connection.commit" title="xrm2m.Connection.commit"><code class="xref py py-meth docutils literal"><span class="pre">commit()</span></code></a> were called:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_changes</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">change</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">change</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">change</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;--&quot;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">Path(RootCfg.Hostname)</span>
+<span class="go">SET R1-BOS</span>
+<span class="go">--</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&quot;act&quot;, &quot;HundredGigE0/0/0/0&quot;).Shutdown)</span>
+<span class="go">DELETE None</span>
+<span class="go">--</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sequence of <a class="reference internal" href="#xrm2m.ChangeDetails" title="xrm2m.ChangeDetails"><code class="xref py py-class docutils literal"><span class="pre">ChangeDetails</span></code></a> for every change that would be
+made if the config changes on this connection were committed.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.get_children">
+<code class="descname">get_children</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.get_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read key/index information (in the form of paths) under a given path.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">vrfs</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">VRF</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">get_children</span><span class="p">(</span><span class="n">vrfs</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">Path(RootCfg.VRF(&#39;bar&#39;))</span>
+<span class="go">Path(RootCfg.VRF(&#39;foo&#39;))</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> &#8211; <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> for which key/index information is being sought.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Iterable of <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.OperationNotSupportedError" title="xrm2m.OperationNotSupportedError"><code class="xref py py-exc docutils literal"><span class="pre">OperationNotSupportedError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.get_nested">
+<code class="descname">get_nested</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.get_nested" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read paths and values under a given path, returning structured data.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">get_nested</span><span class="p">(</span><span class="n">RootOper</span><span class="o">.</span><span class="n">Foo</span><span class="o">.</span><span class="n">Interface</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">{</span>
+<span class="gp">... </span>    <span class="s">&quot;RootOper&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s">&quot;Foo&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s">&quot;Interface&quot;</span><span class="p">:</span> <span class="p">[{</span>
+<span class="gp">... </span>                <span class="s">&quot;IntfName&quot;</span><span class="p">:</span> <span class="s">&quot;GigE0&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s">&quot;b&quot;</span><span class="p">:</span> <span class="mi">2</span>
+<span class="gp">... </span>            <span class="p">},</span> <span class="p">{</span>
+<span class="gp">... </span>                <span class="s">&quot;IntfName&quot;</span><span class="p">:</span> <span class="s">&quot;GigE1&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s">&quot;a&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s">&quot;b&quot;</span><span class="p">:</span> <span class="mi">7</span>
+<span class="gp">... </span>            <span class="p">}]</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> &#8211; <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> identifying which paths and values should be
+returned.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Return a nested dict/list containing the retreived values. The
+information retrieved is equivalent to that returned by
+<a class="reference internal" href="#xrm2m.Connection.get" title="xrm2m.Connection.get"><code class="xref py py-meth docutils literal"><span class="pre">get()</span></code></a>. Leaves in the structures correspond with the values
+returned by <cite>get</cite>. See example for how the dict is formatted.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.OperationNotSupportedError" title="xrm2m.OperationNotSupportedError"><code class="xref py py-exc docutils literal"><span class="pre">OperationNotSupportedError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.get_parent">
+<code class="descname">get_parent</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.get_parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parent of a data path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> &#8211; A <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> whose parent is to be found.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> which is the parent of the path being found.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.get_schema">
+<code class="descname">get_schema</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.get_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the schema meta-data for a path.</p>
+<p>This method returns a <a class="reference internal" href="schema.html#xrm2m.SchemaClass" title="xrm2m.SchemaClass"><code class="xref py py-class docutils literal"><span class="pre">SchemaClass</span></code></a> describing the last element
+of the path:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
+<span class="go">SchemaClass(InterfaceConfiguration)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span><span class="o">.</span><span class="n">description</span>
+<span class="go">&#39;The configuration for an interface&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">schema</span><span class="o">.</span><span class="n">children</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.PseudowireEther)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.IPv6Neighbor)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.MACAccounting)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.IPV6PacketFilter)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration.PTP)</span>
+</pre></div>
+</div>
+<p>The input <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> identifies the point of interest in the schema
+hierarchy.</p>
+<p>Any key values in the path are ignored. In particular, it&#8217;s ok to
+omit key values even where they&#8217;d usually be mandatory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cls</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="o">.</span><span class="n">VRF</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+<span class="go">SchemaClass(VRF)</span>
+</pre></div>
+</div>
+<p>If the path doesn&#8217;t identify a valid sequence of classes in the schema,
+<a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a> is raised:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">RootOper</span><span class="o">.</span><span class="n">Missing</span><span class="o">.</span><span class="n">Interface</span><span class="p">)</span>
+<span class="go">PathHierarchyError: &#39;Missing&#39; is not a child of &#39;RootOper&#39;</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> &#8211; <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> identifying the point in the hierarchy of interest.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="schema.html#xrm2m.SchemaClass" title="xrm2m.SchemaClass"><code class="xref py py-class docutils literal"><span class="pre">SchemaClass</span></code></a> object, as above.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.get_value">
+<code class="descname">get_value</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the value of a given path.</p>
+<p>The functionality is equivalent to that of <code class="xref py py-meth docutils literal"><span class="pre">get()</span></code> where the path
+identifies a single leaf, except only the value is returned.</p>
+<p>A <a class="reference internal" href="errors.html#xrm2m.AmbiguousPathError" title="xrm2m.AmbiguousPathError"><code class="xref py py-class docutils literal"><span class="pre">AmbiguousPathError</span></code></a> is raised if the path matches multiple
+leaves. Note that the request may still succeed even if the path is not
+inherently unambiguous (ie. it contains wildcards or missing keys), in
+the case that the query</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> &#8211; A <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> to be fetched.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Scalar value of the leaf.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.AmbiguousPathError" title="xrm2m.AmbiguousPathError"><code class="xref py py-exc docutils literal"><span class="pre">AmbiguousPathError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.OperationNotSupportedError" title="xrm2m.OperationNotSupportedError"><code class="xref py py-exc docutils literal"><span class="pre">OperationNotSupportedError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.NotFoundError" title="xrm2m.NotFoundError"><code class="xref py py-exc docutils literal"><span class="pre">NotFoundError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.get_version">
+<code class="descname">get_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.get_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current M2M API version number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <cite>major</cite>,`minor` pair of ints, representing the API major and
+minor version number, respectively.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.normalize_path">
+<code class="descname">normalize_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.normalize_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a validated copy of a path in the canonical format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> to be normalized.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Copy of this path, in the standard format returned from the M2M
+API. The returned path is compatible with all standard path
+functions, e.g. <code class="xref py py-meth docutils literal"><span class="pre">Path.key()</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p>This method validates the contents of the path against the schema.</p>
+<p>It raises <a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a> if the sequence of element names
+in this path doesn&#8217;t match the schema:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">RootOper</span><span class="o">.</span><span class="n">Missing</span><span class="o">.</span><span class="n">Interface</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">normalize_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="go">PathHierarchyError: &#39;Missing&#39; is not a child of &#39;RootOper&#39;</span>
+</pre></div>
+</div>
+<p>It raises <a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a> if (for example) the key values
+in this path don&#8217;t include a value for a mandatory key:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="p">(</span><span class="s">&quot;TenGigE0/2/0/0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">VRF</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">normalize_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="go">PathKeyStructureError: Too few key values for &#39;InterfaceConfiguration&#39;: need 2, have 1</span>
+</pre></div>
+</div>
+<p>It raises <a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a> if one of the key values is
+incompatible with the data type defined by the schema.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.reconnect">
+<code class="descname">reconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.reconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconnect to the router.</p>
+<p>If already connected, disconnect first and then connect. If connecting,
+wait for connection to complete, then disconnect, then connect.</p>
+<p>See <code class="xref py py-data docutils literal"><span class="pre">state</span></code> for the current connection state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.replace">
+<code class="descname">replace</code><span class="sig-paren">(</span><em>subtree_or_iter</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark one or more subtrees for atomic replacement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>subtree_or_iter</strong> &#8211; Either a <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> or an iterable of <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> to be
+marked for replacement.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.NotFoundError" title="xrm2m.NotFoundError"><code class="xref py py-exc docutils literal"><span class="pre">NotFoundError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>leaf_or_iter</em>, <em>value=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of one or more leaves.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">set</span><span class="p">(</span><span class="n">intf</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0/0/0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">VRF</span><span class="p">,</span> <span class="s">&quot;barvrf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">set</span><span class="p">(</span><span class="n">intf</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0/0/1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">VRF</span><span class="p">,</span> <span class="s">&quot;bazvrf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or equivalently:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">set</span><span class="p">([(</span><span class="n">intf</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0/0/0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">VRF</span><span class="p">,</span> <span class="s">&quot;barvrf&quot;</span><span class="p">),</span>
+<span class="gp">... </span>     <span class="p">(</span><span class="n">intf</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0/0/1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">VRF</span><span class="p">,</span> <span class="s">&quot;bazvrf&quot;</span><span class="p">)])</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>leaf_or_iter</strong> &#8211; A <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> indicating the leaf being set, or a sequence of
+<cite>path</cite>, <cite>value</cite> pairs, each of which will be set accordingly.</li>
+<li><strong>value</strong> &#8211; The <cite>value</cite> to be set. This should only be provided when
+<cite>leaf_or_iter</cite> is a <a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.OperationNotSupportedError" title="xrm2m.OperationNotSupportedError"><code class="xref py py-exc docutils literal"><span class="pre">OperationNotSupportedError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.InvalidArgumentError" title="xrm2m.InvalidArgumentError"><code class="xref py py-exc docutils literal"><span class="pre">InvalidArgumentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathHierarchyError" title="xrm2m.PathHierarchyError"><code class="xref py py-exc docutils literal"><span class="pre">PathHierarchyError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyContentError" title="xrm2m.PathKeyContentError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.PathKeyStructureError" title="xrm2m.PathKeyStructureError"><code class="xref py py-exc docutils literal"><span class="pre">PathKeyStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.NotFoundError" title="xrm2m.NotFoundError"><code class="xref py py-exc docutils literal"><span class="pre">NotFoundError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DatatypeNotSupportedError" title="xrm2m.DatatypeNotSupportedError"><code class="xref py py-exc docutils literal"><span class="pre">DatatypeNotSupportedError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.ValueContentError" title="xrm2m.ValueContentError"><code class="xref py py-exc docutils literal"><span class="pre">ValueContentError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.ValueStructureError" title="xrm2m.ValueStructureError"><code class="xref py py-exc docutils literal"><span class="pre">ValueStructureError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xrm2m.Connection.state">
+<code class="descname">state</code><a class="headerlink" href="#xrm2m.Connection.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>The connection&#8217;s state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="#xrm2m.ConnectionState" title="xrm2m.ConnectionState"><code class="xref py py-class docutils literal"><span class="pre">ConnectionState</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Connection.write_file">
+<code class="descname">write_file</code><span class="sig-paren">(</span><em>data</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Connection.write_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the given string to the router&#8217;s filesystem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; A string which will be written to a file on the router&#8217;s
+filesystem.</li>
+<li><strong>filename</strong> &#8211; Path of the file on the router to which the file is to be written.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="errors.html#xrm2m.FileExistsError" title="xrm2m.FileExistsError"><code class="xref py py-exc docutils literal"><span class="pre">FileExistsError</span></code></a></li>
+<li><code class="xref py py-exc docutils literal"><span class="pre">PermissionError</span></code></li>
+<li><a class="reference internal" href="errors.html#xrm2m.CiscoError" title="xrm2m.CiscoError"><code class="xref py py-exc docutils literal"><span class="pre">CiscoError</span></code></a></li>
+<li><a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-exc docutils literal"><span class="pre">DisconnectedError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.Change">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">Change</code><a class="headerlink" href="#xrm2m.Change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumeration of data-modifying operations.</p>
+<dl class="attribute">
+<dt id="Change.SET">
+<code class="descname">SET</code><a class="headerlink" href="#Change.SET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value set for a leaf (that may or may not have already existed).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Change.DELETE">
+<code class="descname">DELETE</code><a class="headerlink" href="#Change.DELETE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Existing value for a leaf deleted.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.ChangeDetails">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">ChangeDetails</code><a class="headerlink" href="#xrm2m.ChangeDetails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Description of a data-modifying operation.</p>
+<dl class="attribute">
+<dt id="ChangeDetails.path">
+<code class="descname">path</code><a class="headerlink" href="#ChangeDetails.path" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="dataobj.html#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> identifying the leaf whose value is altered.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ChangeDetails.op">
+<code class="descname">op</code><a class="headerlink" href="#ChangeDetails.op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element of <a class="reference internal" href="#xrm2m.Change" title="xrm2m.Change"><code class="xref py py-class docutils literal"><span class="pre">Change</span></code></a> recording the operation performed on the
+leaf.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ChangeDetails.value">
+<code class="descname">value</code><a class="headerlink" href="#ChangeDetails.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>For non-delete operations, the (new) value for the leaf. This is
+represented in the standard <a class="reference external" href="types.html">output format</a> (and so may
+not exactly match the input representation).</p>
+<p>For delete operations, this is <cite>None</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.ConnectionState">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">ConnectionState</code><a class="headerlink" href="#xrm2m.ConnectionState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of a <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a>&#8216;s state.</p>
+<dl class="attribute">
+<dt id="ConnectionState.DISCONNECTED">
+<code class="descname">DISCONNECTED</code><a class="headerlink" href="#ConnectionState.DISCONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not connected to the router, and not connecting. A <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a>
+may move into this state from <cite>CONNECTED</cite> if the transport fails, or if
+a connection-wide error condition is hit. A <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> may
+move into this state from <cite>CONNECTING</cite> if the in-flight
+<a class="reference internal" href="#xrm2m.connect_async" title="xrm2m.connect_async"><code class="xref py py-func docutils literal"><span class="pre">connect_async()</span></code></a> or <a class="reference internal" href="#xrm2m.Connection.reconnect" title="xrm2m.Connection.reconnect"><code class="xref py py-meth docutils literal"><span class="pre">Connection.reconnect()</span></code></a> call fails.</p>
+<p>Any in-flight requests will fail with <a class="reference internal" href="errors.html#xrm2m.DisconnectedError" title="xrm2m.DisconnectedError"><code class="xref py py-class docutils literal"><span class="pre">DisconnectedError</span></code></a> when
+the corresponding connection transitions to this state.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ConnectionState.CONNECTING">
+<code class="descname">CONNECTING</code><a class="headerlink" href="#ConnectionState.CONNECTING" title="Permalink to this definition">¶</a></dt>
+<dd><p>In the process of connecting to the router, ie. <code class="xref py py-func docutils literal"><span class="pre">connect_async()</span></code>,
+<code class="xref py py-func docutils literal"><span class="pre">connect()</span></code>, or <a class="reference internal" href="#xrm2m.Connection.reconnect" title="xrm2m.Connection.reconnect"><code class="xref py py-meth docutils literal"><span class="pre">Connection.reconnect()</span></code></a> has been called but
+has not yet returned.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ConnectionState.CONNECTED">
+<code class="descname">CONNECTED</code><a class="headerlink" href="#ConnectionState.CONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connected to the router. This is the only state in which request
+methods can be made.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.AsyncConnection">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">AsyncConnection</code><a class="headerlink" href="#xrm2m.AsyncConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>A connection to a router, with asynchronous methods.</p>
+<p>Async connections are created with <a class="reference internal" href="#xrm2m.connect_async" title="xrm2m.connect_async"><code class="xref py py-func docutils literal"><span class="pre">connect_async()</span></code></a>, or
+<a class="reference internal" href="#xrm2m.async" title="xrm2m.async"><code class="xref py py-func docutils literal"><span class="pre">async()</span></code></a>. See the corresponding documentation for more information.</p>
+<p>Objects of this type are equivalent to those of <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a>,
+except the request methods are synchronous: They return the result directly
+rather than returning a future. See the <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> documentation
+for more details.</p>
+<p>Note: <cite>AsyncConnection</cite> objects are not thread-safe: No two threads should
+concurrently call a single <cite>AsyncConnection</cite> object&#8217;s methods.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="transports">
+<h2>Transports<a class="headerlink" href="#transports" title="Permalink to this headline">¶</a></h2>
+<p>Transports are a mechanism for sending and receiving raw bytes from a router,
+with connection semantics. Its methods and attributes should not be used
+directly by the user (other than construction), instead the transport is used
+by calling methods on a <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a>, which in turn is created by
+<a class="reference internal" href="#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a> or <a class="reference internal" href="#xrm2m.connect_async" title="xrm2m.connect_async"><code class="xref py py-func docutils literal"><span class="pre">connect_async()</span></code></a>.</p>
+<p>A given <a class="reference internal" href="#xrm2m.Transport" title="xrm2m.Transport"><code class="xref py py-class docutils literal"><span class="pre">Transport</span></code></a> object may only be passed to <a class="reference internal" href="#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a> or
+<a class="reference internal" href="#xrm2m.connect_async" title="xrm2m.connect_async"><code class="xref py py-func docutils literal"><span class="pre">connect_async()</span></code></a> once. To reconnect a disconnected <a class="reference internal" href="#xrm2m.Connection" title="xrm2m.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a>,
+<a class="reference internal" href="#xrm2m.Connection.reconnect" title="xrm2m.Connection.reconnect"><code class="xref py py-meth docutils literal"><span class="pre">Connection.reconnect()</span></code></a> should be used.</p>
+<dl class="class">
+<dt id="xrm2m.Transport">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">Transport</code><a class="headerlink" href="#xrm2m.Transport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract transport definition.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.SSHTransport">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">SSHTransport</code><span class="sig-paren">(</span><em>hostname</em>, <em>username</em>, <em>key_filename=None</em>, <em>password=None</em>, <em>port=22</em>, <em>look_for_keys=True</em>, <em>allow_agent=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.SSHTransport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transport that defines a connection to a router over SSH.</p>
+<dl class="method">
+<dt id="xrm2m.SSHTransport.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>hostname</em>, <em>username</em>, <em>key_filename=None</em>, <em>password=None</em>, <em>port=22</em>, <em>look_for_keys=True</em>, <em>allow_agent=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.SSHTransport.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the SSHTransport.</p>
+<p>The transport authenticates using the following steps:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hostname</strong> &#8211; Host being connected to.</li>
+<li><strong>port</strong> &#8211; Port to connect to.</li>
+<li><strong>username</strong> &#8211; Username to authenticate as.</li>
+<li><strong>key_filename</strong> &#8211; The filename, or list of filenames of optional private key(s) to
+try for authentication</li>
+<li><strong>password</strong> &#8211; Optional password. This will be used if <cite>key_filename</cite> is not
+passed, or if the private key is protected by a pass-phrase.</li>
+<li><strong>look_for_keys</strong> &#8211; Search for discoverable private key files in <cite>~/.ssh/</cite>.</li>
+<li><strong>allow_agent</strong> &#8211; Allow connecting to an SSH agent.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="event-loops">
+<span id="id1"></span><h2>Event Loops<a class="headerlink" href="#event-loops" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="#xrm2m.connect" title="xrm2m.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a> and <a class="reference internal" href="#xrm2m.connect_async" title="xrm2m.connect_async"><code class="xref py py-func docutils literal"><span class="pre">connect_async()</span></code></a> accept an event loop argument,
+which is used for executing asynchronous operations.</p>
+<p>The type of loop that must be passed depends on the Python version, and
+platform being used:</p>
+<ul class="simple">
+<li>On box, with Python 3: A <code class="xref py py-class docutils literal"><span class="pre">cisco.sdk.EventContext</span></code> should be passed.</li>
+<li>Off box, with Python 2.7.x: A <cite>trollius</cite> event loop should be passed.</li>
+<li>Off box, with Python 3.4 or later: A <cite>asyncio</cite> event loop should be passed.</li>
+</ul>
+<p>All other configurations are unsupported.</p>
+<p>If the parameter is omitted then relevent async library&#8217;s default event loop
+will be used (eg. <cite>asyncio.get_event_loop()</cite>).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Connections and transports</a><ul>
+<li><a class="reference internal" href="#connections">Connections</a></li>
+<li><a class="reference internal" href="#transports">Transports</a></li>
+<li><a class="reference internal" href="#event-loops">Event Loops</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">M2M API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="dataobj.html"
+                        title="next chapter">Data references and representations</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/conn.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="dataobj.html" title="Data references and representations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="M2M API"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Cisco Systems.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

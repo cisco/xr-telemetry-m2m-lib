@@ -1,0 +1,697 @@
+
+Schema inspection
+*****************
+
+Connection.get_schema(path)
+
+   Return the schema meta-data for a path.
+
+   This method returns a "SchemaClass" describing the last element of
+   the path:
+
+      >>> schema = conn.get_schema(RootCfg.InterfaceConfiguration)
+      >>> print(schema)
+      SchemaClass(InterfaceConfiguration)
+      >>> schema.description
+      'The configuration for an interface'
+      >>> for child in schema.children[:5]:
+      ...     print(child)
+      Path(RootCfg.InterfaceConfiguration.PseudowireEther)
+      Path(RootCfg.InterfaceConfiguration.IPv6Neighbor)
+      Path(RootCfg.InterfaceConfiguration.MACAccounting)
+      Path(RootCfg.InterfaceConfiguration.IPV6PacketFilter)
+      Path(RootCfg.InterfaceConfiguration.PTP)
+
+   The input "Path" identifies the point of interest in the schema
+   hierarchy.
+
+   Any key values in the path are ignored. In particular, it's ok to
+   omit key values even where they'd usually be mandatory:
+
+      >>> cls = conn.get_schema(RootCfg.InterfaceConfiguration.VRF)
+      >>> print(cls)
+      SchemaClass(VRF)
+
+   If the path doesn't identify a valid sequence of classes in the
+   schema, "PathHierarchyError" is raised:
+
+      >>> conn.get_schema(RootOper.Missing.Interface)
+      PathHierarchyError: 'Missing' is not a child of 'RootOper'
+
+   Parameters:
+      **path** -- "Path" identifying the point in the hierarchy of
+      interest.
+
+   Returns:
+      A "SchemaClass" object, as above.
+
+   Raises:
+      * "DisconnectedError" if the connection was lost.
+
+      * "PathHierarchyError" if the input path does not exist in the
+        schema.
+
+
+Hierarchy
+=========
+
+@@@ note about paths as 'schema paths'? @@@ note about Tables
+
+class class xrm2m.SchemaClass
+
+   Meta-data for a node in the schema hierarchy.
+
+   Schema classes describe a type of management data that *may* exist
+   and the properties of any such data.
+
+   For example:
+
+      # To navigate to a particular point in the schema, create a Path
+      # without filling in key values.
+      >>> path = RootCfg.InterfaceConfiguration.VRF
+      >>> cls_info = conn.get_schema(path)
+      >>> cls_info.name
+      'VRF'
+      >>> cls_info.category
+      <SchemaClassCategory.LEAF: 2>
+      >>> cls_info.description
+      'Assign the interface to a VRF'
+      >>> for param in cls_info.value()
+      ...     print(param)
+      SchemaParam(BoundedString(1, 32) VRFName)
+
+   name
+
+      Name of this class in the schema.
+
+   category
+
+      "Category" of this class.
+
+      A class' category denotes what data it describes e.g. whether
+      it's a container for other classes, or has an associated value.
+
+   description
+
+      String giving a verbose description of the semantics of data
+      described by the class.
+
+   table_description
+
+      Same as "description", for the table described by this class, if
+      any.
+
+   key
+
+      Data type information for this class' key parameters. This is a
+      list of "SchemaParam" objects, each describing a single key
+      parameter.
+
+      The 'key' of a class is the collection of parameters whose
+      values distinguish different instances of the class in data
+      described by the schema. This attribute describes the format and
+      meaning of those values. For example:
+
+         >>> print(route_cls)
+         SchemaClass(IP_RIBRoute)
+         >>> for param in route_cls.key():
+         ...     print(param)
+         SchemaParam(String RouteTableName)
+
+   value
+
+      Data type information for this class' value parameters. This is
+      a list of "SchemaParam" objects, each describing a single value
+      parameters.
+
+      This attribute describes the format and meaning of the data
+      contained in instances of this class. An example from the BGP
+      config schema:
+
+         >>> print(bufsizes)
+         SchemaClass(ReceiveSocketBufferSizes)
+         >>> for param in bufsizes.value():
+         ...     print(param)
+         SchemaParam(Range(512, 13107) SocketReceiveSize)
+         SchemaParam(Range(512, 13107) BGPReceiveSize)
+
+   presence
+
+      A "Path" identifying the leaf class that gives this class
+      'presence', or *None* if there is no such leaf class.
+
+      Container classes may have a nominated leaf class that defines
+      whether the container exists or not, a similar concept to
+      'containers with presence' in YANG. This method returns a path
+      to the nominated class, if any.
+
+   version
+
+      Current "Version" of this class or "UNVERSIONED" if this class
+      has the same version as its parent.
+
+      For example:
+
+         >>> print(cls)
+         SchemaClass(InterfaceProperties)
+         >>> cls.version()
+         Version(major=3, minor=2)
+
+   table_version
+
+      Same as "version", for the table described by this class, if
+      any.
+
+   hidden
+
+      *True* if this class is hidden, *False* otherwise.
+
+      Classes are typically hidden to mark them as deprecated. See
+      "version_compatibility".
+
+   version_compatibility
+
+      Minimum and maximum schema versions this class is compatible
+      with.
+
+      This is a *(min version, max version)* tuple of "Version"
+      instances. It can be used to determine whether a class is
+      deprecated (in which case it's also likely to be marked as
+      hidden):
+
+         >>> print(cls)
+         SchemaClass(DefaultVRF)
+         >>> current = cls.version()
+         >>> min_supported, max_supported = cls.version_compatibility()
+         >>> max_supported < current
+         True
+         >>> current
+         Version(major=10, minor=0)
+         >>> max_supported
+         Version(major=8, minor=0)
+         >>> cls.hidden()
+         True
+
+      A deprecated class is still a valid representation of management
+      data, but represents an outdated or incomplete view of that
+      data.
+
+      If a class is compatible with known versions after a certain
+      point, the "MAX_VERSION" singleton is used to represent the
+      maximum compatible version:
+
+         >>> print(cls)
+         SchemaClass(Node)
+         >>> cls.version_compatibility()
+         (Version(major=2, minor=0), MAX_VERSION)
+         >>> Version(major=100, minor=20) < MAX_VERSION
+         True
+
+      If a class contains no compatibility information, then
+      "UNVERSIONED" is returned for both the min and max versions.
+
+   table_version_compatibility
+
+      Same as :attr:'version_compatibility`, for the table described
+      by this class, if any.
+
+   children
+
+      List of paths to children of this class in the schema:
+
+         >>> cls = conn.get_schema(RootCfg.InterfaceConfiguration)
+         >>> for child in cls.children[:5]:
+         ...     print(child)
+         Path(RootCfg.InterfaceConfiguration.PseudowireEther)
+         Path(RootCfg.InterfaceConfiguration.IPv6Neighbor)
+         Path(RootCfg.InterfaceConfiguration.MACAccounting)
+         Path(RootCfg.InterfaceConfiguration.IPV6PacketFilter)
+         Path(RootCfg.InterfaceConfiguration.PTP)
+
+class class xrm2m.SchemaClassCategory
+
+   Enumeration of classifications of schema classes.
+
+   CONTAINER
+
+      Denotes a class that acts as a container for other classes (its
+      children) and has no value.
+
+   LEAF
+
+      Denotes a class whose instances have a value. Leaf classes have
+      no child classes.
+
+class class xrm2m.Version
+
+   Named tuple describing the version of an object in the schema.
+
+   If version information is requested for an object that's not
+   versioned, the "UNVERSIONED" singleton is returned rather than an
+   instance of this class.
+
+   The "MAX_VERSION" singleton represents an 'infinitely high'
+   version.
+
+   major
+
+      Major version number.
+
+   minor
+
+      Minor version number.
+
+xrm2m.MAX_VERSION
+
+   Singleton representing an arbitrarily high "Version", i.e. this is
+   greater than every other version.
+
+xrm2m.UNVERSIONED
+
+   Singleton representing absence of version information.
+
+
+Typing
+======
+
+
+Parameters
+----------
+
+class class xrm2m.SchemaParam
+
+   Typing information for a single key or value parameter.
+
+   datatype
+
+      Element of "Datatype".
+
+   name
+
+      Brief string description of the meaning of data described by
+      this parameter, e.g. *'Bandwidth'* for a parameter describing an
+      interface's configured bandwidth value.
+
+   description
+
+      Verbose string description of the meaning of data described by
+      this parameter, e.g. *'Bandwidth of the interface in kbps'* for
+      a bandwidth parameter.
+
+   datatype_args
+
+      If "datatype" is a parameterised type, a dict containing the
+      parameter values for this instance of the type. For
+      unparameterised types, this is *None*.
+
+      For integer range types:
+
+         >>> param
+         SchemaParam(Range(5, 16) MaxRecursionDepth)
+         >>> param.description
+         'Maximum depth for route recursion check'
+         >>> pprint(param.datatype_args)
+         {
+             "min": 5,
+             "max": 16,
+         }
+
+      For restricted-length string types:
+
+         >>> param
+         SchemaParam(BoundedString(0, 244) Description)
+         >>> param.description
+         'VRF description'
+         >>> pprint(param.datatype_args)
+         {
+             "minlen": 0,
+             "maxlen": 244,
+         }
+
+      For instances of the enum type:
+
+         >>> param
+         SchemaParam(Enum Mode)
+         >>> pprint(param.datatype_args)
+         {
+             "Default": {
+                 "value": 0,
+                 "description": "Default interface mode",
+             },
+             "PointToPoint": {
+                 "value": 1,
+                 "description": "Point-to-point interface mode",
+             },
+             "Multipoint": {
+                 "value": 2,
+                 "description": "Multipoint interface mode",
+             },
+             "L2Transport": {
+                 "value": 3,
+                 "description": "L2 transport interface mode",
+             },
+         }
+
+      For instances of the range enum type:
+
+         >>> param
+         SchemaParam(RangeEnum(0, 4294967295) MeshGroup)
+         >>> pprint(param.datatype_args)
+         {
+             "min": 0,
+             "max": 4294967295,
+             "enum": {
+                 "Blocked": {
+                     "value": 0,
+                     "description": "Blocked mesh group. Changed LSPs are "
+                                    "not flooded over blocked interfaces",
+                 },
+             },
+         }
+
+      For instances of the string list type:
+
+         >>> param
+         SchemaParam(StringList Active)
+         >>> pprint(param.datatype_args)
+         {
+             "act": {
+                 "description": "Interface is active",
+             },
+             "pre": {
+                 "description": "Interface is preconfigured",
+             },
+         }
+
+   repeat_count
+
+      Number of times this parameter is repeated in data described by
+      the schema. This is *1* unless this parameter is an array.
+
+   status
+
+      Element of "SchemaParamStatus" describing requirements on values
+      described by this parameter e.g. whether specifying the value is
+      optional.
+
+   internal_name
+
+      Name used to refer to this parameter internally within the IOS-
+      XR  system.  It is set only if this data is of type *BAG*.
+      Otherwise it is None.
+
+      If set it is usually the same as *name*.
+
+      This information is intended for use by IOS-XR tools built on
+      top of  MPG. It's unlikely to be useful in other scenarios.
+
+class class xrm2m.SchemaParamStatus
+
+   Enumeration of schema parameter statuses.
+
+   MANDATORY
+
+      Value must be specified for this parameter.
+
+   OPTIONAL
+
+      Value may be specified for this parameter.
+
+   IGNORED
+
+      Value may be specified for this parameter, but any value given
+      will have no effect on the system.
+
+      This status is typically used to denote a parameter that no
+      longer has a meaning after an update to the schema, while
+      preserving backwards compatibility.
+
+
+Data types
+----------
+
+class class xrm2m.Datatype
+
+   Enumeration of datatypes that appear in the schema.
+
+   INTEGER
+
+      Unsigned 32-bit integer
+
+   HEX_INTEGER
+
+      Unsigned 32-bit integer
+
+   SIGNED_INTEGER
+
+      Signed 32-bit integer
+
+   BOOL
+
+      Boolean
+
+   TRUE_ONLY
+
+      Boolean restricted to True
+
+   FALSE_ONLY
+
+      Boolean restricted to False
+
+   RANGE
+
+      Unsigned 32-bit integer range
+
+   SIGNED_RANGE
+
+      Signed 32-bit integer range
+
+   ENUM
+
+      Integer-valued enum
+
+   RANGE_ENUM
+
+      Unsigned 32-bit integer range with labels
+
+   STRING
+
+      ASCII-compatible string
+
+   TEXT
+
+      ASCII-compatible string
+
+   IDENTIFIER
+
+      Identifier string
+
+   ENCODED_STRING
+
+      ASCII-compatible string
+
+   BOUNDED_STRING
+
+      Restricted-length ASCII-compatible string
+
+   BOUNDED_IDENTIFIER
+
+      Restricted-length identifier string
+
+   ENCODED_BOUNDED_STRING
+
+      Restricted-length ASCII-compatible string
+
+   STRING_LIST
+
+      String-valued enum
+
+   BAG
+
+      Composite data
+
+   IPV4ADDRESS
+
+      IPv4 address
+
+   MASK
+
+      IPv4 address
+
+   IPV4ADDRESS_STRING
+
+      IPv4 address
+
+   IPV4HOSTNAME
+
+      IPv4 address
+
+   IPV6ADDRESS
+
+      IPv6 address
+
+   IPV6ADDRESS_PLUS
+
+      IPv6 address
+
+   IPV6ADDRESS_STRING
+
+      IPv6 address
+
+   IPV6ADDRESS_HEXSTRING
+
+      IPv6 address
+
+   IPV6HOSTNAME
+
+      IPv6 address
+
+   IPADDRESS
+
+      IP address
+
+   IPADDRESS_STRING
+
+      IP address
+
+   IPHOSTNAME
+
+      IP address
+
+   IPADDRESS_PREFIX
+
+      IP address and prefix length
+
+   VRF
+
+      VRF
+
+   MACADDRESS
+
+      MAC address
+
+   MACADDRESS_STRING
+
+      MAC address
+
+   INTERFACE_NAME
+
+      Interface name
+
+   INTERFACE_HANDLE
+
+      Interface name
+
+   INTERFACE_FORWARD
+
+      Interface name
+
+   NODEID
+
+      Node ID
+
+   SYSDB_NODEID
+
+      Node ID
+
+   NODEID_STRING
+
+      Node ID
+
+   PHYSICAL_NODEID
+
+      Node ID
+
+   PHYSICAL_NODEID_STRING
+
+      Node ID
+
+   EXTENDED_NODEID
+
+      Node ID
+
+   PQ_NODEID
+
+      Partially-qualified node ID
+
+   PQ_NODEID_STRING
+
+      Partially-qualified node ID
+
+   RACKID
+
+      Rack ID
+
+   ENCRYPTION_TYPE
+
+      Enum of cryptographic algorithms
+
+   ENCRYPTED_STRING
+
+      Obfuscated string
+
+   ENCRYPTION_STRING
+
+      Obfuscated string
+
+   MD5_PASSWORD
+
+      Obfuscated string
+
+   PROPRIETARY_PASSWORD
+
+      Obfuscated string
+
+   OSI_SYSTEMID
+
+      OSI system ID
+
+   OSI_AREA_ADDRESS
+
+      OSI area address
+
+   ISIS_NODEID
+
+      IS-IS node ID
+
+   ISIS_LSPID
+
+      IS-IS LSP ID
+
+   OSI_NET
+
+      OSI NET
+
+   CHARNUM
+
+      Byte value
+
+   TTY_ESCAPE_CHARNUM
+
+      Byte value or special value
+
+   TTY_ESCAPE_CHARNUM
+
+      Byte value or special value
+
+
+Parameterised types
+-------------------
+
+Certain data types have associated parameters: for example, every
+instance of the "RANGE" type has two associated integer arguments
+giving the min and max values for the range:
+
+   >>> param
+   SchemaParam(Range(5, 16) MaxRecursionDepth)
+   >>> param.datatype
+   <Datatype.RANGE: 'Range'>
+   >>> param.datatype_args
+   {'min': 5, 'max': 16}
+
+The following table lists all of the parameterised types (see also
+"SchemaParam.datatype_args"):
+
+ACME_COMMIT_FAIL Table could not be generated in text form. See http
+://ensoft-linux3.cisco.com/m2m-python-api/schema.html#parameterised-
+types for the table

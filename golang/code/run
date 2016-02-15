@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Simple script to build and run everything
+#
+set -e
+
+XR_HOST=172.16.1.69
+export SSH_USER=cisco
+export SSH_KEYFILE=/code/xrm2m/src/_test/cisco_private_key
+
+# Delete stale executables
+rm -f bin/*
+
+# Format
+go fmt _test jsonrpc2 manage_telemetry m2mcli xrm2m xrm2m_util
+
+# Build
+go install _test
+go install m2mcli
+go install manage_telemetry
+
+# Run tests
+bin/_test $XR_HOST
+bin/manage_telemetry $XR_HOST
+bin/m2mcli $XR_HOST

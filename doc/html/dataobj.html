@@ -1,0 +1,605 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data references and representations &mdash; IOS-XR Machine-to-Machine Python API 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/m2m.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="IOS-XR Machine-to-Machine Python API 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Schema inspection" href="schema.html" />
+    <link rel="prev" title="Connections and transports" href="conn.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="schema.html" title="Schema inspection"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="conn.html" title="Connections and transports"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="data-references-and-representations">
+<h1>Data references and representations<a class="headerlink" href="#data-references-and-representations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="paths">
+<h2>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xrm2m.Path">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">Path</code><a class="headerlink" href="#xrm2m.Path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path objects encode references to management data items.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">hostname</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">Hostname</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hostname</span>
+<span class="go">Path(RootCfg.Hostname)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">hostname</span><span class="p">)</span>
+<span class="go">&#39;R1-SFO&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0/0/0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">intf</span><span class="o">.</span><span class="n">Description</span><span class="p">)</span>
+<span class="go">&#39;To BOS&#39;</span>
+</pre></div>
+</div>
+<p>Paths encode two types of information:</p>
+<ul class="simple">
+<li>A point in the schema hierarchy.</li>
+<li>&#8216;Key&#8217; values, identifying specific data described by that point in the
+schema.</li>
+</ul>
+<p>The path objects <a class="reference internal" href="#xrm2m.RootCfg" title="xrm2m.RootCfg"><code class="xref py py-data docutils literal"><span class="pre">RootCfg</span></code></a> and <a class="reference internal" href="#xrm2m.RootOper" title="xrm2m.RootOper"><code class="xref py py-data docutils literal"><span class="pre">RootOper</span></code></a> provide access to
+the root of the configuration and operational data hierarchies,
+respectively:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">RootCfg</span>
+<span class="go">Path(RootCfg)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RootOper</span>
+<span class="go">Path(RootOper)</span>
+</pre></div>
+</div>
+<p>Attribute access on a path returns a new path with additional schema
+hierarchy levels:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">RootOper</span>
+<span class="go">Path(RootOper)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RootOper</span><span class="o">.</span><span class="n">BGP</span><span class="o">.</span><span class="n">Instance</span>
+<span class="go">Path(RootOper.BGP.Instance)</span>
+</pre></div>
+</div>
+<p>Calling a path returns a new path with additional key values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bgp_inst</span>
+<span class="go">Path(RootOper.BGP.Instance)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bgp_inst</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">InstanceActive</span>
+<span class="go">Path(RootOper.BGP.Instance(&#39;foo&#39;).InstanceActive)</span>
+</pre></div>
+</div>
+<p>Key values can be identified by name using keyword arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">te_announce</span><span class="p">(</span><span class="s">&quot;ISIS&quot;</span><span class="p">,</span> <span class="n">Area</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">IGP_ID</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">Path(RootOper.MPLS_TE.Announce(&#39;ISIS&#39;, 0, 0))</span>
+</pre></div>
+</div>
+<p>Additionally, key values can be supplied in a sequence or mapping (matching
+the format used by other interfaces e.g. JSON-RPC):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">RootOper</span><span class="o">.</span><span class="n">MPLS_TE</span><span class="o">.</span><span class="n">Announce</span><span class="p">([</span><span class="s">&quot;ISIS&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">Path(RootOper.MPLS_TE.Announce(&#39;ISIS&#39;, 0, 0))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RootOper</span><span class="o">.</span><span class="n">MPLS_TE</span><span class="o">.</span><span class="n">Announce</span><span class="p">({</span><span class="s">&quot;Protocol&quot;</span><span class="p">:</span> <span class="s">&quot;ISIS&quot;</span><span class="p">,</span> <span class="s">&quot;Area&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;IGP_ID&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+<span class="go">Path(RootOper.MPLS_TE.Announce(&#39;ISIS&#39;, 0, 0))</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="dataobj.html#wildcards">Wildcards</a> can be used when specifying keys:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf_cfg</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">te_tunnels</span> <span class="o">=</span> <span class="n">intf_cfg</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;te-tunnel*&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Schema meta-data for a path can be obtained using the
+<a class="reference internal" href="conn.html#xrm2m.Connection.get_schema" title="xrm2m.Connection.get_schema"><code class="xref py py-meth docutils literal"><span class="pre">get_schema()</span></code></a> method of connection objects.</p>
+<p>Paths are hashable. Two paths are considered equal if they encode the same
+schema hierarchy and key information.</p>
+<dl class="method">
+<dt id="xrm2m.Path.elems">
+<code class="descname">elems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Path.elems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a sequence of <a class="reference internal" href="#xrm2m.PathElement" title="xrm2m.PathElement"><code class="xref py py-class docutils literal"><span class="pre">PathElement</span></code></a> objects for this path.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;).VRF)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elems</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">elems</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elems</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">PathElement(InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elems</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;InterfaceConfiguration&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elems</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">key</span>
+<span class="go">{&#39;Active&#39;: &#39;act&#39;, &#39;InterfaceName&#39;: &#39;HundredGigE0/0/0/0&#39;}</span>
+</pre></div>
+</div>
+<p>Path element sequences have limited support for slicing to obtain a
+prefix, as a new <a class="reference internal" href="#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;).VRF)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elems</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">elems</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elems</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elems</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">ValueError: Path slices must not specify step</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elems</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="go">ValueError: Path slices must include the start of the path</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Path.__getitem__">
+<code class="descname">__getitem__</code><span class="sig-paren">(</span><em>name_or_idx</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Path.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of a key with a particular name or index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name_or_idx</strong> &#8211; String name or integer index of the key to return.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span>
+<span class="go">Path(RootOper.Interfaces.Interface(&#39;HundredGigE0/0/0/0&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">[</span><span class="s">&quot;InterfaceName&quot;</span><span class="p">]</span>
+<span class="go">&#39;HundredGigE0/0/0/0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">&#39;HundredGigE0/0/0/0&#39;</span>
+</pre></div>
+</div>
+<p>If the path includes multiple keys with the same name, the first key
+with the given name is returned.</p>
+<p>If there&#8217;s no key with the given name or index, <code class="xref py py-exc docutils literal"><span class="pre">KeyError</span></code> is
+raise for name lookups, and <code class="xref py py-exc docutils literal"><span class="pre">IndexError</span></code> for index lookups.</p>
+<p>If the path was constructed without key names, this method can&#8217;t be
+used:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;Loopback0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">[</span><span class="s">&quot;InterfaceName&quot;</span><span class="p">]</span>
+<span class="go">KeyError: No key named &#39;InterfaceName&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">&#39;Loopback0&#39;</span>
+</pre></div>
+</div>
+<p>Paths output from the M2M API <em>always</em> have key names available
+(including <a class="reference internal" href="conn.html#xrm2m.Connection.normalize_path" title="xrm2m.Connection.normalize_path"><code class="xref py py-meth docutils literal"><span class="pre">Connection.normalize_path()</span></code></a>).</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="xrm2m.Path.from_str">
+<em class="property">classmethod </em><code class="descname">from_str</code><span class="sig-paren">(</span><em>pathstr</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Path.from_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new path from a string representation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Path</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s">&#39;RootCfg.Abc&#39;</span><span class="p">)</span>
+<span class="go">Path(RootCfg.Abc)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Path</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s">&#39;RootCfg.Abc.Def([&quot;10.0.0.1&quot;, &quot;(xyz|abc)*&quot;, null])&#39;</span><span class="p">)</span>
+<span class="go">Path(RootCfg.Abc.Def(&#39;10.0.0.1&#39;, &#39;(xyz|abc)*&#39;, None)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Path</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s">&#39;RootCfg.Abc.Def({IPAddress: &quot;10.0.0.1&quot;, Name: &quot;(xyz|abc)*&quot;})&#39;</span><span class="p">)</span>
+<span class="go">Path(RootCfg.Abc.Def(&#39;10.0.0.1&#39;, &#39;(xyz|abc)*&#39;, None)</span>
+</pre></div>
+</div>
+<p>As seen in the example above, the format expected on input is very
+similar to the string representation of path objects:</p>
+<ul class="simple">
+<li>Hierarchy element names are separated by <cite>.</cite></li>
+<li>Key values are specified inside <cite>()</cite> - either inside <cite>[]</cite> as a sequence of values, or <cite>{}</cite> as a mapping of name-value pairs (i.e. using JSON array or object notation).</li>
+<li>Key values are separated by <cite>,</cite></li>
+<li>Key name-value pairs separate the name and value by <cite>:</cite></li>
+</ul>
+<p>Additionally:</p>
+<ul class="simple">
+<li>Whitespace between key values is ignored.</li>
+<li>It&#8217;s possible to wildcard <em>all</em> key values, using <cite>(*)</cite>. This is equivalent to <a class="reference internal" href="#xrm2m.WILDCARD_ALL" title="xrm2m.WILDCARD_ALL"><code class="xref py py-data docutils literal"><span class="pre">WILDCARD_ALL</span></code></a>.</li>
+</ul>
+<p>Each key value should be one of the following:</p>
+<ul>
+<li><p class="first">A string literal, using any literal notation with <cite>&#8216;&#8217;</cite> or <cite>&#8220;&#8221;</cite>
+delimiters that&#8217;s supported by Python.</p>
+<p>The string is evaluated using <cite>ast.literal_eval</cite>. For example
+<cite>RootCfg.Xyz([&#8216;abc&#8221;\\z&#8217;])</cite> gives the path
+<cite>Path(RootCfg.Xyz(&#8216;abc&#8221;\z&#8217;))</cite>.</p>
+<p>Strings may include <a class="reference external" href="dataobj.html#wildcards">globbing</a>
+meta-characters (e.g. <cite>&#8216;abc*&#8217;</cite>).</p>
+<p>Triple-quoted strings and prefixed strings (e.g. <cite>&#8216;&#8217;&#8216;abc&#8217;&#8216;&#8217;</cite> or
+<cite>r&#8221;abc&#8221;</cite>) are not supported.</p>
+</li>
+<li><p class="first">An integer literal, using decimal notation or hex notation with a
+<cite>0x</cite> or <cite>0X</cite> prefix, e.g. <cite>123</cite>, <cite>0x7B</cite> or <cite>0X7b</cite>.</p>
+</li>
+<li><p class="first">One of the literals <cite>true</cite> or <cite>false</cite> to indicate the corresponding
+bool value.</p>
+</li>
+<li><p class="first">The literal <cite>null</cite> to explicitly indicate &#8216;no value&#8217;.</p>
+</li>
+<li><p class="first">The literal <cite>*</cite> to indicate a <a class="reference internal" href="#xrm2m.WILDCARD" title="xrm2m.WILDCARD"><code class="xref py py-data docutils literal"><span class="pre">WILDCARD</span></code></a>.</p>
+</li>
+</ul>
+<p>Each key name should be a string literal.</p>
+<p><a class="reference internal" href="errors.html#xrm2m.PathStringFormatError" title="xrm2m.PathStringFormatError"><code class="xref py py-exc docutils literal"><span class="pre">PathStringFormatError</span></code></a> is raised if:</p>
+<ul class="simple">
+<li>The input string is badly formatted and can&#8217;t be parsed.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pathstr</strong> &#8211; String representation of a path to be parsed.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new <a class="reference internal" href="#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Path.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Path.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the string representation of this path.</p>
+<p>The format returned is (as far as possible) the same that&#8217;s supported
+as input by <code class="xref py py-meth docutils literal"><span class="pre">from_str()</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+<span class="go">Path(RootCfg.Abc.Def(&#39;10.0.0.1&#39;, &#39;xyz*&#39;).Ghi(42, True, WILDCARD))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+<span class="go">RootCfg.Abc.Def({&quot;address&quot;: &quot;10.0.0.1&quot;, &quot;name&quot;: &quot;xyz*&quot;}).Ghi({&quot;j&quot;: 42, &quot;k&quot;: true, &quot;l&quot;: *})</span>
+</pre></div>
+</div>
+<p>For paths constructed by users of this API, it&#8217;s possible that key
+names aren&#8217;t available. In this case, they&#8217;re ommitted:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">RootCfg</span><span class="o">.</span><span class="n">InterfaceConfiguration</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;Loopback0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+<span class="go">RootCfg.InterfaceConfiguration([&quot;act&quot;, &quot;Loopback0&quot;])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Path.__getattr__">
+<code class="descname">__getattr__</code><span class="sig-paren">(</span><em>elem_name</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Path.__getattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of this path with an extra hierarchy element appended.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>elem_name</strong> &#8211; Name of the additional element.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xrm2m.Path.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>*key_seq</em>, <em>**key_map</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Path.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of this path with key information added.</p>
+<p>Values for optional keys &#8216;omitted&#8217; by passing <cite>None</cite>. For example
+<cite>path(123, None, 456)</cite> returns a new path with values for the first and
+third key elements, but no value for the second element.</p>
+<p>Keys may be specified using:</p>
+<blockquote>
+<div><ul class="simple">
+<li>positional arguments, or</li>
+<li>keyword arguments, or</li>
+<li>a single sequence, or</li>
+<li>a single mapping</li>
+</ul>
+</div></blockquote>
+<p>The following expressions create equivalent paths:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf_cfg</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0/0/0&quot;</span><span class="p">)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intf_cfg</span><span class="p">(</span><span class="n">Active</span><span class="o">=</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="n">InterfaceName</span><span class="o">=</span><span class="s">&quot;HundredGigE0/0/0/0&quot;</span><span class="p">)</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intf_cfg</span><span class="p">([</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0/0/0&quot;</span><span class="p">])</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intf_cfg</span><span class="p">({</span><span class="s">&quot;Active&quot;</span><span class="p">:</span> <span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;InterfaceName&quot;</span><span class="p">:</span> <span class="s">&quot;HundredGigE0/0/0/0&quot;</span><span class="p">})</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;))</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="dataobj.html#wildcards">Wildcard</a> key values can be used to
+match multiple values. For example <cite>intf_cfg(&#8220;tunnel-te*&#8221;)</cite> returns a
+new path matching all TE tunnel interface config.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xrm2m.PathElement">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">PathElement</code><a class="headerlink" href="#xrm2m.PathElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a single element of a path.</p>
+<p>Path elements encode:</p>
+<ul class="simple">
+<li>A schema class, defining the semantics of the element.</li>
+<li>&#8216;Key&#8217; information, identifying a specific instance of the schema class.</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span>
+<span class="go">Path(RootCfg.InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elem</span> <span class="o">=</span> <span class="n">intf</span><span class="o">.</span><span class="n">elems</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elem</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;InterfaceConfiguration&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elem</span><span class="o">.</span><span class="n">key</span>
+<span class="go">OrderedDict([(&#39;Active&#39;, &#39;act&#39;), (&#39;InterfaceName&#39;, &#39;HundredGigE0/0/0/0&#39;)])</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="PathElement.name">
+<code class="descname">name</code><a class="headerlink" href="#PathElement.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the schema class that this element represents an instance of.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PathElement.key">
+<code class="descname">key</code><a class="headerlink" href="#PathElement.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key values associated with this element:</p>
+<ul class="simple">
+<li>This is <cite>None</cite> if no key is specified.</li>
+<li>This is a single value if the key has only a single value, e.g. a
+single IP address.</li>
+<li>This is an ordered mapping of key names to values if the key
+consists of multiple values.</li>
+</ul>
+<p>For example,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">vrf</span>
+<span class="go">PathElement(VRF(&#39;foo&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vrf</span><span class="o">.</span><span class="n">key</span>
+<span class="go">&#39;foo&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span>
+<span class="go">PathElement(InterfaceConfiguration(&#39;act&#39;, &#39;HundredGigE0/0/0/0&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span><span class="o">.</span><span class="n">key</span>
+<span class="go">OrderedDict([(&#39;Active&#39;, &#39;act&#39;), (&#39;InterfaceName&#39;, &#39;HundredGigE0/0/0/0&#39;)])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="xrm2m.RootCfg">
+<code class="descclassname">xrm2m.</code><code class="descname">RootCfg</code><a class="headerlink" href="#xrm2m.RootCfg" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> instance representing the root node of the configuration data
+hierarchy.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="xrm2m.RootOper">
+<code class="descclassname">xrm2m.</code><code class="descname">RootOper</code><a class="headerlink" href="#xrm2m.RootOper" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#xrm2m.Path" title="xrm2m.Path"><code class="xref py py-class docutils literal"><span class="pre">Path</span></code></a> instance representing the root node of the operational data
+hierarchy.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="passwords">
+<h2>Passwords<a class="headerlink" href="#passwords" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="xrm2m.Password">
+<em class="property">class </em><code class="descclassname">xrm2m.</code><code class="descname">Password</code><a class="headerlink" href="#xrm2m.Password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for password data.</p>
+<p>This is a subclass of <cite>str</cite> that is used to indicate that a string should
+be encrypted before it is stored. The algorithm used depends on the schema
+type of the node being set.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">password_path</span><span class="p">,</span> <span class="n">Password</span><span class="p">(</span><span class="s">&quot;very secret&quot;</span><span class="p">)])</span>
+</pre></div>
+</div>
+<dl class="staticmethod">
+<dt id="xrm2m.Password.__new__">
+<em class="property">static </em><code class="descname">__new__</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#xrm2m.Password.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new password.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; String value to be obfuscated. It&#8217;s assumed that this is a
+cleartext value! If this value is already obfuscated, it should be
+set directly without wrapping it an instance of this class.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="wildcarding">
+<span id="wildcards"></span><h2>Wildcarding<a class="headerlink" href="#wildcarding" title="Permalink to this headline">¶</a></h2>
+<p>Three wildcarding mechanisms are supported:</p>
+<ul class="simple">
+<li>&#8216;Glob&#8217; characters allow wildcarding of string key values, e.g. matching all
+key values starting with a certain substring.</li>
+<li><a class="reference internal" href="#xrm2m.WILDCARD" title="xrm2m.WILDCARD"><code class="xref py py-data docutils literal"><span class="pre">WILDCARD</span></code></a> matches any value, and can be used in conjunction with
+any data type.</li>
+<li><a class="reference internal" href="#xrm2m.WILDCARD_ALL" title="xrm2m.WILDCARD_ALL"><code class="xref py py-data docutils literal"><span class="pre">WILDCARD_ALL</span></code></a> matches any value for <em>multiple</em> keys.</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="o">.</span><span class="n">InterfaceConfiguration</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Get the description of all TE tunnels</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">all_tunnels</span> <span class="o">=</span> <span class="n">intf</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="s">&quot;tunnel-te*&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">get</span><span class="p">(</span><span class="n">all_tunnels</span><span class="o">.</span><span class="n">Description</span><span class="p">):</span>
+<span class="gp">... </span>  <span class="k">print</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">key</span><span class="p">[</span><span class="s">&quot;InterfaceName&quot;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+<span class="go">te-tunnel1 BOS-SFO-1</span>
+<span class="go">te-tunnel2 BOS-ATL-4</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Get the description of all active interfaces</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">all_intfs</span> <span class="o">=</span> <span class="n">intf</span><span class="p">(</span><span class="s">&quot;act&quot;</span><span class="p">,</span> <span class="n">WILDCARD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">get</span><span class="p">(</span><span class="n">all_intfs</span><span class="o">.</span><span class="n">Description</span><span class="p">):</span>
+<span class="gp">... </span>  <span class="k">print</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">key</span><span class="p">[</span><span class="s">&quot;InterfaceName&quot;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+<span class="go">HundredGigE0/0/0/0 Trunk-A</span>
+<span class="go">HundredGigE0/0/0/1 Trunk-A</span>
+<span class="go">te-tunnel1 BOS-SFO-1</span>
+<span class="go">te-tunnel2 BOS-ATL-4</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Get the description of all interfaces</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c">#</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># This is equivalent to intf(WILDCARD, WILDCARD)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">all_intfs</span> <span class="o">=</span> <span class="n">intf</span><span class="p">(</span><span class="n">WILDCARD_ALL</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">get</span><span class="p">(</span><span class="n">all_intfs</span><span class="o">.</span><span class="n">Description</span><span class="p">):</span>
+<span class="gp">... </span>  <span class="k">print</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">key</span><span class="p">[</span><span class="s">&quot;Active&quot;</span><span class="p">],</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">key</span><span class="p">[</span><span class="s">&quot;InterfaceName&quot;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+<span class="go">act HundredGigE0/0/0/0 Trunk-A</span>
+<span class="go">act HundredGigE0/0/0/1 Trunk-A</span>
+<span class="go">act te-tunnel1 BOS-SFO-1</span>
+<span class="go">act te-tunnel2 BOS-ATL-4</span>
+<span class="go">pre HundredGigE0/1/0/0 Trunk-B</span>
+<span class="go">pre HundredGigE0/1/0/1 Trunk-B</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h3>Wildcards<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="xrm2m.WILDCARD">
+<code class="descclassname">xrm2m.</code><code class="descname">WILDCARD</code><a class="headerlink" href="#xrm2m.WILDCARD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singleton that can substitute any key value and matches any value.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="xrm2m.WILDCARD_ALL">
+<code class="descclassname">xrm2m.</code><code class="descname">WILDCARD_ALL</code><a class="headerlink" href="#xrm2m.WILDCARD_ALL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singleton that can substitute <em>all</em> key values for a path element, and
+matches any value for those keys.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="globbing">
+<h3>Globbing<a class="headerlink" href="#globbing" title="Permalink to this headline">¶</a></h3>
+<p>The supported globbing characters are:</p>
+<ul>
+<li><p class="first"><cite>*</cite> to match any number of arbitrary characters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Match all key values containing the string &#39;abc&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">(</span><span class="s">&quot;*abc*&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><cite>|</cite> to match against two or more glob expressions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Match any ethernet interface or controller</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">(</span><span class="s">&quot;GigabitEthernet*|TenGigE*|FortyGigE*|HundredGigE*&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><cite>()</cite> to group glob expressions into a single sub-expression:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Match any ethernet interface or controller</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">(</span><span class="s">&quot;(GigabitEthernet|TenGigE|FortyGigE|HundredGigE)*&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Match any key value that satisfies any of:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c">#  - starts with &#39;abc&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c">#  - starts with &#39;def&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c">#  - is exactly &#39;xyz&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">(</span><span class="s">&quot;(abc|def)*|xyz&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>The globbing characters above may also be used literally. However, they must be
+escaped using the &#8216;&#8217; character. In addition if the literal &#8216;&#8217; character is
+required, then it must also be escaped as follows &#8216;\&#8217;.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Match the key which contains the literal &#39;*&#39; character followed by abc.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span><span class="p">(</span><span class="s">&quot;\*abc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Globbing is supported only for a limited set of &#8216;string&#8217; data types. These are:</p>
+<ul class="simple">
+<li><a class="reference external" href="types.html#string">STRING</a></li>
+<li><a class="reference external" href="types.html#text">TEXT</a></li>
+<li><a class="reference external" href="types.html#identifier">IDENTIFIER</a></li>
+<li><a class="reference external" href="types.html#bounded-string">BOUNDED_STRING</a></li>
+<li><a class="reference external" href="types.html#bounded-identifier">BOUNDED_IDENTIFIER</a></li>
+<li><a class="reference external" href="types.html#string-list">STRING_LIST</a></li>
+<li><a class="reference external" href="types.html#interface-name">INTERFACE_NAME</a></li>
+<li><a class="reference external" href="types.html#interface-forward">INTERFACE_FORWARD</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Data references and representations</a><ul>
+<li><a class="reference internal" href="#paths">Paths</a></li>
+<li><a class="reference internal" href="#passwords">Passwords</a></li>
+<li><a class="reference internal" href="#wildcarding">Wildcarding</a><ul>
+<li><a class="reference internal" href="#id1">Wildcards</a></li>
+<li><a class="reference internal" href="#globbing">Globbing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="conn.html"
+                        title="previous chapter">Connections and transports</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="schema.html"
+                        title="next chapter">Schema inspection</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dataobj.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="schema.html" title="Schema inspection"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="conn.html" title="Connections and transports"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Cisco Systems.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

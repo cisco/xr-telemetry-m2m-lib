@@ -1,0 +1,466 @@
+
+Data references and representations
+***********************************
+
+
+Paths
+=====
+
+class class xrm2m.Path
+
+   Path objects encode references to management data items.
+
+   For example:
+
+      >>> hostname = RootCfg.Hostname
+      >>> hostname
+      Path(RootCfg.Hostname)
+      >>> conn.get_value(hostname)
+      'R1-SFO'
+      >>>
+      >>> intf = RootCfg.InterfaceConfiguration("act", "HundredGigE0/0/0/0")
+      >>> conn.get_value(intf.Description)
+      'To BOS'
+
+   Paths encode two types of information:
+
+   * A point in the schema hierarchy.
+
+   * 'Key' values, identifying specific data described by that point
+     in the schema.
+
+   The path objects "RootCfg" and "RootOper" provide access to the
+   root of the configuration and operational data hierarchies,
+   respectively:
+
+   >>> RootCfg
+   Path(RootCfg)
+   >>> RootOper
+   Path(RootOper)
+
+   Attribute access on a path returns a new path with additional
+   schema hierarchy levels:
+
+      >>> RootOper
+      Path(RootOper)
+      >>> RootOper.BGP.Instance
+      Path(RootOper.BGP.Instance)
+
+   Calling a path returns a new path with additional key values:
+
+      >>> bgp_inst
+      Path(RootOper.BGP.Instance)
+      >>> bgp_inst("foo").InstanceActive
+      Path(RootOper.BGP.Instance('foo').InstanceActive)
+
+   Key values can be identified by name using keyword arguments:
+
+      >>> te_announce("ISIS", Area=0, IGP_ID=0)
+      Path(RootOper.MPLS_TE.Announce('ISIS', 0, 0))
+
+   Additionally, key values can be supplied in a sequence or mapping
+   (matching the format used by other interfaces e.g. JSON-RPC):
+
+      >>> RootOper.MPLS_TE.Announce(["ISIS", 0, 0])
+      Path(RootOper.MPLS_TE.Announce('ISIS', 0, 0))
+      >>> RootOper.MPLS_TE.Announce({"Protocol": "ISIS", "Area": 0, "IGP_ID": 0})
+      Path(RootOper.MPLS_TE.Announce('ISIS', 0, 0))
+
+   Wildcards can be used when specifying keys:
+
+      >>> intf_cfg
+      Path(RootCfg.InterfaceConfiguration)
+      >>> te_tunnels = intf_cfg("act", "te-tunnel*")
+
+   Schema meta-data for a path can be obtained using the
+   "get_schema()" method of connection objects.
+
+   Paths are hashable. Two paths are considered equal if they encode
+   the same schema hierarchy and key information.
+
+   elems()
+
+      Return a sequence of "PathElement" objects for this path.
+
+      >>> path
+      Path(RootCfg.InterfaceConfiguration('act', 'HundredGigE0/0/0/0').VRF)
+      >>> elems = path.elems()
+      >>> elems[2]
+      PathElement(InterfaceConfiguration('act', 'HundredGigE0/0/0/0'))
+      >>> elems[2].name
+      'InterfaceConfiguration'
+      >>> elems[2].key
+      {'Active': 'act', 'InterfaceName': 'HundredGigE0/0/0/0'}
+
+      Path element sequences have limited support for slicing to
+      obtain a prefix, as a new "Path" object:
+
+         >>> path
+         Path(RootCfg.InterfaceConfiguration('act', 'HundredGigE0/0/0/0').VRF)
+         >>> elems = path.elems()
+         >>> elems[:3]
+         Path(RootCfg.InterfaceConfiguration('act', 'HundredGigE0/0/0/0'))
+         >>> elems[::2]
+         ValueError: Path slices must not specify step
+         >>> elems[1:]
+         ValueError: Path slices must include the start of the path
+
+   __getitem__(name_or_idx)
+
+      Return the value of a key with a particular name or index.
+
+      Parameters:
+         **name_or_idx** -- String name or integer index of the key to
+         return.
+
+         >>> path
+         Path(RootOper.Interfaces.Interface('HundredGigE0/0/0/0'))
+         >>> path["InterfaceName"]
+         'HundredGigE0/0/0/0'
+         >>> path[0]
+         'HundredGigE0/0/0/0'
+
+      If the path includes multiple keys with the same name, the first
+      key with the given name is returned.
+
+      If there's no key with the given name or index, "KeyError" is
+      raise for name lookups, and "IndexError" for index lookups.
+
+      If the path was constructed without key names, this method can't
+      be used:
+
+         >>> path = RootCfg.InterfaceConfiguration("act", "Loopback0")
+         >>> path["InterfaceName"]
+         KeyError: No key named 'InterfaceName'
+         >>> path[1]
+         'Loopback0'
+
+      Paths output from the M2M API *always* have key names available
+      (including "Connection.normalize_path()").
+
+   classmethod from_str(pathstr)
+
+      Create a new path from a string representation.
+
+         >>> Path.from_str('RootCfg.Abc')
+         Path(RootCfg.Abc)
+         >>> Path.from_str('RootCfg.Abc.Def(["10.0.0.1", "(xyz|abc)*", null])')
+         Path(RootCfg.Abc.Def('10.0.0.1', '(xyz|abc)*', None)
+         >>> Path.from_str('RootCfg.Abc.Def({IPAddress: "10.0.0.1", Name: "(xyz|abc)*"})')
+         Path(RootCfg.Abc.Def('10.0.0.1', '(xyz|abc)*', None)
+
+      As seen in the example above, the format expected on input is
+      very similar to the string representation of path objects:
+
+      * Hierarchy element names are separated by *.*
+
+      * Key values are specified inside *()* - either inside *[]* as
+        a sequence of values, or *{}* as a mapping of name-value pairs
+        (i.e. using JSON array or object notation).
+
+      * Key values are separated by *,*
+
+      * Key name-value pairs separate the name and value by *:*
+
+      Additionally:
+
+      * Whitespace between key values is ignored.
+
+      * It's possible to wildcard *all* key values, using *(*)*.
+        This is equivalent to "WILDCARD_ALL".
+
+      Each key value should be one of the following:
+
+      * A string literal, using any literal notation with *''* or
+        *""* delimiters that's supported by Python.
+
+        The string is evaluated using *ast.literal_eval*. For example
+        *RootCfg.Xyz(['abc"\\z'])* gives the path
+        *Path(RootCfg.Xyz('abc"\z'))*.
+
+        Strings may include globbing meta-characters (e.g. *'abc*'*).
+
+        Triple-quoted strings and prefixed strings (e.g. *'''abc'''*
+        or *r"abc"*) are not supported.
+
+      * An integer literal, using decimal notation or hex notation
+        with a *0x* or *0X* prefix, e.g. *123*, *0x7B* or *0X7b*.
+
+      * One of the literals *true* or *false* to indicate the
+        corresponding bool value.
+
+      * The literal *null* to explicitly indicate 'no value'.
+
+      * The literal *** to indicate a "WILDCARD".
+
+      Each key name should be a string literal.
+
+      "PathStringFormatError" is raised if:
+
+      * The input string is badly formatted and can't be parsed.
+
+      Parameters:
+         **pathstr** -- String representation of a path to be parsed.
+
+      Returns:
+         A new "Path".
+
+   __str__()
+
+      Return the string representation of this path.
+
+      The format returned is (as far as possible) the same that's
+      supported as input by "from_str()":
+
+         >>> print(repr(path))
+         Path(RootCfg.Abc.Def('10.0.0.1', 'xyz*').Ghi(42, True, WILDCARD))
+         >>> print(str(path))
+         RootCfg.Abc.Def({"address": "10.0.0.1", "name": "xyz*"}).Ghi({"j": 42, "k": true, "l": *})
+
+      For paths constructed by users of this API, it's possible that
+      key names aren't available. In this case, they're ommitted:
+
+         >>> path = RootCfg.InterfaceConfiguration("act", "Loopback0")
+         >>> print(str(path))
+         RootCfg.InterfaceConfiguration(["act", "Loopback0"])
+
+   __getattr__(elem_name)
+
+      Return a copy of this path with an extra hierarchy element
+      appended.
+
+      Parameters:
+         **elem_name** -- Name of the additional element.
+
+   __call__(*key_seq, **key_map)
+
+      Return a copy of this path with key information added.
+
+      Values for optional keys 'omitted' by passing *None*. For
+      example *path(123, None, 456)* returns a new path with values
+      for the first and third key elements, but no value for the
+      second element.
+
+      Keys may be specified using:
+
+         * positional arguments, or
+
+         * keyword arguments, or
+
+         * a single sequence, or
+
+         * a single mapping
+
+      The following expressions create equivalent paths:
+
+         >>> intf_cfg("act", "HundredGigE0/0/0/0")
+         Path(RootCfg.InterfaceConfiguration('act', 'HundredGigE0/0/0/0'))
+         >>> intf_cfg(Active="act", InterfaceName="HundredGigE0/0/0/0")
+         Path(RootCfg.InterfaceConfiguration('act', 'HundredGigE0/0/0/0'))
+         >>> intf_cfg(["act", "HundredGigE0/0/0/0"])
+         Path(RootCfg.InterfaceConfiguration('act', 'HundredGigE0/0/0/0'))
+         >>> intf_cfg({"Active": "act", "InterfaceName": "HundredGigE0/0/0/0"})
+         Path(RootCfg.InterfaceConfiguration('act', 'HundredGigE0/0/0/0'))
+
+      Wildcard key values can be used to match multiple values. For
+      example *intf_cfg("tunnel-te*")* returns a new path matching all
+      TE tunnel interface config.
+
+class class xrm2m.PathElement
+
+   Represents a single element of a path.
+
+   Path elements encode:
+
+   * A schema class, defining the semantics of the element.
+
+   * 'Key' information, identifying a specific instance of the
+     schema class.
+
+   For example:
+
+      >>> intf
+      Path(RootCfg.InterfaceConfiguration('act', 'HundredGigE0/0/0/0'))
+      >>> elem = intf.elems()[-1]
+      >>> elem.name
+      'InterfaceConfiguration'
+      >>> elem.key
+      OrderedDict([('Active', 'act'), ('InterfaceName', 'HundredGigE0/0/0/0')])
+
+   name
+
+      Name of the schema class that this element represents an
+      instance of.
+
+   key
+
+      Key values associated with this element:
+
+      * This is *None* if no key is specified.
+
+      * This is a single value if the key has only a single value,
+        e.g. a single IP address.
+
+      * This is an ordered mapping of key names to values if the key
+        consists of multiple values.
+
+      For example,
+
+      >>> vrf
+      PathElement(VRF('foo'))
+      >>> vrf.key
+      'foo'
+      >>> intf
+      PathElement(InterfaceConfiguration('act', 'HundredGigE0/0/0/0'))
+      >>> intf.key
+      OrderedDict([('Active', 'act'), ('InterfaceName', 'HundredGigE0/0/0/0')])
+
+xrm2m.RootCfg
+
+   "Path" instance representing the root node of the configuration
+   data hierarchy.
+
+xrm2m.RootOper
+
+   "Path" instance representing the root node of the operational data
+   hierarchy.
+
+
+Passwords
+=========
+
+class class xrm2m.Password
+
+   Wrapper for password data.
+
+   This is a subclass of *str* that is used to indicate that a string
+   should be encrypted before it is stored. The algorithm used depends
+   on the schema type of the node being set.
+
+   For example:
+
+      conn.set([password_path, Password("very secret")])
+
+   static __new__(value)
+
+      Create a new password.
+
+      Parameters:
+         **value** -- String value to be obfuscated. It's assumed that
+         this is a cleartext value! If this value is already
+         obfuscated, it should be set directly without wrapping it an
+         instance of this class.
+
+
+Wildcarding
+===========
+
+Three wildcarding mechanisms are supported:
+
+* 'Glob' characters allow wildcarding of string key values, e.g.
+  matching all key values starting with a certain substring.
+
+* "WILDCARD" matches any value, and can be used in conjunction with
+  any data type.
+
+* "WILDCARD_ALL" matches any value for *multiple* keys.
+
+For example:
+
+   >>> intf = Path(conn).InterfaceConfiguration
+   >>>
+   >>> # Get the description of all TE tunnels
+   >>> all_tunnels = intf("act", "tunnel-te*")
+   >>> for path, value in get(all_tunnels.Description):
+   ...   print(path[-2].key["InterfaceName"], value)
+   te-tunnel1 BOS-SFO-1
+   te-tunnel2 BOS-ATL-4
+   >>>
+   >>> # Get the description of all active interfaces
+   >>> all_intfs = intf("act", WILDCARD)
+   >>> for path, value in get(all_intfs.Description):
+   ...   print(path[-2].key["InterfaceName"], value)
+   HundredGigE0/0/0/0 Trunk-A
+   HundredGigE0/0/0/1 Trunk-A
+   te-tunnel1 BOS-SFO-1
+   te-tunnel2 BOS-ATL-4
+   >>>
+   >>> # Get the description of all interfaces
+   >>> #
+   >>> # This is equivalent to intf(WILDCARD, WILDCARD)
+   >>> all_intfs = intf(WILDCARD_ALL)
+   >>> for path, value in get(all_intfs.Description):
+   ...   print(path[-2].key["Active"], path[-2].key["InterfaceName"], value)
+   act HundredGigE0/0/0/0 Trunk-A
+   act HundredGigE0/0/0/1 Trunk-A
+   act te-tunnel1 BOS-SFO-1
+   act te-tunnel2 BOS-ATL-4
+   pre HundredGigE0/1/0/0 Trunk-B
+   pre HundredGigE0/1/0/1 Trunk-B
+
+
+Wildcards
+---------
+
+xrm2m.WILDCARD
+
+   Singleton that can substitute any key value and matches any value.
+
+xrm2m.WILDCARD_ALL
+
+   Singleton that can substitute *all* key values for a path element,
+   and matches any value for those keys.
+
+
+Globbing
+--------
+
+The supported globbing characters are:
+
+* *** to match any number of arbitrary characters:
+
+     >>> # Match all key values containing the string 'abc'
+     >>> path("*abc*")
+
+* *|* to match against two or more glob expressions:
+
+     >>> # Match any ethernet interface or controller
+     >>> path("GigabitEthernet*|TenGigE*|FortyGigE*|HundredGigE*")
+
+* *()* to group glob expressions into a single sub-expression:
+
+     >>> # Match any ethernet interface or controller
+     >>> path("(GigabitEthernet|TenGigE|FortyGigE|HundredGigE)*")
+
+  >>> # Match any key value that satisfies any of:
+  >>> #  - starts with 'abc'
+  >>> #  - starts with 'def'
+  >>> #  - is exactly 'xyz'
+  >>> path("(abc|def)*|xyz")
+
+The globbing characters above may also be used literally. However,
+they must be escaped using the '' character. In addition if the
+literal '' character is required, then it must also be escaped as
+follows '\'.
+
+>>> # Match the key which contains the literal '*' character followed by abc.
+>>> path("\*abc")
+
+Globbing is supported only for a limited set of 'string' data types.
+These are:
+
+* STRING
+
+* TEXT
+
+* IDENTIFIER
+
+* BOUNDED_STRING
+
+* BOUNDED_IDENTIFIER
+
+* STRING_LIST
+
+* INTERFACE_NAME
+
+* INTERFACE_FORWARD

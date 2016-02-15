@@ -1,0 +1,1282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data types &mdash; IOS-XR Machine-to-Machine Python API 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/m2m.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="IOS-XR Machine-to-Machine Python API 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Errors" href="errors.html" />
+    <link rel="prev" title="Schema inspection" href="schema.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="errors.html" title="Errors"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="schema.html" title="Schema inspection"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="data-types">
+<h1>Data types<a class="headerlink" href="#data-types" title="Permalink to this headline">¶</a></h1>
+<p>This page documents the data types supported by M2M, and the representations
+used for each type on input and output.</p>
+<p>Input/output formats conform to these general principles:</p>
+<ul class="simple">
+<li>Data is passed into and out of M2M as integers and strings. The intention is
+that this gives clients the flexibility to use their preferred high-level
+representations of any type (e.g. one of the many IP address manipulation
+libraries).</li>
+<li>Any commonly-used &#8216;standard&#8217; format is accepted on input for most types (e.g.
+<cite>&#8216;00:00:06:12:ab:ef&#8217;</cite> as well as <cite>&#8216;0000.0612.abef&#8217;</cite> for MAC addresses).</li>
+<li>Wherever a string or integer is required on input, any object that can be
+converted to a string or integer (using <cite>str()</cite> or <cite>int()</cite>) is usually also
+accepted.</li>
+</ul>
+<p>Some data types are synonymous, e.g. <cite>IPADDRESS</cite> and <cite>IPADDRESS_STRING</cite>.
+Usually, the only difference between such types is how they&#8217;re encoded
+internally by IOS-XR features. Any other difference with an effect on clients
+is explicitly noted.</p>
+<div class="section" id="integers">
+<span id="hex-integer"></span><span id="signed-range"></span><span id="range"></span><span id="signed-integer"></span><span id="integer"></span><h2>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.INTEGER" title="Datatype.INTEGER"><code class="xref py py-attr docutils literal"><span class="pre">INTEGER</span></code></a></td>
+<td>Unsigned 32-bit integer</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.SIGNED_INTEGER" title="Datatype.SIGNED_INTEGER"><code class="xref py py-attr docutils literal"><span class="pre">SIGNED_INTEGER</span></code></a></td>
+<td>Signed 32-bit integer</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.RANGE" title="Datatype.RANGE"><code class="xref py py-attr docutils literal"><span class="pre">RANGE</span></code></a></td>
+<td>Unsigned 32-bit integer range</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.SIGNED_RANGE" title="Datatype.SIGNED_RANGE"><code class="xref py py-attr docutils literal"><span class="pre">SIGNED_RANGE</span></code></a></td>
+<td>Signed 32-bit integer range</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.HEX_INTEGER" title="Datatype.HEX_INTEGER"><code class="xref py py-attr docutils literal"><span class="pre">HEX_INTEGER</span></code></a></td>
+<td>Unsigned 32-bit integer, usually presented in hexadecimal</td>
+</tr>
+</tbody>
+</table>
+<p><cite>RANGE</cite> and <cite>SIGNED_RANGE</cite> are <a class="reference external" href="schema.html#parameters">parameterised types</a>,
+with parameters giving the minimum and maximum values represented by the range
+(inclusive).</p>
+<div class="section" id="input-format">
+<h3>Input format<a class="headerlink" href="#input-format" title="Permalink to this headline">¶</a></h3>
+<p>For all integer types, any object that can be converted to an integer (using
+<cite>int()</cite>) is supported on input:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">mtu_path</span><span class="p">,</span> <span class="mi">9000</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">mtu_path</span><span class="p">,</span> <span class="s">&quot;9000&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Types representing unsigned integers (e.g. <cite>INTEGER</cite>) have the (obvious!)
+restriction that input values must be non-negative, while <cite>RANGE</cite> and
+<cite>SIGNED_RANGE</cite> have the additional restriction that input values must lie
+within a particular range:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">te_rel_metric_path</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">te_rel_metric_path</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">te_rel_metric_path</span><span class="p">,</span> <span class="o">-</span><span class="mi">11</span><span class="p">])</span>
+<span class="go">ValueContentError: -11 is not a valid SignedRange(-10, 10) value</span>
+</pre></div>
+</div>
+<p>For the <cite>HEX_INTEGER</cite> type, strings beginning with <cite>&#8216;0x&#8217;</cite> or <cite>&#8216;0X&#8217;</cite> and
+encoding an integer in hex notation are also supported:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">te_affinity_path</span><span class="p">,</span> <span class="s">&quot;0x10001&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">te_affinity_path</span><span class="p">,</span> <span class="s">&quot;0X10001&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">te_affinity_path</span><span class="p">,</span> <span class="mh">0x10001</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">te_affinity_path</span><span class="p">,</span> <span class="s">&quot;65537&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">te_affinity_path</span><span class="p">,</span> <span class="mi">65537</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="output-format">
+<h3>Output format<a class="headerlink" href="#output-format" title="Permalink to this headline">¶</a></h3>
+<p>All integer types are represented by integers on output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">mtu_path</span><span class="p">)</span>
+<span class="go">9000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">te_affinity_path</span><span class="p">)</span>
+<span class="go">65537</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="booleans">
+<span id="false-only"></span><span id="true-only"></span><span id="bool"></span><h2>Booleans<a class="headerlink" href="#booleans" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.BOOL" title="Datatype.BOOL"><code class="xref py py-attr docutils literal"><span class="pre">BOOL</span></code></a></td>
+<td>Standard boolean</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.TRUE_ONLY" title="Datatype.TRUE_ONLY"><code class="xref py py-attr docutils literal"><span class="pre">TRUE_ONLY</span></code></a></td>
+<td>Boolean whose only valid value is <cite>True</cite>. Values of this type
+communicate information only through their presence or absence</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.FALSE_ONLY" title="Datatype.FALSE_ONLY"><code class="xref py py-attr docutils literal"><span class="pre">FALSE_ONLY</span></code></a></td>
+<td>Boolean whose only valid value is <cite>False</cite>. The semantics of
+this type are similar to <cite>TRUE_ONLY</cite></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id1">
+<h3>Input format<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>For all boolean types, any object that can be converted to a boolean (using
+<cite>bool()</cite>) is supported on input:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># &#39;True&#39; values</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">enable_path</span><span class="p">,</span> <span class="bp">True</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">enable_path</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">enable_path</span><span class="p">,</span> <span class="s">&quot;any non-empty string&quot;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">enable_path</span><span class="p">,</span> <span class="s">&quot;False&quot;</span><span class="p">])</span>
+<span class="c"># &#39;False&#39; values</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">auto_in_service_path</span><span class="p">,</span> <span class="bp">False</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">auto_in_service_path</span><span class="p">,</span> <span class="p">[]])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Output format<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>All boolean types are represented by bools on output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">enable_path</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">auto_in_service_path</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="strings">
+<span id="encoded-bounded-string"></span><span id="encoded-string"></span><span id="bounded-identifier"></span><span id="identifier"></span><span id="bounded-string"></span><span id="text"></span><span id="string"></span><h2>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.STRING" title="Datatype.STRING"><code class="xref py py-attr docutils literal"><span class="pre">STRING</span></code></a></td>
+<td>ASCII-compatible string</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.TEXT" title="Datatype.TEXT"><code class="xref py py-attr docutils literal"><span class="pre">TEXT</span></code></a></td>
+<td>Synonym for <cite>STRING</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.BOUNDED_STRING" title="Datatype.BOUNDED_STRING"><code class="xref py py-attr docutils literal"><span class="pre">BOUNDED_STRING</span></code></a></td>
+<td>Variant on <cite>STRING</cite>, with a restricted length</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.IDENTIFIER" title="Datatype.IDENTIFIER"><code class="xref py py-attr docutils literal"><span class="pre">IDENTIFIER</span></code></a></td>
+<td>Variant on <cite>STRING</cite>, with the additional restrictions that the
+string only contains alphanumeric characters plus <cite>&#8216;-&#8216;</cite> and <cite>&#8216;_&#8217;</cite>,
+and that the string begins with an alphabetic character</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.BOUNDED_IDENTIFIER" title="Datatype.BOUNDED_IDENTIFIER"><code class="xref py py-attr docutils literal"><span class="pre">BOUNDED_IDENTIFIER</span></code></a></td>
+<td>Variant on <cite>IDENTIFIER</cite>, with a restricted length</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.ENCODED_STRING" title="Datatype.ENCODED_STRING"><code class="xref py py-attr docutils literal"><span class="pre">ENCODED_STRING</span></code></a></td>
+<td>Synonym for <cite>STRING</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.ENCODED_BOUNDED_STRING" title="Datatype.ENCODED_BOUNDED_STRING"><code class="xref py py-attr docutils literal"><span class="pre">ENCODED_BOUNDED_STRING</span></code></a></td>
+<td>Synonym for <cite>BOUNDED_STRING</cite></td>
+</tr>
+</tbody>
+</table>
+<p><cite>BOUNDED_STRING</cite>, <cite>BOUNDED_IDENTIFIER</cite> and <cite>ENCODED_BOUNDED_STRING</cite> are
+<a class="reference external" href="schema.html#parameters">parameterised types</a>, with parameters giving the
+minimum and maximum lengths for represented strings (inclusive).</p>
+<p>Note that <cite>ENCRYPTED_STRING</cite> and similar types are functionally identical to
+<cite>STRING</cite>: no algorithm is applied as values described by these types pass
+through MPG.</p>
+<div class="section" id="id4">
+<h3>Input format<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>For all string types input values <em>must</em> be an instance of <cite>str</cite> or <cite>bytes</cite>  on
+Python 3, or equivalently <cite>unicode</cite> or <cite>str</cite> on Python 2, and must contain only
+ASCII characters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Valid values</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">description_path</span><span class="p">,</span> <span class="s">&quot;To BOS&quot;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">description_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="mi">12345</span><span class="p">)])</span>
+<span class="c"># Invalid value</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">description</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\u2625</span><span class="s"> +</span><span class="se">\u1f43</span><span class="s">7&quot;</span><span class="p">])</span>
+<span class="n">ValueContentError</span><span class="p">:</span> <span class="s">&#39;</span><span class="se">\u2625</span><span class="s"> +</span><span class="se">\u1f43</span><span class="s">7&#39;</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">String</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>If an instance of <cite>bytes</cite> on Python 3 or <cite>str</cite> on Python 2 is provided, then it
+will be decoded as ASCII into the corresponding <cite>str</cite> object on Python 3 or
+<cite>unicode</cite> object on Python 2.</p>
+<p>For <cite>IDENTIFIER</cite> and <cite>BOUNDED_IDENTIFIER</cite> there are additional restrictions on
+the string&#8217;s contents, as described above:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Valid values</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">ident_path</span><span class="p">,</span> <span class="s">&quot;abc123-def&quot;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">ident_path</span><span class="p">,</span> <span class="s">&quot;XY_-_-_12&quot;</span><span class="p">])</span>
+<span class="c"># Invalid values</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">ident_path</span><span class="p">,</span> <span class="s">&quot;_abc&quot;</span><span class="p">])</span>
+<span class="n">ValueContentError</span><span class="p">:</span> <span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">ident_path</span><span class="p">,</span> <span class="s">&quot;0abc&quot;</span><span class="p">])</span>
+<span class="n">ValueContentError</span><span class="p">:</span> <span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">ident_path</span><span class="p">,</span> <span class="s">&quot;abc def&quot;</span><span class="p">])</span>
+<span class="n">ValueContentError</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>Output format<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>All string types are represented by strings on output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">description_path</span><span class="p">)</span>
+<span class="go">&#39;To BOS&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">ident_path</span><span class="p">)</span>
+<span class="go">&#39;abc123-def&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="enums">
+<span id="string-list"></span><span id="range-enum"></span><span id="enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.ENUM" title="Datatype.ENUM"><code class="xref py py-attr docutils literal"><span class="pre">ENUM</span></code></a></td>
+<td>Collection of unsigned integer values, each labelled with
+a string name</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.RANGE_ENUM" title="Datatype.RANGE_ENUM"><code class="xref py py-attr docutils literal"><span class="pre">RANGE_ENUM</span></code></a></td>
+<td>Hybrid of the <cite>ENUM</cite> and <cite>RANGE</cite> types: a range between
+two unsigned integers, where a selection of values in the
+range are labelled with names</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.STRING_LIST" title="Datatype.STRING_LIST"><code class="xref py py-attr docutils literal"><span class="pre">STRING_LIST</span></code></a></td>
+<td>Collection of string values</td>
+</tr>
+</tbody>
+</table>
+<p>All enum types are <a class="reference external" href="schema.html#parameters">parameterised</a>, with parameters
+giving names and descriptions of the enum elements. For <cite>RANGE_ENUM</cite> the
+parameters also record the minimum and maximum values represented by the range
+(inclusive).</p>
+<div class="section" id="usage-and-schema-examples">
+<h3>Usage and schema examples<a class="headerlink" href="#usage-and-schema-examples" title="Permalink to this headline">¶</a></h3>
+<p><cite>ENUM</cite> instances are used throughout the schema to represent pre-defined
+collections of permissible values, e.g. for an RSVP bandwidth mode:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(Enum BandwidthMode)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span><span class="o">.</span><span class="n">dump</span><span class="p">())</span>
+<span class="go">{</span>
+<span class="go">   &#39;Absolute&#39;: {</span>
+<span class="go">      &#39;value&#39;: 0,</span>
+<span class="go">      &#39;description&#39;: &#39;Configuration is in absolute bandwidth values&#39;,</span>
+<span class="go">   },</span>
+<span class="go">   &#39;Percentage&#39;: {</span>
+<span class="go">      &#39;value&#39;: 1,</span>
+<span class="go">      &#39;description&#39;: &#39;Configuration is in percentage of physical bandwidth values&#39;,</span>
+<span class="go">   },</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p><cite>RANGE_ENUM</cite> instances are occasionally used in place of <cite>RANGE</cite> when a handful
+of values in the range have distinguished semantics, e.g. for an ISIS mesh
+group ID:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(RangeEnum(0, 4294967295) MeshGroup)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span><span class="o">.</span><span class="n">dump</span><span class="p">())</span>
+<span class="go">{</span>
+<span class="go">      &quot;min&quot;: 0,</span>
+<span class="go">      &quot;max&quot;: 4294967295,</span>
+<span class="go">      &quot;enum&quot;: {</span>
+<span class="go">         &quot;Blocked&quot;: {</span>
+<span class="go">            &quot;value&quot;: 0,</span>
+<span class="go">            &quot;description&quot;: &quot;Blocked mesh group. Changed LSPs are not &quot;</span>
+<span class="go">                           &quot;flooded over blocked interfaces&quot;,</span>
+<span class="go">         },</span>
+<span class="go">      },</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p><cite>STRING_LIST</cite> instances are occasionally used in place of <cite>ENUM</cite> where, from
+the point of view of the underlying IOS-XR feature, the enumerated values
+are most naturally represented as strings rather than integers. This
+distinction between <cite>STRING_LIST</cite> and <cite>ENUM</cite> has little relevance for clients
+of MPG, and string lists and enums have a very similar look and feel:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">SchemaParam(StringList AccountingType)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">datatype_args</span><span class="o">.</span><span class="n">dump</span><span class="p">())</span>
+<span class="go">{</span>
+<span class="go">      &#39;subscriber&#39;: {</span>
+<span class="go">         &#39;description&#39;: &#39;Set AAA lists for &quot;subscriber&quot;&#39;,</span>
+<span class="go">      },</span>
+<span class="go">      &#39;service&#39;: {</span>
+<span class="go">         &#39;description&#39;: &#39;Set AAA lists for &quot;service&quot;&#39;,</span>
+<span class="go">      },</span>
+<span class="go">      &#39;policy-if&#39;: {</span>
+<span class="go">         &#39;description&#39;: &#39;Set AAA lists for &quot;policy-if&quot;&#39;,</span>
+<span class="go">      },</span>
+<span class="go">      &#39;prepaid&#39;: {</span>
+<span class="go">         &#39;description&#39;: &#39;Set AAA lists for &quot;prepaid&quot;&#39;,</span>
+<span class="go">      },</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>Input format<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>For <cite>ENUM</cite>, strings specifying a symbolic name and integers giving an
+underlying value are both accepted on input. If the input value is not an
+integer or string, it&#8217;s converted to a string (using <cite>str()</cite>) and intepreting
+as specifying a value by name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># All of the inputs below are equivalent, specifying RSVP bandwidth config.</span>
+<span class="c"># In each case, the first tuple element is the bandwidth value and the</span>
+<span class="c"># second is an enum value that determines how it&#39;s interpreted.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">bandwidth_path</span><span class="p">,</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="s">&quot;Percentage&quot;</span><span class="p">)])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">bandwidth_path</span><span class="p">,</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="c"># Example of a non-str/int input that&#39;s converted to a str</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">str</span><span class="p">(</span><span class="n">complex_bwmode_obj</span><span class="p">)</span>
+<span class="s">&quot;Percentage&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">bandwidth_path</span><span class="p">,</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">complex_bwmode_obj</span><span class="p">)])</span>
+</pre></div>
+</div>
+<p><cite>RANGE_ENUM</cite> values can be represented as follows on input:</p>
+<ol class="arabic simple">
+<li>As an <cite>int</cite>, to specify any value in the range.</li>
+<li>As an <cite>str</cite>, to specify a named value.</li>
+<li>If neither of the above cases applies, the value is converted to a string
+(using <cite>str()</cite>) and matched against named values.</li>
+<li>If the value doesn&#8217;t match a named value when converted to a string, it&#8217;s
+converted to an integer (using <cite>int()</cite>) and, if successful, the result is
+interpreted as a value in the range.</li>
+</ol>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># All of the inputs below are equivalent, specifying an ISIS mesh group ID.</span>
+<span class="c"># They illustrate the cases listed above.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">meshgrp_path</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">meshgrp_path</span><span class="p">,</span> <span class="s">&quot;Blocked&quot;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">str</span><span class="p">(</span><span class="n">complex_meshgrp_obj</span><span class="p">)</span>
+<span class="s">&quot;Blocked&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">meshgrp_path</span><span class="p">,</span> <span class="n">complex_meshgrp_obj</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">meshgrp_path</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>For <cite>STRING_LIST</cite>, any object that can be converted to a string is supported on
+input:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">accounting</span>
+<span class="go">Path(RootCfg.AAA.AAASubscriber.Accounting)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">accounting</span><span class="p">(</span><span class="s">&quot;subscriber&quot;</span><span class="p">)</span>
+<span class="go">Path(RootCfg.AAA.AAASubscriber.Accounting(&#39;subscriber&#39;))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h3>Output format<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p><cite>ENUM</cite> values, <cite>RANGE_ENUM</cite> values that are named and <cite>STRING_LIST</cite> values are
+all represented by strings on output. <cite>RANGE_ENUM</cite> values that aren&#8217;t named are
+represented by integers.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">bandwidth_path</span><span class="p">)</span>
+<span class="go">(50, &#39;Percentage&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">meshgrp_path</span><span class="p">)</span>
+<span class="go">&#39;Blocked&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">other_meshgrp_path</span><span class="p">)</span>
+<span class="go">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">get_keys</span><span class="p">(</span><span class="n">accounting_table</span><span class="p">))</span>
+<span class="go">[Path(RootCfg.AAA.AAASubscriber.Accounting(&#39;subscriber&#39;)),</span>
+<span class="go"> Path(RootCfg.AAA.AAASubscriber.Accounting(&#39;prepaid&#39;))]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="bags">
+<span id="bag"></span><h2>Bags<a class="headerlink" href="#bags" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.BAG" title="Datatype.BAG"><code class="xref py py-attr docutils literal"><span class="pre">BAG</span></code></a></td>
+<td>Collection of data grouped together into a single &#8216;value&#8217;</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<p>Bags are composite structures used to collect several values into a single
+leaf. They:</p>
+<ul class="simple">
+<li>Consist of key, value pairs. Keys are always strings.</li>
+<li>May contain arbitrarily many values.</li>
+<li>May have arbitrarily deep substructure.</li>
+</ul>
+<p>They&#8217;re used extensively for operational data, e.g. interface ethernet counters
+are represented by a single bag-valued leaf in the schema, rather than one leaf
+for each statistic.</p>
+</div>
+<div class="section" id="id8">
+<h3>Input format<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>Bags are currently only supported on output.</p>
+</div>
+<div class="section" id="id9">
+<h3>Output format<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>Bags are represented by mappings:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span>
+<span class="go">Path(RootOper.Interfaces.InterfaceBriefTable.Interface(&quot;GigabitEthernet0/0/0/0&quot;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">intf</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span>
+<span class="go">Bag(imds_ifattr_base_info v1.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">info</span><span class="p">))</span>
+<span class="go">{&#39;ActualLineState&#39;: &#39;IM_STATE_UP&#39;,</span>
+<span class="go"> &#39;ActualState&#39;: &#39;IM_STATE_UP&#39;,</span>
+<span class="go"> &#39;Bandwidth&#39;: 0,</span>
+<span class="go"> &#39;Encapsulation&#39;: 17,</span>
+<span class="go"> &#39;EncapsulationTypeString&#39;: &#39;Null&#39;,</span>
+<span class="go"> &#39;Interface&#39;: 384,</span>
+<span class="go"> &#39;L2Transport&#39;: False,</span>
+<span class="go"> &#39;LineState&#39;: &#39;IM_STATE_UP&#39;,</span>
+<span class="go"> &#39;MTU&#39;: 1500,</span>
+<span class="go"> &#39;ParentInterface&#39;: 0,</span>
+<span class="go"> &#39;State&#39;: &#39;IM_STATE_UP&#39;,</span>
+<span class="go"> &#39;SubInterfaceMTUOverhead&#39;: 0,</span>
+<span class="go"> &#39;Type&#39;: 17}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&quot;L2Transport&quot;</span> <span class="ow">in</span> <span class="n">intf</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intf</span><span class="p">[</span><span class="s">&quot;MTU&quot;</span><span class="p">]</span>
+<span class="go">1500</span>
+</pre></div>
+</div>
+<p>Bag-like substructures within bags are represented by dicts:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">info</span><span class="p">))</span>
+<span class="go">{</span>
+<span class="go"> &#39;ABC&#39;: &#39;10.0.0.1&#39;,</span>
+<span class="go"> &#39;DEF&#39;: &#39;xyz&#39;,</span>
+<span class="go"> &#39;GHI&#39;: {</span>
+<span class="go">   &#39;X&#39;: 1,</span>
+<span class="go">   &#39;Y&#39;: 2,</span>
+<span class="go">  },</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>&#8216;Array&#8217; substructures within bags are represented by lists:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">info</span><span class="p">))</span>
+<span class="go">{</span>
+<span class="go"> &#39;ABC&#39;: [123, 456, 789],</span>
+<span class="go"> &#39;DEF&#39;: {</span>
+<span class="go">   &#39;XX&#39;: &#39;abc&#39;,</span>
+<span class="go">   &#39;YY&#39;: {</span>
+<span class="go">      &#39;ZZ&#39;: [&#39;xx&#39;, &#39;yy&#39;],</span>
+<span class="go">    },</span>
+<span class="go"> },</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="ip-addresses">
+<span id="ipaddress-prefix"></span><span id="iphostname"></span><span id="ipaddress-string"></span><span id="ipaddress"></span><span id="ipv6hostname"></span><span id="ipv6address-plus"></span><span id="ipv6address-hexstring"></span><span id="ipv6address-string"></span><span id="ipv6address"></span><span id="ipv4hostname"></span><span id="ipv4address-string"></span><span id="ipv4address"></span><h2>IP addresses<a class="headerlink" href="#ip-addresses" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.IPV4ADDRESS" title="Datatype.IPV4ADDRESS"><code class="xref py py-attr docutils literal"><span class="pre">IPV4ADDRESS</span></code></a></td>
+<td>IPv4 address, represented as a string, e.g.
+<cite>&#8216;203.0.113.1&#8217;</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.IPV4ADDRESS_STRING" title="Datatype.IPV4ADDRESS_STRING"><code class="xref py py-attr docutils literal"><span class="pre">IPV4ADDRESS_STRING</span></code></a></td>
+<td>Synonym for <cite>IPV4ADDRESS</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.IPV4HOSTNAME" title="Datatype.IPV4HOSTNAME"><code class="xref py py-attr docutils literal"><span class="pre">IPV4HOSTNAME</span></code></a></td>
+<td>Synonym for <cite>IPV4ADDRESS</cite></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.IPV6ADDRESS" title="Datatype.IPV6ADDRESS"><code class="xref py py-attr docutils literal"><span class="pre">IPV6ADDRESS</span></code></a></td>
+<td>IPv6 address, represented as a string, e.g.
+<cite>&#8216;2001:db8::42&#8217;</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.IPV6ADDRESS_STRING" title="Datatype.IPV6ADDRESS_STRING"><code class="xref py py-attr docutils literal"><span class="pre">IPV6ADDRESS_STRING</span></code></a></td>
+<td>Synonym for <cite>IPV6ADDRESS</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.IPV6ADDRESS_HEXSTRING" title="Datatype.IPV6ADDRESS_HEXSTRING"><code class="xref py py-attr docutils literal"><span class="pre">IPV6ADDRESS_HEXSTRING</span></code></a></td>
+<td>Synonym for <cite>IPV6ADDRESS</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.IPV6ADDRESS_PLUS" title="Datatype.IPV6ADDRESS_PLUS"><code class="xref py py-attr docutils literal"><span class="pre">IPV6ADDRESS_PLUS</span></code></a></td>
+<td>Synonym for <cite>IPV6ADDRESS</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.IPV6HOSTNAME" title="Datatype.IPV6HOSTNAME"><code class="xref py py-attr docutils literal"><span class="pre">IPV6HOSTNAME</span></code></a></td>
+<td>Synonym for <cite>IPV6ADDRESS</cite></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.IPADDRESS" title="Datatype.IPADDRESS"><code class="xref py py-attr docutils literal"><span class="pre">IPADDRESS</span></code></a></td>
+<td>IPv4 or IPv6 address, represented as a string, e.g.
+<cite>&#8216;203.0.13.1&#8217;</cite> or <cite>&#8216;2001:db8::42&#8217;</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.IPADDRESS_STRING" title="Datatype.IPADDRESS_STRING"><code class="xref py py-attr docutils literal"><span class="pre">IPADDRESS_STRING</span></code></a></td>
+<td>Synonym for <cite>IPADDRESS</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.IPHOSTNAME" title="Datatype.IPHOSTNAME"><code class="xref py py-attr docutils literal"><span class="pre">IPHOSTNAME</span></code></a></td>
+<td>Synonym for <cite>IPADDRESS</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.IPADDRESS_PREFIX" title="Datatype.IPADDRESS_PREFIX"><code class="xref py py-attr docutils literal"><span class="pre">IPADDRESS_PREFIX</span></code></a></td>
+<td>IPv4 or IPv6 address together with a prefix length.
+Represented as a string, e.g. <cite>&#8216;203.0.13.1/24&#8217;</cite>
+or <cite>&#8216;2001:db8::42/32&#8217;</cite></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Though the names of the <cite>IPV4HOSTNAME</cite>, <cite>IPV6HOSTNAME</cite> and <cite>IPHOSTNAME</cite>
+types suggest that they should be presented as hostnames, this isn&#8217;t the
+case for MPG:</p>
+<ul class="last simple">
+<li>Data modelled by these types is processed internally by IOS-XR features as
+IP addresses rather than hostnames.</li>
+<li>Rather than incurring the overhead of DNS and reverse DNS lookups when
+data modelled by these types is encountered, the IP address data is
+exposed directly.</li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h3>Input format<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p>IP addresses are represented by strings on input, using one of the following
+representations:</p>
+<ul class="simple">
+<li>For IPv4 addresses, dotted-decimal notation, e.g. <cite>&#8216;203.0.13.1&#8217;</cite>.</li>
+<li>For IPv6 addresses, groups of four hex digits separated by colons, e.g.
+<cite>&#8216;2001:db8::42&#8217;</cite>.</li>
+</ul>
+<p>Any object whose string representation (obtained using <cite>str()</cite>) conforms with
+one of these formats is also accepted.</p>
+<p>IPv4 address examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">nexthop_path</span><span class="p">,</span> <span class="s">&quot;203.0.13.1&quot;</span><span class="p">])</span>
+<span class="go"># Any object whose string representation is appropriately formatted is</span>
+<span class="go"># permissible on input. This applies to all IP address types.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">ipaddr</span><span class="p">)</span>
+<span class="go">&#39;203.0.13.1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">nexthop_path</span><span class="p">,</span> <span class="n">ipaddr</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>IPv6 address examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">nexthop_path</span><span class="p">,</span> <span class="s">&quot;2001:0db8:0000:0000:0000:0000:0000:0042&quot;</span><span class="p">])</span>
+<span class="go"># Groups of all-zero digits may be omitted, using the standard :: notation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">nexthop_path</span><span class="p">,</span> <span class="s">&quot;2001:0db8::0042&quot;</span><span class="p">])</span>
+<span class="go"># Leading zeroes within groups may also be omitted</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">nexthop_path</span><span class="p">,</span> <span class="s">&quot;2001:db8::42&quot;</span><span class="p">])</span>
+<span class="go"># Any combination of upper-case and lower-case letters may be used</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">nexthop_path</span><span class="p">,</span> <span class="s">&quot;2001:DB8::42&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">nexthop_path</span><span class="p">,</span> <span class="s">&quot;2001:Db8::42&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>For <cite>IPADDRESS</cite> and related types, all of the address formats above are
+supported. For <cite>IPADDRESS_PREFIX</cite>, the prefix length must be specified using
+<cite>&#8216;address/prefix_len&#8217;</cite> notation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">network_path</span><span class="p">,</span> <span class="s">&quot;203.0.13.1/16&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">network_path</span><span class="p">,</span> <span class="s">&quot;2001:0db8:0000:0000:0000:0000:0000:0042/32&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">network_path</span><span class="p">,</span> <span class="s">&quot;2001:db8::42/32&quot;</span><span class="p">])</span>
+<span class="go"># As usual, objects with an appropriate str() representation are accepted</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">netaddr</span><span class="p">)</span>
+<span class="go">&#39;203.0.13.1/16&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">network_path</span><span class="p">,</span> <span class="n">netaddr</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id11">
+<h3>Output format<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<p>IP addresses are represented by strings on output, formatted as follows:</p>
+<ul class="simple">
+<li>For IPv4 addresses, dotted-decimal notation, e.g. <cite>&#8216;203.0.13.1&#8217;</cite>.</li>
+<li>For IPv6 addresses, groups of four hex digits separated by colons,
+following <a class="reference external" href="http://tools.ietf.org/html/rfc5952">RFC-5952</a>.</li>
+<li>For <cite>IPADDRESS_PREFIX</cite>, the standard IPv4 or IPv6 notation, with the
+prefix appended as a decimal string separated from the address by a slash.</li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># IPv4 address</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">nexthop4_path</span><span class="p">)</span>
+<span class="s">&#39;203.0.13.1&#39;</span>
+<span class="c"># IPv6 address</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">nexthop6_path</span><span class="p">)</span>
+<span class="s">&#39;2001:db8::42&#39;</span>
+<span class="c"># IPADDRESS_PREFIX</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">netaddr4_path</span><span class="p">)</span>
+<span class="s">&#39;203.0.13.1/16&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">netaddr6_path</span><span class="p">)</span>
+<span class="s">&#39;2001:db8::42/32&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="vrfs">
+<span id="vrf"></span><h2>VRFs<a class="headerlink" href="#vrfs" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.VRF" title="Datatype.VRF"><code class="xref py py-attr docutils literal"><span class="pre">VRF</span></code></a></td>
+<td>VRF identified by name, e.g. <cite>&#8216;default&#8217;</cite></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id12">
+<h3>Input format<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<p>VRFs are represented by strings on input, identifying a VRF by name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">vrf_path</span><span class="p">,</span> <span class="s">&quot;default&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">vrf_path</span><span class="p">,</span> <span class="s">&quot;abcxyz&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Any object whose string representation (obtained using <cite>str()</cite>) is a VRF name
+is also accepted.</p>
+</div>
+<div class="section" id="id13">
+<h3>Output format<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<p>VRFs are represented by strings on output, identifying VRFs by name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">vrf_path</span><span class="p">)</span>
+<span class="go">&#39;abcxyz&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="mac-addresses">
+<span id="macaddress-string"></span><span id="macaddress"></span><h2>MAC addresses<a class="headerlink" href="#mac-addresses" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.MACADDRESS" title="Datatype.MACADDRESS"><code class="xref py py-attr docutils literal"><span class="pre">MACADDRESS</span></code></a></td>
+<td>MAC address, represented as a string e.g.
+<cite>&#8216;00:00:06:12:ab:ef&#8217;</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.MACADDRESS_STRING" title="Datatype.MACADDRESS_STRING"><code class="xref py py-attr docutils literal"><span class="pre">MACADDRESS_STRING</span></code></a></td>
+<td>Synonym for <cite>MACADDRESS</cite></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id14">
+<h3>Input format<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<p>MAC addresses are represented by strings on input, with the following
+representations accepted:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Colon-separated octets</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">src_mac_path</span><span class="p">,</span> <span class="s">&quot;00:00:06:12:ab:ef&quot;</span><span class="p">])</span>
+<span class="c"># Hyphen-separated octets</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">src_mac_path</span><span class="p">,</span> <span class="s">&quot;00-00-06-12-ab-ef&quot;</span><span class="p">])</span>
+<span class="c"># Period-separated quads</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">src_mac_path</span><span class="p">,</span> <span class="s">&quot;0000.0612.abef&quot;</span><span class="p">])</span>
+<span class="c"># All formats are case-insensitive</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">src_mac_path</span><span class="p">,</span> <span class="s">&quot;00:00:06:12:aB:Ef&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Any object whose string representation (obtained using <cite>str()</cite>) conforms with
+one of these formats is also accepted.</p>
+</div>
+<div class="section" id="id15">
+<h3>Output format<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<p>MAC addresses are represented by strings on output, using a colon-separated
+octet representation in transmission order:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">src_mac_path</span><span class="p">)</span>
+<span class="go">&#39;00:00:06:12:ab:ef&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="interfaces">
+<span id="interface-forward"></span><span id="interface-handle"></span><span id="interface-name"></span><span id="interface"></span><h2>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h2>
+<p>Throughout this section, the terms &#8216;interface&#8217; and &#8216;controller&#8217; may be
+interchanged: &#8216;interface&#8217; data types are used to identify controllers as well
+as interfaces.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.INTERFACE_NAME" title="Datatype.INTERFACE_NAME"><code class="xref py py-attr docutils literal"><span class="pre">INTERFACE_NAME</span></code></a></td>
+<td>Name of a network interface, e.g. <cite>&#8216;HundredGigE0/0/0/0</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.INTERFACE_HANDLE" title="Datatype.INTERFACE_HANDLE"><code class="xref py py-attr docutils literal"><span class="pre">INTERFACE_HANDLE</span></code></a></td>
+<td>Synonym for <cite>INTERFACE_NAME</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.INTERFACE_FORWARD" title="Datatype.INTERFACE_FORWARD"><code class="xref py py-attr docutils literal"><span class="pre">INTERFACE_FORWARD</span></code></a></td>
+<td>Synonym for <cite>INTERFACE_NAME</cite></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><cite>INTERFACE_FORWARD</cite> has slightly different semantics to <cite>INTERFACE_NAME</cite>:</p>
+<p>Conventionally, <cite>INTERFACE_NAME</cite> is used to encode references to interfaces
+that are known to exist in the system whereas <cite>INTERFACE_FORWARD</cite> is used to
+encode a forward-reference to an interface that may not yet exist.</p>
+<p class="last">MPG does not enforce this distinction.</p>
+</div>
+<div class="section" id="id16">
+<h3>Input format<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<p>All interface types are represented by strings on input, identifying an
+interface by name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;HundredGigE0/0/0/0&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Any object whose string representation (obtained using <cite>str()</cite>) is an interface
+name is also accepted.</p>
+<p>More precisely, interface names should be formatted as follows:</p>
+<ul>
+<li><p class="first">Names have two components: a string identifying the interface&#8217;s type,
+directly followed by a string giving its location:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Valid</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;Loopback4&quot;</span><span class="p">])</span>
+<span class="c"># Invalid (no whitespace is permitted)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;Loopback 4&quot;</span><span class="p">])</span>
+<span class="n">ValueContentError</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">&#8216;Long&#8217; type names must used rather than &#8216;short&#8217; abbreviated names:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Valid</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;GigabitEthernet100/2/0/1&quot;</span><span class="p">])</span>
+<span class="c"># Invalid</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;Gi100/2/0/1&quot;</span><span class="p">])</span>
+<span class="n">ValueContentError</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Type names are case-insensitive:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;gigabitethernet100/2/0/1&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Any location format accepted by the IOS-XR CLI may be used. In particular,
+MPG uses standard mechanisms to parse interface names and so any new
+extension to the syntax is automatically supported:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Interfaces with a &#39;physical&#39; location</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;TenGigE0/0/0/0&quot;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;dwdm0/0/0/0&quot;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;GigabitEthernet201/20/0/10&quot;</span><span class="p">])</span>
+<span class="c"># Subinterfaces</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;TenGigE0/2/0/1.3&quot;</span><span class="p">])</span>
+<span class="c"># PPPoE sessions on subinterfaces of channelised/breakout interfaces!</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">intf_path</span><span class="p">,</span> <span class="s">&quot;GigabitEthernet4/12/0/13/2.987.pppoe12345&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id17">
+<h3>Output format<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<p>Interfaces are represented by strings on output, identifying interfaces by
+name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">intf_path</span><span class="p">)</span>
+<span class="go">&#39;HundredGigE0/0/0/0&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="osi-is-is-types">
+<span id="osi-net"></span><span id="isis-lspid"></span><span id="isis-nodeid"></span><span id="osi-area-address"></span><span id="osi-systemid"></span><h2>OSI/IS-IS types<a class="headerlink" href="#osi-is-is-types" title="Permalink to this headline">¶</a></h2>
+<p>The following types are used to model data related to the IS-IS protocol.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="59%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.OSI_SYSTEMID" title="Datatype.OSI_SYSTEMID"><code class="xref py py-attr docutils literal"><span class="pre">OSI_SYSTEMID</span></code></a></td>
+<td>Identifier for a router/host in the network, represented
+as a string e.g. <cite>&#8216;1234.5678.9abc&#8217;</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.OSI_AREA_ADDRESS" title="Datatype.OSI_AREA_ADDRESS"><code class="xref py py-attr docutils literal"><span class="pre">OSI_AREA_ADDRESS</span></code></a></td>
+<td>Identifier for an area of the network, represented as a
+string, e.g. <cite>&#8216;49&#8217;</cite> or <cite>&#8216;49.0000.1111.2222.aaaa.bbbb.cccc&#8217;</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.OSI_NET" title="Datatype.OSI_NET"><code class="xref py py-attr docutils literal"><span class="pre">OSI_NET</span></code></a></td>
+<td>Network entity title, combining an area address, system ID
+and an additional selector octet (which is always zero).
+Represented as a string e.g. <cite>&#8216;49.1234.5678.9abc.00&#8217;</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.ISIS_NODEID" title="Datatype.ISIS_NODEID"><code class="xref py py-attr docutils literal"><span class="pre">ISIS_NODEID</span></code></a></td>
+<td>Identifier for a network node, combining a system ID with
+an additional octet specifying the pseudonode ID.
+Represented as a string e.g. <cite>&#8216;1234.5678.9abc.ab&#8217;</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.ISIS_LSPID" title="Datatype.ISIS_LSPID"><code class="xref py py-attr docutils literal"><span class="pre">ISIS_LSPID</span></code></a></td>
+<td>Identifier for an LSP, combining a node ID with an
+additional octet specifying the LSP fragmentation number.
+Represented as a string e.g. <cite>&#8216;1234.5678.9abc.ab.cd&#8217;</cite></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id18">
+<h3>Input format<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<p>Values modelled by OSI/IS-IS types are represented by strings on input (or any
+object whose string representation, obtained using <cite>str()</cite>, is appropriately
+formatted). All values consist of hex-string representations of octets,
+delimited by <cite>.</cite> characters.</p>
+<dl class="docutils">
+<dt><cite>OSI_SYSTEMID</cite>:</dt>
+<dd><ul class="first last simple">
+<li>Six octets.</li>
+<li>Split into three two-octet segments.</li>
+<li>e.g. <cite>&#8220;1234.5678.9abc&#8221;</cite>.</li>
+</ul>
+</dd>
+<dt><cite>OSI_AREA_ADDRESS</cite>:</dt>
+<dd><ul class="first last simple">
+<li>Between one and thirteen octets (inclusive).</li>
+<li>Split into two-octet segments (starting from the right).</li>
+<li>e.g. <cite>&#8220;49&#8221;</cite>, <cite>&#8220;4900.0000&#8221;</cite>, <cite>&#8220;49.0000.1111.2222.aaaa.bbbb.cccc&#8221;</cite>.</li>
+</ul>
+</dd>
+<dt><cite>OSI_NET</cite>:</dt>
+<dd><ul class="first last simple">
+<li>Concatentation of an area address, system ID and a zero octet.</li>
+<li>e.g. <cite>&#8220;49.1234.5678.9abc.00&#8221;</cite>,
+<cite>&#8220;49.0000.1111.2222.aaaa.bbbb.cccc.1234.5678.9abc.00&#8221;</cite>.</li>
+</ul>
+</dd>
+<dt><cite>ISIS_NODEID</cite>:</dt>
+<dd><ul class="first last simple">
+<li>Concatentation of a system ID and a pseudonode ID octet.</li>
+<li>e.g. <cite>&#8220;1234.5678.9abc.ab&#8221;</cite>.</li>
+</ul>
+</dd>
+<dt><cite>ISIS_LSPID</cite>:</dt>
+<dd><ul class="first last simple">
+<li>Concatentation of an IS-IS node ID and an LSP fragmentation number octet.</li>
+<li>e.g. <cite>&#8220;1234.5678.9abc.ab.cd&#8221;</cite>.</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="id19">
+<h3>Output format<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<p>Values modelled by OSI/IS-IS types are represented by strings on output, using
+the formats defined above.</p>
+</div>
+</div>
+<div class="section" id="node-ids">
+<span id="rackid"></span><span id="pq-nodeid-string"></span><span id="pq-nodeid"></span><span id="extended-nodeid"></span><span id="sysdb-nodeid"></span><span id="physical-nodeid-string"></span><span id="physical-nodeid"></span><span id="nodeid-string"></span><span id="nodeid"></span><h2>Node IDs<a class="headerlink" href="#node-ids" title="Permalink to this headline">¶</a></h2>
+<p>The following types are used to model data identifying physical resources in
+the system at (approximately) a card/CPU granularity. Physical port references
+are modelled by <a class="reference internal" href="#interface">interface</a> types.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.NODEID" title="Datatype.NODEID"><code class="xref py py-attr docutils literal"><span class="pre">NODEID</span></code></a></td>
+<td>ID of a node in the system, as a string, e.g.
+<cite>&#8216;0/RP0/CPU0&#8217;</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.NODEID_STRING" title="Datatype.NODEID_STRING"><code class="xref py py-attr docutils literal"><span class="pre">NODEID_STRING</span></code></a></td>
+<td>Synonym for <cite>NODEID</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.PHYSICAL_NODEID" title="Datatype.PHYSICAL_NODEID"><code class="xref py py-attr docutils literal"><span class="pre">PHYSICAL_NODEID</span></code></a></td>
+<td>Synonym for <cite>NODEID</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.PHYSICAL_NODEID_STRING" title="Datatype.PHYSICAL_NODEID_STRING"><code class="xref py py-attr docutils literal"><span class="pre">PHYSICAL_NODEID_STRING</span></code></a></td>
+<td>Synonym for <cite>NODEID</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.SYSDB_NODEID" title="Datatype.SYSDB_NODEID"><code class="xref py py-attr docutils literal"><span class="pre">SYSDB_NODEID</span></code></a></td>
+<td>Synonym for <cite>NODEID</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.EXTENDED_NODEID" title="Datatype.EXTENDED_NODEID"><code class="xref py py-attr docutils literal"><span class="pre">EXTENDED_NODEID</span></code></a></td>
+<td>Synonym for <cite>NODEID</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.PQ_NODEID" title="Datatype.PQ_NODEID"><code class="xref py py-attr docutils literal"><span class="pre">PQ_NODEID</span></code></a></td>
+<td>Partially-qualified ID of a node in the system, as a
+string with wildcard elements represented by <cite>&#8216;*&#8217;</cite>, e.g.
+<cite>&#8216;2/*/*&#8217;</cite> to match all nodes in rack 2.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.PQ_NODEID_STRING" title="Datatype.PQ_NODEID_STRING"><code class="xref py py-attr docutils literal"><span class="pre">PQ_NODEID_STRING</span></code></a></td>
+<td>Synonym for <cite>PQ_NODEID</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.RACKID" title="Datatype.RACKID"><code class="xref py py-attr docutils literal"><span class="pre">RACKID</span></code></a></td>
+<td>ID of a rack in the system, as a string, e.g. <cite>&#8216;0&#8217;</cite></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id20">
+<h3>Input format<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<p>Node IDs are represented by strings on input, using standard
+<cite>&#8216;rack/slot/instance&#8217;</cite> notation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">preferred_active_path</span><span class="p">,</span> <span class="s">&quot;0/RP0/CPU0&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">preferred_active_path</span><span class="p">,</span> <span class="s">&quot;0/RSP0/CPU0&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">preferred_active_path</span><span class="p">,</span> <span class="s">&quot;2/5/CPU1&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Rack IDs are represented by strings on input, identically to the &#8216;rack&#8217;
+component of node ID strings:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">rack_path</span><span class="p">,</span> <span class="s">&quot;2&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">rack_path</span><span class="p">,</span> <span class="s">&quot;F0&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Partially-qualified node IDs use similar notation, except <cite>&#8216;*&#8217;</cite> may be used to
+wildcard rack, slot and instance numbers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">node_group_path</span><span class="p">,</span> <span class="s">&quot;*/RP0/CPU0&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">node_group_path</span><span class="p">,</span> <span class="s">&quot;0/*/*&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">node_group_path</span><span class="p">,</span> <span class="s">&quot;2/5/*&quot;</span><span class="p">])</span>
+<span class="go"># Fully-qualified IDs are also valid.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">node_group_path</span><span class="p">,</span> <span class="s">&quot;0/RP0/CPU0&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>In practice, partially-qualified node ID types are very rarely used.</p>
+<p>As usual, any object with an appropriate string representation (obtained using
+<cite>str()</cite>) is also accepted on input for each type.</p>
+</div>
+<div class="section" id="id21">
+<h3>Output format<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<p>All node ID types are represented by strings on output, using the formats
+described above, i.e.</p>
+<ul class="simple">
+<li><cite>&#8216;rack/slot/instance&#8217;</cite> notation for node IDs.</li>
+<li>Standard node ID notation with <cite>&#8216;*&#8217;</cite> wildcards for partially-qualified node
+IDs.</li>
+<li><cite>&#8216;rack&#8217;</cite> notation for rack IDs</li>
+</ul>
+</div>
+</div>
+<div class="section" id="password-types">
+<span id="proprietary-password"></span><span id="md5-password"></span><span id="encryption-string"></span><span id="encrypted-string"></span><span id="encryption-type"></span><h2>Password types<a class="headerlink" href="#password-types" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.ENCRYPTION_TYPE" title="Datatype.ENCRYPTION_TYPE"><code class="xref py py-attr docutils literal"><span class="pre">ENCRYPTION_TYPE</span></code></a></td>
+<td>Enumeration of cryptographic algorithms</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.PROPRIETARY_PASSWORD" title="Datatype.PROPRIETARY_PASSWORD"><code class="xref py py-attr docutils literal"><span class="pre">PROPRIETARY_PASSWORD</span></code></a></td>
+<td>Synonym for <cite>STRING</cite>, signifying a value passed through
+the cisco-proprietary (reversible) cryptographic algorithm</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.ENCRYPTED_STRING" title="Datatype.ENCRYPTED_STRING"><code class="xref py py-attr docutils literal"><span class="pre">ENCRYPTED_STRING</span></code></a></td>
+<td>Synonym for <cite>PROPRIETARY_PASSWORD</cite></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.ENCRYPTION_STRING" title="Datatype.ENCRYPTION_STRING"><code class="xref py py-attr docutils literal"><span class="pre">ENCRYPTION_STRING</span></code></a></td>
+<td>Synonym for <cite>PROPRIETARY_PASSWORD</cite></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.MD5_PASSWORD" title="Datatype.MD5_PASSWORD"><code class="xref py py-attr docutils literal"><span class="pre">MD5_PASSWORD</span></code></a></td>
+<td>Similar to <cite>PROPRIETARY_PASSWORD</cite>, signifying a value passed
+through the MD5 algorithm</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id22">
+<h3>Input format<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<p><cite>ENCRYPTION_TYPE</cite> values are specified as strings, selecting from one of three
+possible values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">encrypt_type_path</span><span class="p">,</span> <span class="s">&quot;none&quot;</span><span class="p">])</span>          <span class="c"># cleartext</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">encrypt_type_path</span><span class="p">,</span> <span class="s">&quot;md5&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">encrypt_type_path</span><span class="p">,</span> <span class="s">&quot;proprietary&quot;</span><span class="p">])</span>   <span class="c"># cisco-proprietary, reversible</span>
+</pre></div>
+</div>
+<p>Password values are specified as strings. Cleartext values can be passed
+through the appropriate algorithm before input using <a class="reference internal" href="dataobj.html#xrm2m.Password" title="xrm2m.Password"><code class="xref py py-class docutils literal"><span class="pre">Password</span></code></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># The following are equivalent</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">password_path</span><span class="p">,</span> <span class="n">Password</span><span class="p">(</span><span class="s">&quot;secret&quot;</span><span class="p">)])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">password_path</span><span class="p">,</span> <span class="s">&quot;0215015819031B&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id23">
+<h3>Output format<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<p>The output formation for <cite>ENCRYPTION_TYPE</cite> is identical to its input format.</p>
+<p>Password values are represented by (obfuscated) strings on output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">password_path</span><span class="p">)</span>
+<span class="go">&quot;0215015819031B&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="tty-types">
+<span id="tty-escape-charnum"></span><span id="charnum"></span><h2>TTY types<a class="headerlink" href="#tty-types" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="schema.html#Datatype.CHARNUM" title="Datatype.CHARNUM"><code class="xref py py-attr docutils literal"><span class="pre">CHARNUM</span></code></a></td>
+<td>Byte value</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="schema.html#Datatype.TTY_ESCAPE_CHARNUM" title="Datatype.TTY_ESCAPE_CHARNUM"><code class="xref py py-attr docutils literal"><span class="pre">TTY_ESCAPE_CHARNUM</span></code></a></td>
+<td>Byte value with special cases for none/default/break</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id24">
+<h3>Input format<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<p><cite>CHARNUM</cite> values are specified as integers, in the range <cite>0</cite> to <cite>255</cite>
+inclusive.</p>
+<p><cite>TTY_ESCAPE_CHARNUM</cite> values are specified as integers, in the range <cite>0</cite> to
+<cite>255</cite> inclusive, or as a string indicating a distinguished value:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">escape_char</span><span class="p">,</span> <span class="s">&quot;none&quot;</span><span class="p">])</span>     <span class="c"># disable escape</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">escape_char_path</span><span class="p">,</span> <span class="s">&quot;default&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">([</span><span class="n">escape_char</span><span class="p">,</span> <span class="s">&quot;break&quot;</span><span class="p">])</span>    <span class="c"># break signal causes escape</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id25">
+<h3>Output format<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<p>Output formats are identical to input formats for each of these types.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Data types</a><ul>
+<li><a class="reference internal" href="#integers">Integers</a><ul>
+<li><a class="reference internal" href="#input-format">Input format</a></li>
+<li><a class="reference internal" href="#output-format">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#booleans">Booleans</a><ul>
+<li><a class="reference internal" href="#id1">Input format</a></li>
+<li><a class="reference internal" href="#id2">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#strings">Strings</a><ul>
+<li><a class="reference internal" href="#id4">Input format</a></li>
+<li><a class="reference internal" href="#id5">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#enums">Enums</a><ul>
+<li><a class="reference internal" href="#usage-and-schema-examples">Usage and schema examples</a></li>
+<li><a class="reference internal" href="#id6">Input format</a></li>
+<li><a class="reference internal" href="#id7">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bags">Bags</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#id8">Input format</a></li>
+<li><a class="reference internal" href="#id9">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ip-addresses">IP addresses</a><ul>
+<li><a class="reference internal" href="#id10">Input format</a></li>
+<li><a class="reference internal" href="#id11">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vrfs">VRFs</a><ul>
+<li><a class="reference internal" href="#id12">Input format</a></li>
+<li><a class="reference internal" href="#id13">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mac-addresses">MAC addresses</a><ul>
+<li><a class="reference internal" href="#id14">Input format</a></li>
+<li><a class="reference internal" href="#id15">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#interfaces">Interfaces</a><ul>
+<li><a class="reference internal" href="#id16">Input format</a></li>
+<li><a class="reference internal" href="#id17">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#osi-is-is-types">OSI/IS-IS types</a><ul>
+<li><a class="reference internal" href="#id18">Input format</a></li>
+<li><a class="reference internal" href="#id19">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#node-ids">Node IDs</a><ul>
+<li><a class="reference internal" href="#id20">Input format</a></li>
+<li><a class="reference internal" href="#id21">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#password-types">Password types</a><ul>
+<li><a class="reference internal" href="#id22">Input format</a></li>
+<li><a class="reference internal" href="#id23">Output format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tty-types">TTY types</a><ul>
+<li><a class="reference internal" href="#id24">Input format</a></li>
+<li><a class="reference internal" href="#id25">Output format</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="schema.html"
+                        title="previous chapter">Schema inspection</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="errors.html"
+                        title="next chapter">Errors</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/types.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="errors.html" title="Errors"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="schema.html" title="Schema inspection"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IOS-XR Machine-to-Machine Python API 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Cisco Systems.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

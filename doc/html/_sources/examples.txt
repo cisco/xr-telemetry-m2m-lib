@@ -1,0 +1,221 @@
+.. ----------------------------------------------------------------------------
+.. examples.rst - M2M API usage examples.
+..
+.. September 2015, Phil Connell
+..
+.. Copyright (c) 2015 by Cisco Systems, Inc.
+.. All rights reserved.
+.. ----------------------------------------------------------------------------
+
+Usage examples
+==============
+
+.. contents::
+
+Summarise interfaces
+--------------------
+
+Complete examples of a very simple summary of some operational data.
+
+These include all setup overhead and cover all on-box/off-box and sync/async
+combinations (showing relative verbosity/differences).
+
+On box, sync
+++++++++++++
+
+.. sourcecode:: python
+
+   from cisco.sdk import ApplicationContext, EventContext
+   from xrm2m import RootOper, connect
+
+   app_ctx = ApplicationContext("interface-summarizer")
+   event_loop = EventContext(app_ctx)
+
+   conn = connect(loop=event_loop)
+   for path, info in conn.get(RootOper.Interfaces):
+       print(path["InterfaceName"], info["MTU"], info["ActualState"])
+
+
+On box, async
++++++++++++++
+
+.. sourcecode:: python
+
+   from cisco.sdk import ApplicationContext, EventContext
+   from xrm2m import RootOper, connect_async
+
+   app_ctx = ApplicationContext("interface-summarizer")
+   event_loop = EventContext(app_ctx)
+
+   async def summarise_intfs():
+      conn = await connect_async(loop=event_loop)
+      for path, info in await conn.get(RootOper.Interfaces):
+          print(path["InterfaceName"], info["MTU"], info["ActualState"])
+
+   task = event_loop.create_task(summarise_intfs())
+   event_loop.run_until_complete(task)
+
+
+Off box, sync
++++++++++++++
+
+.. sourcecode:: python
+
+   from xrm2m import RootOper, connect, SSHTransport
+
+   # Default asyncio/trollius event loop used unless otherwise specified
+   conn = connect(SSHTransport("LSR42", "netops"))
+   for path, info in conn.get(RootOper.Interfaces):
+       print(path["InterfaceName"], info["MTU"], info["ActualState"])
+
+
+Off box, async
+++++++++++++++
+
+.. sourcecode:: python
+
+   import asyncio
+   from xrm2m import RootOper, connect_async, SSHTransport
+
+   async def summarise_intfs():
+      # Default asyncio/trollius event loop used unless otherwise specified
+      conn = await connect_async(SSHTransport("LSR42", "netops"))
+      for path, info in await conn.get(RootOper.Interfaces):
+          print(path["InterfaceName"], info["MTU"], info["ActualState"])
+
+   event_loop = asyncio.get_event_loop()
+   task = event_loop.create_task(summarise_intfs())
+   event_loop.run_until_complete(task)
+
+
+
+Summarise, recompose TE tunnel interfaces
+-----------------------------------------
+
+Some more complex examples of read operations, working with TE tunnel config.
+
+These are all sync, omitting the standard overhead. For async, mentally
+sprinkle `await` around.
+
+
+Summarize TE tunnel interface-name mapping:
+
+.. sourcecode:: python
+
+   # This example also illustrates one potential gap: seamlessly retrieving the
+   # values of two leafs for all elements of the InterfaceConfiguration list in
+   # one get operation.
+
+   tunnels_cfg = RootCfg.InterfaceConfiguration("act", "tunnel-te*")
+
+   print("TE Tunnel Interface  Tail-IP\n--------- ---------- --------")
+   for path, signame in conn.get(tunnels_cfg.TunnelTEAttributes.SignalledName):
+       destination = conn.get_value(conn.get_parent(path).Destination)
+       print(signame, path["InterfaceName"], destination)
+
+
+Summarize TE tunnel interface-name mapping, using 'nested' output format to
+reduce number of operations:
+
+.. sourcecode:: python
+
+   tunnels_cfg_path = RootCfg.InterfaceConfiguration("act", "tunnel-te*")
+
+   print("TE Tunnel Interface  Tail-IP\n--------- ---------- --------")
+   # N.B. same get RPC under the covers, just a non-clunking spelling for
+   # Python
+   tunnels_cfg = conn.get_nested(tunnels_cfg_path):
+   for tunnel_cfg in tunnels_cfg["RootCfg"]["InterfaceConfiguration"]:
+       print(tunnel_cfg["TunnelTEAttributes"]["SignalledName"],
+             tunnel_cfg["InterfaceName"]
+             tunnel_cfg["TunnelTEAttributes"]["Destination"])
+
+
+Recompose data in a custom way, server-side filtering:
+
+.. sourcecode:: python
+
+   intfs_oper = RootOper.Interfaces.InterfaceBrief
+   tunnels_cfg = RootCfg.InterfaceConfiguration("act", "tunnel-te*")
+
+   for path, signame in conn.get(tunnels_cfg.TunnelTEAttributes.SignalledName):
+       oper_state = conn.get_value(intfs_oper(path["InterfaceName"]))
+       print(signame, oper_state['MTU'], oper_state['ActualState'])
+
+
+
+Reconfigure TE metrics
+----------------------
+
+Basic config write examples, again omitting overheads and sync only.
+
+Start changing the behavior of the router:
+
+.. sourcecode:: python
+
+   REGEXP = ".*SFO.*-3"
+   METRIC = {"MetricType": "Relative", "RelativeMetric": -5}
+
+   tunnels_signame_cfg = (RootCfg.InterfaceConfiguration("act", "tunnel-te*").
+                          TunnelTEAttributes.SignalledName)
+
+   for path, signame in conn.get(tunnels_signame_cfg):
+       if re.match(REGEXP, signame):
+           conn.set(path.elems[:-1].Autoroute.Metric, METRIC)
+   conn.commit()
+
+
+Alternative, more efficient spelling of the above example (demonstrates bulk
+set capability):
+
+.. sourcecode:: python
+
+   REGEXP = ".*SFO.*-3"
+   METRIC = {"MetricType": "Relative", "RelativeMetric": -5}
+
+   tunnels_signame_cfg = (RootCfg.InterfaceConfiguration("act", "tunnel-te*").
+                          TunnelTEAttributes.SignalledName)
+
+   conn.set((path.elems[:-1].Autoroute.Metric, METRIC)
+            for path, signame in conn.get(tunnels_signame_cfg)
+            if re.match(REGEXP, signame))
+   conn.commit()
+
+
+
+Subtree replace
+---------------
+
+.. sourcecode:: python
+
+   CONFIG = {
+       "SFO": {
+           "Description": "to DEN",
+           "IPV4Network.Addresses.Primary": ("10.0.128.13", "255.255.255.252"),
+           "Bandwidth": 42
+       },
+       "BOS": {
+           "Description": "to CVG",
+           "IPV4Network.Addresses.Primary": ("10.0.0.18", "255.255.255.252"),
+           "Bandwidth": 43
+       },
+       "MIA": {
+           "Description": "to ATL",
+           "IPV4Network.Addresses.Primary": ("10.0.0.10", "255.255.255.252"),
+           "Bandwidth": 44
+       }
+   }
+
+   def extend_path(base_path, extra_pathstr):
+       extended_path = base_path
+       for elem in extra_pathstr.split("."):
+           extended_path = getattr(extended_path, elem)
+       return extended_path
+
+   intf_cfg = RootCfg.InterfaceConfiguration("act", "GigabitEthernet0/0/0/0")
+   conn.replace(intf_cfg)
+   for path, value in CONFIG[cfg.get_value(RootCfg.Hostname)].items():
+       full_path = extend_path(intf_cfg, path)
+       conn.set(full_path, value)
+   conn.commit()
+

@@ -1,0 +1,78 @@
+.. ----------------------------------------------------------------------------
+.. conn.rst - 
+..
+.. September 2015, Matthew Earl
+..
+.. Copyright (c) 2015 by Cisco Systems, Inc.
+.. All rights reserved.
+.. ----------------------------------------------------------------------------
+
+Connections and transports
+==========================
+
+Connections
+-----------
+
+Connections to an IOS-XR router are created with :func:`xrm2m.connect` or
+:func:`xrm2m.connect_async`. 
+
+.. autofunction:: xrm2m.connect
+
+.. autofunction:: xrm2m.connect_async
+
+.. autofunction:: xrm2m.sync
+
+.. autofunction:: xrm2m.async
+
+.. autoclass:: xrm2m.Connection()
+   :members:
+   :inherited-members:
+
+.. autoclass:: xrm2m.Change
+
+.. autoclass:: xrm2m.ChangeDetails
+
+.. autoclass:: xrm2m.ConnectionState
+
+.. autoclass:: xrm2m.AsyncConnection()
+
+Transports
+----------
+
+Transports are a mechanism for sending and receiving raw bytes from a router,
+with connection semantics. Its methods and attributes should not be used
+directly by the user (other than construction), instead the transport is used
+by calling methods on a :class:`.Connection`, which in turn is created by
+:func:`.connect` or :func:`.connect_async`.
+
+A given :class:`.Transport` object may only be passed to :func:`.connect` or
+:func:`.connect_async` once. To reconnect a disconnected :class:`.Connection`,
+:meth:`.Connection.reconnect` should be used.
+
+.. autoclass:: xrm2m.Transport
+
+.. autoclass:: xrm2m.SSHTransport
+    :members: __init__
+
+.. _event-loops:
+
+Event Loops
+-----------
+
+:func:`.connect` and :func:`.connect_async` accept an event loop argument,
+which is used for executing asynchronous operations.
+
+The type of loop that must be passed depends on the Python version, and
+platform being used:
+
+- On box, with Python 3: A :class:`cisco.sdk.EventContext` should be passed.
+
+- Off box, with Python 2.7.x: A `trollius` event loop should be passed.
+
+- Off box, with Python 3.4 or later: A `asyncio` event loop should be passed.
+
+All other configurations are unsupported.
+
+If the parameter is omitted then relevent async library's default event loop
+will be used (eg. `asyncio.get_event_loop()`).
+

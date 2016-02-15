@@ -1,0 +1,54 @@
+.. ----------------------------------------------------------------------------
+.. errors.rst - M2M errors documentation
+..
+.. September 2015, Matthew Earl
+..
+.. Copyright (c) 2015 by Cisco Systems, Inc.
+.. All rights reserved.
+.. ----------------------------------------------------------------------------
+
+Errors
+======
+
+.. autoexception:: xrm2m.ConnectionError()
+
+.. autoexception:: xrm2m.DisconnectedError()
+
+Request errors
+--------------
+
+These exceptions may be raised by :class:`.Connection` request methods. See the
+individial methods for details on what each method can raise.
+
+.. autoexception:: xrm2m.AmbiguousPathError()
+
+.. autoexception:: xrm2m.CiscoError()
+
+.. autoexception:: xrm2m.ConfigCommitError()
+
+.. autoclass:: xrm2m.ErrorCategory
+
+.. autoclass:: xrm2m.ConfigCommitErrorDetail
+
+.. autoexception:: xrm2m.DatatypeNotSupportedError()
+
+.. autoexception:: xrm2m.FileExistsError()
+
+.. autoexception:: xrm2m.InvalidArgumentError()
+
+.. autoexception:: xrm2m.NotFoundError()
+
+.. autoexception:: xrm2m.OperationNotSupportedError()
+
+.. autoexception:: xrm2m.PathHierarchyError()
+
+.. autoexception:: xrm2m.PathKeyContentError()
+
+.. autoexception:: xrm2m.PathKeyStructureError()
+
+.. autoexception:: xrm2m.PathStringFormatError()
+
+.. autoexception:: xrm2m.ValueContentError()
+
+.. autoexception:: xrm2m.ValueStructureError()
+

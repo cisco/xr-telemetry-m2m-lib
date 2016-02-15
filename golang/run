@@ -1,0 +1,4 @@
+#!/bin/bash
+docker rm go
+docker build --rm -t go .
+docker run -it -v "$(/bin/pwd -P)/code:/code" --name go go $*
